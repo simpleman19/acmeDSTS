@@ -1,0 +1,23 @@
+package acme.pd;
+
+public enum Direction {
+    WEST("West"),
+    EAST("East"),
+    NORTH("North"),
+    SOUTH("South");
+
+    Direction(String name) {
+        this.displayValue = name;
+    }
+
+    private String displayValue;
+
+    public String getDisplayValue() {
+        return displayValue;
+    }
+
+    @Override
+    public String toString() {
+        return displayValue;
+    }
+}
