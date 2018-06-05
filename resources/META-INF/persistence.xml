@@ -1,0 +1,18 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+        version="2.0">
+    <persistence-unit name="my-pu">
+   		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+    	<properties>
+	    	<property name="connection.driver_class">org.sqlite.JDBC</property>
+		    <property name="connection.url">jdbc:sqlite:database/acmeDSTS.db</property>
+		    <property name="connection.username"></property>
+		    <property name="connection.password"></property>
+		    <property name="show_sql">true</property>
+		    <!-- Scan for annotated classes and Hibernate mapping XML files -->
+		    <property name="hibernate.archive.autodetection" value="class, hbm"/>
+    	</properties>
+    </persistence-unit>
+</persistence>
+
