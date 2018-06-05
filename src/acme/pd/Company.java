@@ -4,14 +4,25 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "COMPANY")
 public class Company {
+	@Id
+	@Column(name = "COMPANY_ID")
     private UUID id;
+	@Column(name = "COMPANY_NAME")
     private String name = "ACME";
+	@Transient
     private Map map;
+	@Transient
     private HashMap<UUID, Courier> couriers;
+	@Transient
     private HashMap<UUID, Ticket> tickets;
+	@Transient
     private HashMap<UUID, Customer> customer;
+    @Transient
     private User currentUser;
     private BigDecimal bonus = new BigDecimal(1.25);
     private BigDecimal flatBillingRate = new BigDecimal(25);
