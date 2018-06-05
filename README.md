@@ -5,7 +5,13 @@ There is an example for JavaFX in Jacob's repo on github. Feel free to use anyth
 	clone links:
 	https://github.com/jake6642/3DRotate.git
 	https://github.com/jake6642/ColorSelector.git
-	
+
+# Gradle
+Build & run with Gradle dependencies:
+```bash
+gradle run
+```
+
 # git
 
 To pull down the repo:
