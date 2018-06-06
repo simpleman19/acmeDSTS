@@ -10,6 +10,8 @@ import javax.persistence.Persistence;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityManager;
  
+import javax.persistence.PersistenceUnit;
+
 public class Main {
     public static void main(String[] args) {
         Company company = new Company();
@@ -20,6 +22,7 @@ public class Main {
 
     
     public static class HibernateConnection {
+    	@PersistenceUnit
     	static EntityManagerFactory entityManagerFactory;
     	protected static void setUp() throws Exception {
 		    entityManagerFactory = Persistence.createEntityManagerFactory("my-pu");
@@ -31,13 +34,16 @@ public class Main {
     		} catch (Exception e) {
                 System.out.println(e.getMessage());
     		}
-    		EntityManager entityManager = entityManagerFactory.createEntityManager();
-    		entityManager.getTransaction().begin();
-    		Company c = new Company();
-    		c.setName("Test company");
-    		entityManager.persist(c);
-    		entityManager.getTransaction().commit();
-    		entityManager.close();
+    		if (entityManagerFactory != null) {
+    			EntityManager entityManager = entityManagerFactory.createEntityManager();
+        		entityManager.getTransaction().begin();
+        		Company c = new Company();
+        		c.setName("Test company");
+        		entityManager.persist(c);
+        		entityManager.getTransaction().commit();
+        		entityManager.close();
+    		}
+    		
     	}
     }
  
