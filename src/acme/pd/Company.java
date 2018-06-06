@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "COMPANY")
 public class Company {
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "COMPANY_ID")
     private UUID id;
 	@Column(name = "COMPANY_NAME")
