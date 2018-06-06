@@ -49,8 +49,8 @@ dependencies {
     compile 'org.xerial:sqlite-jdbc:3.23.1'
     
     // Dialect to talk to SQLite
-    //compile 'com.enigmabridge:hibernate4-sqlite-dialect:0.1.2'
-    compile group: 'net.kemitix', name: 'sqlite-dialect', version: '0.1.0'
+    compile 'com.enigmabridge:hibernate4-sqlite-dialect:0.1.2'
+    compile 'javax.xml.bind:jaxb-api:2.3.0'
 }
 
 // In this section you declare where to find the dependencies of your project
