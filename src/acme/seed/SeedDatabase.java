@@ -3,6 +3,7 @@ package acme.seed;
 import acme.pd.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class SeedDatabase {
     public static void main(String[] args) {
@@ -41,7 +42,7 @@ public class SeedDatabase {
         customer.setStreetName("1st");
         customer.setCustomerNumber(5000);
         // TODO save
-        customer = new Customer();
+        Customer customer2 = new Customer();
         customer.setName("Company Two");
         customer.setAvenueName("F");
         customer.setStreetName("5th");
@@ -50,6 +51,40 @@ public class SeedDatabase {
         Ticket ticket = new Ticket();
         ticket.setCompany(company);
         ticket.setDeliveryCustomer(customer);
+        ticket.setPickupCustomer(customer2);
+        ticket.setDeliveryTime(LocalDateTime.now().plusHours(4).plusMinutes(45));
+        ticket.setCreationDateTime(LocalDateTime.now());
+        ticket.setBillToSender(false);
+        ticket.setNote("This is a note");
+        ticket.setClerk(user);
+        // TODO save
+
+        Ticket ticket2 = new Ticket();
+        ticket.setCompany(company);
+        ticket.setDeliveryCustomer(customer2);
+        ticket.setPickupCustomer(customer);
+        ticket.setDeliveryTime(LocalDateTime.now().plusDays(2));
+        ticket.setCreationDateTime(LocalDateTime.now());
+        ticket.setBillToSender(true);
+        ticket.setNote("This is a note");
+        ticket.setClerk(user);
+        // TODO save
+
+        Ticket ticket3 = new Ticket();
+        ticket.setCompany(company);
+        ticket.setDeliveryCustomer(customer2);
+        ticket.setPickupCustomer(customer);
+        ticket.setDeliveryTime(LocalDateTime.now().minusHours(2));
+        ticket.setCreationDateTime(LocalDateTime.now());
+        ticket.setBillToSender(true);
+        ticket.setNote("This is a note");
+        ticket.setClerk(user);
+        ticket.setCourier(courier);
+        ticket.setDeliveryTime(LocalDateTime.now().minusHours(2));
+        ticket.setPickupTime(LocalDateTime.now().minusHours(3));
+        ticket.setDepartureTime(LocalDateTime.now().minusHours(4));
+        // TODO save
+
 
     }
 
