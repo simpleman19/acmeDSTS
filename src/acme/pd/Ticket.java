@@ -11,8 +11,8 @@ import java.util.stream.IntStream;
 public class Ticket {
     private UUID id;
     private Company company;
-    private Company deliveryCustomer;
-    private Company pickupCustomer;
+    private Customer deliveryCustomer;
+    private Customer pickupCustomer;
     private LocalDateTime creationDateTime;
     private User clerk;
     private Courier courier;
@@ -61,19 +61,19 @@ public class Ticket {
         this.company = company;
     }
 
-    public Company getDeliveryCustomer() {
+    public Customer getDeliveryCustomer() {
         return deliveryCustomer;
     }
 
-    public void setDeliveryCustomer(Company deliveryCustomer) {
+    public void setDeliveryCustomer(Customer deliveryCustomer) {
         this.deliveryCustomer = deliveryCustomer;
     }
 
-    public Company getPickupCustomer() {
+    public Customer getPickupCustomer() {
         return pickupCustomer;
     }
 
-    public void setPickupCustomer(Company pickupCustomer) {
+    public void setPickupCustomer(Customer pickupCustomer) {
         this.pickupCustomer = pickupCustomer;
     }
 
