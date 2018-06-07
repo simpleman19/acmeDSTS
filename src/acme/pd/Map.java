@@ -80,15 +80,25 @@ public class Map {
 					String NS = "";
 					String EW = "";
 
-					// System.out.println("col=" + j + " row=" + i);
-					NS = maps[j][i + 1];
-					EW = maps[j + 1][i];
-
-					if (NS == null) {
-						NS = "";
+					if (i == 1) {
+						NS = "NBorder";
 					}
-					if (EW == null) {
-						EW = "";
+					else if (maps[j][i + 1] == null){
+						NS = "SBorder";
+					}
+					else {
+						NS = maps[j][i + 1];
+					}
+					
+
+					if (j == 1) {
+						EW = "WBorder";
+					}
+					else if (maps[j+1][i] == null){
+						EW = "EBorder";
+					}
+					else {
+						EW = maps[j+1][i];
 					}
 
 					MapIntersection temp = new MapIntersection();
@@ -105,6 +115,22 @@ public class Map {
 						break;
 					case "V":
 						nRoad.setDirection(Direction.SOUTH);
+						break;
+					case "NBorder":
+						if (maps[j][i+1].equals("V")) {
+							nRoad.setDirection(Direction.SOUTH);
+						}
+						else {
+							nRoad.setDirection(null);
+						}
+						break;
+					case "SBorder":
+						if (maps[j][i-1].equals("^")){
+							nRoad.setDirection(Direction.NORTH);
+						}
+						else {
+							nRoad.setDirection(null);
+						}
 						break;
 					default:
 						nRoad.setDirection(Direction.NORTH);
@@ -125,6 +151,22 @@ public class Map {
 					case ">":
 						eRoad.setDirection(Direction.EAST);
 						break;
+					case "EBorder":
+						if (maps[j-1][i].equals("<")) {
+							eRoad.setDirection(Direction.WEST);
+						}
+						else {
+							eRoad.setDirection(null);
+						}
+						break;
+					case "WBorder":
+						if (maps[j+1][i].equals(">")) {
+							eRoad.setDirection(Direction.EAST);
+						}
+						else {
+							eRoad.setDirection(null);
+						}
+						break;
 					default:
 						eRoad.setDirection(Direction.EAST);
 						eRoad.setBidirectional(true);
@@ -139,18 +181,20 @@ public class Map {
 
 		this.homeBase = map[3][3];
 		
-		System.out.println(map[6][6].getNSroad().getName());
-		System.out.println(map[6][6].getNSroad().getDirection());
-		System.out.println(map[6][6].getEWroad().getName());
-		System.out.println(map[6][6].getEWroad().getDirection());
-		System.out.println(map[6][6].getIntersectionName());
-		System.out.println(map[6][6].canTravelDirection(Direction.NORTH));
-		System.out.println(map[6][6].canTravelDirection(Direction.SOUTH));
-		System.out.println(map[6][6].canTravelDirection(Direction.EAST));
-		System.out.println(map[6][6].canTravelDirection(Direction.WEST));
-		System.out.println("\n"+this.getHomeBase().getNSroad().getName());
-		System.out.println(this.getHomeBase().getIntersectionName());
+		testit(2,1);
 
+	}
+	
+	public void testit(int i , int j) {
+		System.out.println(map[i][j].getNSroad().getName());
+		System.out.println(map[i][j].getNSroad().getDirection());
+		System.out.println(map[i][j].getEWroad().getName());
+		System.out.println(map[i][j].getEWroad().getDirection());
+		System.out.println(map[i][j].getIntersectionName());
+		System.out.println(map[i][j].canTravelDirection(Direction.NORTH));
+		System.out.println(map[i][j].canTravelDirection(Direction.SOUTH));
+		System.out.println(map[i][j].canTravelDirection(Direction.EAST));
+		System.out.println(map[i][j].canTravelDirection(Direction.WEST));
 	}
 
 	public MapIntersection[][] getMap() {
