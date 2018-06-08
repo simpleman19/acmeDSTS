@@ -52,6 +52,10 @@ dependencies {
     // Dialect to talk to SQLite
     compile 'com.enigmabridge:hibernate4-sqlite-dialect:0.1.2'
     compile 'javax.xml.bind:jaxb-api:2.3.0'
+
+    // https://mvnrepository.com/artifact/postgresql/postgresql
+    compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
+
 }
 
 // In this section you declare where to find the dependencies of your project
