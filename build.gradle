@@ -46,7 +46,8 @@ dependencies {
     compile 'org.hibernate:hibernate-agroal:5.3.1.Final'
 
     // Driver to connect to SQLite
-    compile 'org.xerial:sqlite-jdbc:3.23.1'
+    //compile 'org.xerial:sqlite-jdbc:3.23.1' THIS IS BROKEN WE MADE A CUSTOM LOCAL ONE
+    compile name: 'sqlite-jdbc-3.23.2'
     
     // Dialect to talk to SQLite
     compile 'com.enigmabridge:hibernate4-sqlite-dialect:0.1.2'
@@ -59,4 +60,7 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenCentral()
+    flatDir {
+    	dirs 'libs'
+    }
 }
