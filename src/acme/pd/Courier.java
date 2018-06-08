@@ -1,6 +1,19 @@
 package acme.pd;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-public class Courier extends Person {
+import acme.data.PersistableEntity;
+
+@Entity
+@Table(name = "COURIER")
+public class Courier extends Person implements PersistableEntity {
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "NUMBER")
     private int courierNumber;
 
     public int getCourierNumber() {

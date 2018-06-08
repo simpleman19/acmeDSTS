@@ -4,11 +4,21 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import acme.data.PersistableEntity;
 
 @Entity
 @Table(name = "COMPANY")
-public class Company {
+public class Company implements PersistableEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "COMPANY_ID")
@@ -17,7 +27,8 @@ public class Company {
     private String name = "ACME";
 	@Transient
     private Map map;
-	@Transient
+	//@OneToMany(mappedBy = "COURIER")
+	//@MapKey(name = "NUMBER")
     private HashMap<UUID, Courier> couriers;
 	@Transient
     private HashMap<UUID, Ticket> tickets;
