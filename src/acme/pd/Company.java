@@ -19,7 +19,7 @@ public class Company {
     private int latenessMarginMinutes = 5;
     private double blocksPerMile = 5.2;
     private double courierMilesPerHour = 5.8;
-    private String mapFile = "map.csv";
+    private String mapFile = "map/map.csv";
 
     public Company() {
         // TODO initialize company

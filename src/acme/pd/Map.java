@@ -11,16 +11,39 @@ public class Map {
 	private MapIntersection[][] map;
 	private MapIntersection homeBase;
 
+	private static final String NORTH = "^";
+	private static final String SOUTH = "V";
+	private static final String EAST = ">";
+	private static final String WEST = "<";
+	private static final String N_BORDER = "nb";
+	private static final String S_BORDER = "sb";
+	private static final String E_BORDER = "eb";
+	private static final String W_BORDER = "wb";
+	private static final String OPEN = "O";
+	private static final String CLOSED = "X";
+	private static final String EW_BI = "-";
+	private static final String NS_BI = "|";
+
 	Map(File file) {
+		importMap(file);
+		// TODO export map
+	}
+
+	public void importMap(File file) {
 		// this gives you a 2-dimensional array of strings
 		List<List<String>> lines = new ArrayList<>();
-		String[][] maps = new String[40][40];
+		/*
+		 * This is where we'll store the intersection information and closures. There
+		 * will be a max of 40x40 for each (40 was an arbitrarily selected number but
+		 * there is no requirement for 40)
+		 */
+		String[][] intersection = new String[40][40];
 		String[][] closures = new String[40][40];
 
 		Scanner inputStream = null;
+		// read in the file and put it into a 2d list
 		try {
 			inputStream = new Scanner(file);
-
 			while (inputStream.hasNext()) {
 				String line = inputStream.next();
 				String[] values = line.split(",");
@@ -29,170 +52,162 @@ public class Map {
 			}
 			inputStream.close();
 		} catch (FileNotFoundException e) {
+			// TODO add a popup for when there is no file
 			e.printStackTrace();
 		}
 
-		final int rows = lines.size();
-		final int cols = lines.get(0).size();
-		// the following code lets you iterate through the 2-dimensional array
+		/*
+		 * Read in all the lines and store map info into the Intersections array and
+		 * closure info into the closures array
+		 */
 		int lineNo = 0;
+		int numRows = 0, numCols = 0;
 		boolean closuresSection = false;
 		for (List<String> line : lines) {
 			int columnNo = 0;
 			for (String value : line) {
-				if (value.equals("IntersectionClosures")) {
+				// Check for the intersection closure portion of the CSV
+				if (value.equalsIgnoreCase("IntersectionClosures")) {
 					closuresSection = true;
 					columnNo = 0;
 					lineNo = 0;
 				}
 				if (closuresSection == true) {
 					closures[columnNo][lineNo] = value;
-				} else {
-					maps[columnNo][lineNo] = value;
+				} else { // add the info to the map array
+					intersection[columnNo][lineNo] = value;
 				}
 				columnNo++;
 			}
 			lineNo++;
 		}
 
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				if (maps[j][i] != null) {
-					//System.out.print(maps[j][i] + "\t");
-				}
+		/*
+		 * Find out how many intersections we actually have so we can give our
+		 * MapIntersection array the necessary dimensions.
+		 */
+		for (int i = 0; intersection[0][i] != null; i++) {
+			numRows++;
+			numCols = 0;
+			for (int j = 0; intersection[j][0] != null; j++) {
+				numCols++;
 			}
-			//System.out.print("\n");
 		}
 
+		// Instantiate the map with the number of rows/columns we counted eariler
+		map = new MapIntersection[(numRows + 1) / 2][(numCols + 1) / 2];
+		// iterate through the list of intersections and set the road info
+		for (int rows = 0; rows < numRows; rows++) {
+			for (int cols = 0; cols < numCols; cols++) {
+				if ((cols % 2) == 1 && rows % 2 == 1) {
+					String nsRoadDir = "";
+					String ewRoadDir = "";
 
+					// check to see if we hit the North/South borders
+					if (rows == 1) {
+						nsRoadDir = N_BORDER;
+					} else if (intersection[cols][rows + 1] == null) {
+						nsRoadDir = S_BORDER;
+					} else {
+						nsRoadDir = intersection[cols][rows + 1];
+					}
 
-		map = new MapIntersection[8][8];
-		for (int i = 0; i < cols; i++) {
-			for (int j = 0; j < cols; j++) {
-				if ((j % 2) == 1 && i % 2 == 1) {
-					String NS = "";
-					String EW = "";
-
-					if (i == 1) {
-						NS = "NBorder";
-					}
-					else if (maps[j][i + 1] == null){
-						NS = "SBorder";
-					}
-					else {
-						NS = maps[j][i + 1];
-					}
-					
-
-					if (j == 1) {
-						EW = "WBorder";
-					}
-					else if (maps[j+1][i] == null){
-						EW = "EBorder";
-					}
-					else {
-						EW = maps[j+1][i];
+					// check to see if we hit the East/West borders
+					if (cols == 1) {
+						ewRoadDir = W_BORDER;
+					} else if (intersection[cols + 1][rows] == null) {
+						ewRoadDir = E_BORDER;
+					} else {
+						ewRoadDir = intersection[cols + 1][rows];
 					}
 
 					MapIntersection temp = new MapIntersection();
-					Road nRoad = new Road();
-					Road eRoad = new Road();
+					Road nsRoad = new Road();
+					Road ewRoad = new Road();
 					/* handle the NS road */
 					// set the road name to to first row for this column
-					nRoad.setName(maps[j][0]);
+					nsRoad.setName(intersection[cols][0]);
 					// check which direction it is
 					// if it is neither, it is bidirectional
-					switch (NS) {
-					case "^":
-						nRoad.setDirection(Direction.NORTH);
+					switch (nsRoadDir) {
+					case NORTH:
+						nsRoad.setDirection(Direction.NORTH);
 						break;
-					case "V":
-						nRoad.setDirection(Direction.SOUTH);
+					case SOUTH:
+						nsRoad.setDirection(Direction.SOUTH);
 						break;
-					case "NBorder":
-						if (maps[j][i+1].equals("V") || maps[j][i+1].equals("|")) {
-							nRoad.setDirection(Direction.SOUTH);
-						}
-						else {
-							nRoad.setDirection(null);
-						}
-						break;
-					case "SBorder":
-						if (maps[j][i-1].equals("^") || maps[j][i-1].equals("|")){
-							nRoad.setDirection(Direction.NORTH);
-						}
-						else {
-							nRoad.setDirection(null);
+					// secure the borders!
+					case N_BORDER:
+						if (intersection[cols][rows + 1].equalsIgnoreCase(SOUTH)
+								|| intersection[cols][rows + 1].equalsIgnoreCase(NS_BI)) {
+							nsRoad.setDirection(Direction.SOUTH);
+						} else {
+							nsRoad.setDirection(null);
 						}
 						break;
-					default:
-						nRoad.setDirection(Direction.NORTH);
-						nRoad.setBidirectional(true);
+					case S_BORDER:
+						if (intersection[cols][rows - 1].equalsIgnoreCase(NORTH)
+								|| intersection[cols][rows - 1].equalsIgnoreCase(NS_BI)) {
+							nsRoad.setDirection(Direction.NORTH);
+						} else {
+							nsRoad.setDirection(null);
+						}
+						break;
+					default: // this must be a bidirectional if nothing else fits
+						nsRoad.setDirection(Direction.NORTH);
+						nsRoad.setBidirectional(true);
 					}
-					temp.setNSroad(nRoad);
-					
+					temp.setNSroad(nsRoad);
 
 					/* Handle EW road */
 					// set the road name to to first column for this row
-					eRoad.setName(maps[0][i]);
+					ewRoad.setName(intersection[0][rows]);
 					// check which direction it is
 					// if it is neither, it is bidirectional
-					switch (EW) {
-					case "<":
-						eRoad.setDirection(Direction.WEST);
+					switch (ewRoadDir) {
+					case WEST:
+						ewRoad.setDirection(Direction.WEST);
 						break;
-					case ">":
-						eRoad.setDirection(Direction.EAST);
+					case EAST:
+						ewRoad.setDirection(Direction.EAST);
 						break;
-					case "EBorder":
-						if (maps[j-1][i].equals("<") || maps[j-1][i].equals("-")) {
-							eRoad.setDirection(Direction.WEST);
-						}
-						else {
-							eRoad.setDirection(null);
+					case E_BORDER:
+						if (intersection[cols - 1][rows].equalsIgnoreCase(WEST)
+								|| intersection[cols - 1][rows].equalsIgnoreCase(EW_BI)) {
+							ewRoad.setDirection(Direction.WEST);
+						} else {
+							ewRoad.setDirection(null);
 						}
 						break;
-					case "WBorder":
-						if (maps[j+1][i].equals(">") || maps[j+1][i].equals("-")) {
-							eRoad.setDirection(Direction.EAST);
-						}
-						else {
-							eRoad.setDirection(null);
+					case W_BORDER:
+						if (intersection[cols + 1][rows].equalsIgnoreCase(EAST)
+								|| intersection[cols + 1][rows].equalsIgnoreCase(EW_BI)) {
+							ewRoad.setDirection(Direction.EAST);
+						} else {
+							ewRoad.setDirection(null);
 						}
 						break;
 					default:
-						eRoad.setDirection(Direction.EAST);
-						eRoad.setBidirectional(true);
+						ewRoad.setDirection(Direction.EAST);
+						ewRoad.setBidirectional(true);
 					}
-					temp.setEWroad(eRoad);
+					temp.setEWroad(ewRoad);
 
 					// set the intersection in our map
-					map[i/2][j/2] = temp;
+					map[rows / 2][cols / 2] = temp;
 				}
 			}
 		}
 
-		this.homeBase = map[3][3];
-		for (int i = 0; i < 7; i++) {
-			for (int j = 0; j < 7; j++) {
-				testit(i,j);
-				System.out.print("\n");
-			}
-		}
+		// set the homebase
+		setHomeBase(3, 3);
 
+		// test all the directions
+		testDirection();
 	}
-	
-	public void testit(int i , int j) {
-		/*System.out.println(map[i][j].getNSroad().getName());
-		System.out.println(map[i][j].getNSroad().getDirection());
-		System.out.println(map[i][j].getEWroad().getName());
-		System.out.println(map[i][j].getEWroad().getDirection());*/
-		System.out.println(map[i][j].getIntersectionName());
-		System.out.println(map[i][j].canTravelDirection(Direction.NORTH));
-		System.out.println(map[i][j].canTravelDirection(Direction.SOUTH));
-		System.out.println(map[i][j].canTravelDirection(Direction.EAST));
-		System.out.println(map[i][j].canTravelDirection(Direction.WEST));
-		
+
+	private void setHomeBase(int NS, int EW) {
+		this.homeBase = map[NS][EW];
 	}
 
 	public MapIntersection[][] getMap() {
@@ -201,5 +216,26 @@ public class Map {
 
 	public MapIntersection getHomeBase() {
 		return homeBase;
+	}
+
+	public void testDirection() {
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 7; j++) {
+				/*
+				 * System.out.println(map[i][j].getNSroad().getName());
+				 * System.out.println(map[i][j].getNSroad().getDirection());
+				 * System.out.println(map[i][j].getEWroad().getName());
+				 * System.out.println(map[i][j].getEWroad().getDirection());
+				 */
+				System.out.println(map[i][j].getIntersectionName());
+				System.out.println(map[i][j].canTravelDirection(Direction.NORTH));
+				System.out.println(map[i][j].canTravelDirection(Direction.SOUTH));
+				System.out.println(map[i][j].canTravelDirection(Direction.EAST));
+				System.out.println(map[i][j].canTravelDirection(Direction.WEST));
+
+				System.out.print("\n");
+			}
+			System.out.print("\n");
+		}
 	}
 }
