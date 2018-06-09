@@ -127,6 +127,11 @@ public class Ticket {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMdd-hhmmss");
         this.packageID = df.format(this.getCreationDateTime());
         // TODO check database for duplicate (Not likely but better safe than sorry)
+        boolean overlap = (new Random().nextInt() % 10 == 0);
+        if (overlap) {
+            this.setCreationDateTime(this.getCreationDateTime().plusSeconds(1));
+            this.generatePackageId();
+        }
     }
 
     public BigDecimal getQuotedPrice() {
@@ -198,6 +203,8 @@ public class Ticket {
     }
 
     public static void main(String [] args) {
-        Ticket ticket = new Ticket(new Company());
+        for (int i = 0; i < 100; i++) {
+            Ticket ticket = new Ticket(new Company());
+        }
     }
 }
