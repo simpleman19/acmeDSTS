@@ -4,9 +4,25 @@ import acme.pd.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class SeedDatabase {
     public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        String input = "";
+        do {
+            System.out.print("Do you wish to clear the current tables? (Y/N): ");
+            input = sc.nextLine().toUpperCase();
+            if (input.equals("Y")) {
+                // TODO drop tables
+                System.out.println("Dropped tables");
+            } else {
+                System.out.println("[WARN]: Not Dropping Tables");
+            }
+        } while (!input.equals("Y") && !input.equals("N"));
+
+
         Company company = new Company();
         company.setName("ACME Courier Service");
         company.setBonus(new BigDecimal(5.25));
@@ -15,6 +31,7 @@ public class SeedDatabase {
         company.setCourierMilesPerHour(5.8);
         company.setFlatBillingRate(new BigDecimal(25.00));
         // TODO save
+        System.out.println("Added company");
 
         // admin account
         User user = new User();
@@ -29,6 +46,7 @@ public class SeedDatabase {
         user.setPassword("password");
         user.setAdmin(false);
         // TODO save
+        System.out.println("Added admin and clerk accounts");
 
         // Two couriers
         Courier courier = new Courier();
@@ -39,6 +57,7 @@ public class SeedDatabase {
         courier.setName("Jane Doe");
         courier.setCourierNumber(1001);
         // TODO save
+        System.out.println("Added 2 couriers");
 
         // A couple customers
         Customer customer = new Customer();
@@ -52,6 +71,7 @@ public class SeedDatabase {
         customer.setAvenueName("F");
         customer.setStreetName("5th");
         // TODO save
+        System.out.println("Added 2 customers");
 
         // TODO path generation for tickets??
         // Open ticket
@@ -94,7 +114,7 @@ public class SeedDatabase {
         ticket.setPickupTime(LocalDateTime.now().minusHours(3));
         ticket.setDepartureTime(LocalDateTime.now().minusHours(4));
         // TODO save
-
+        System.out.println("Added an open ticket, open with courier, and closed ticket");
 
     }
 
