@@ -216,9 +216,9 @@ public class Map {
 			}
 		}
 
-		// set the homebase
-		setHomeBase(3, 3);
-
+		// set the homeBase
+		setHomeBase(3, 3);		
+		
 	}
 
 	public MapIntersection[][] getMap() {
@@ -254,41 +254,4 @@ public class Map {
 			} // end for columns
 		} // end for rows
 	}
-
-	/* Test only functions that help confirm the closures and intersections */
-	public void testClosure() {
-		for (int i = 0; i < 7; i++) {
-			for (int j = 0; j < 7; j++) {
-				System.out.println(map[i][j].getIntersectionName());
-				System.out.println((map[i][j].isClosedIndefinitely()));
-				if (map[i][j].getClosedFrom() != null) {
-					System.out.println(map[i][j].getClosedFrom() + " " + map[i][j].getClosedTo());
-				}
-				System.out.print("\n");
-			}
-			System.out.print("\n");
-		}
-	}
-
-	public void testDirection() {
-		for (int i = 0; i < 7; i++) {
-			for (int j = 0; j < 7; j++) {
-				/*
-				 * System.out.println(map[i][j].getNSroad().getName());
-				 * System.out.println(map[i][j].getNSroad().getDirection());
-				 * System.out.println(map[i][j].getEWroad().getName());
-				 * System.out.println(map[i][j].getEWroad().getDirection());
-				 */
-				System.out.println(map[i][j].getIntersectionName());
-				System.out.println(map[i][j].canTravelDirection(Direction.NORTH));
-				System.out.println(map[i][j].canTravelDirection(Direction.SOUTH));
-				System.out.println(map[i][j].canTravelDirection(Direction.EAST));
-				System.out.println(map[i][j].canTravelDirection(Direction.WEST));
-
-				System.out.print("\n");
-			}
-			System.out.print("\n");
-		}
-	}
-
 }
