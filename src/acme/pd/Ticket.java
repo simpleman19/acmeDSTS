@@ -2,7 +2,10 @@ package acme.pd;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
@@ -30,9 +33,10 @@ public class Ticket {
     private String note;
 
     public Ticket(Company company) {
-        this.creationDateTime = LocalDateTime.now();
+        this.setCreationDateTime(LocalDateTime.now());
         this.setCompany(company);
-        this.setClerk(this.company.getCurrentUser());
+        this.generatePackageId();
+        this.setClerk(this.getCompany().getCurrentUser());
     }
 
     public ArrayList<String> getDeliveryInstructions() {
@@ -63,7 +67,7 @@ public class Ticket {
         return company;
     }
 
-    public void setCompany(Company company) {
+    private void setCompany(Company company) {
         this.company = company;
     }
 
@@ -87,7 +91,7 @@ public class Ticket {
         return creationDateTime;
     }
 
-    public void setCreationDateTime(LocalDateTime creationDateTime) {
+    private void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
@@ -95,7 +99,7 @@ public class Ticket {
         return clerk;
     }
 
-    public void setClerk(User clerk) {
+    private void setClerk(User clerk) {
         this.clerk = clerk;
     }
 
@@ -117,6 +121,12 @@ public class Ticket {
 
     public String getPackageID() {
         return packageID;
+    }
+
+    private void generatePackageId() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMdd-ssSSS");
+        this.packageID = df.format(this.getCreationDateTime());
+        // TODO check database for duplicate (Not likely but better safe than sorry)
     }
 
     public BigDecimal getQuotedPrice() {
@@ -185,5 +195,9 @@ public class Ticket {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public static void main(String [] args) {
+        Ticket ticket = new Ticket(new Company());
     }
 }
