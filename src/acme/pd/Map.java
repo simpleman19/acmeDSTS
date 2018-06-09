@@ -21,12 +21,11 @@ public class Map {
 	private static final String S_BORDER = "sb";
 	private static final String E_BORDER = "eb";
 	private static final String W_BORDER = "wb";
-	private static final String OPEN = "O";
 	private static final String CLOSED = "X";
 	private static final String EW_BI = "-";
 	private static final String NS_BI = "|";
 	private String[][] closures;
-	private String[][] intersection;
+	private String[][] intersections;
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
 	Map(File file) {
@@ -38,12 +37,14 @@ public class Map {
 		// this gives you a 2-dimensional array of strings
 		List<List<String>> lines = new ArrayList<>();
 		/*
-		 * This is where we'll store the intersection information and closures. There
-		 * will be a max of 40x40 for each (40 was an arbitrarily selected number but
-		 * there is no requirement for 40)
+		 * This is where we'll store the intersection information and closures. The
+		 * intersections array is different form the map object.
+		 * 
+		 * intersection[][] stores the imported road and intersection values
+		 * closures[][] stores the imported closure information with date ranges
 		 */
-		intersection = new String[40][40];
-		closures = new String[40][40];
+		intersections = new String[40][40];
+		closures = new String[40][4];
 
 		Scanner inputStream = null;
 		// read in the file and put it into a 2d list
@@ -77,10 +78,13 @@ public class Map {
 					columnNo = 0;
 					lineNo = 0;
 				}
+				// add the info into the closure array
 				if (closuresSection == true) {
 					closures[lineNo][columnNo] = value;
-				} else { // add the info to the map array
-					intersection[columnNo][lineNo] = value;
+				}
+				// add the info to the map array
+				else {
+					intersections[columnNo][lineNo] = value;
 				}
 				columnNo++;
 			}
@@ -91,49 +95,51 @@ public class Map {
 		 * Find out how many intersections we actually have so we can give our
 		 * MapIntersection array the necessary dimensions.
 		 */
-		for (int i = 0; intersection[0][i] != null; i++) {
+		for (int i = 0; intersections[0][i] != null; i++) {
 			numRows++;
 			numCols = 0;
-			for (int j = 0; intersection[j][0] != null; j++) {
+			for (int j = 0; intersections[j][0] != null; j++) {
 				numCols++;
 			}
 		}
 
-		// Instantiate the map with the number of rows/columns we counted eariler
+		// Instantiate the map with the number of rows/columns we counted prior
 		map = new MapIntersection[(numRows + 1) / 2][(numCols + 1) / 2];
 		// iterate through the list of intersections and set the road info
 		for (int rows = 0; rows < numRows; rows++) {
 			for (int cols = 0; cols < numCols; cols++) {
+				// intersections fall on the odd indices of the csv file
 				if ((cols % 2) == 1 && rows % 2 == 1) {
 					String nsRoadDir = "";
 					String ewRoadDir = "";
+					// create new roads and an intersection
+					MapIntersection tempIntersection = new MapIntersection();
+					Road nsRoad = new Road();
+					Road ewRoad = new Road();
 
 					// check to see if we hit the North/South borders
 					if (rows == 1) {
 						nsRoadDir = N_BORDER;
-					} else if (intersection[cols][rows + 1] == null) {
+					} else if (intersections[cols][rows + 1] == null) {
 						nsRoadDir = S_BORDER;
 					} else {
-						nsRoadDir = intersection[cols][rows + 1];
+						nsRoadDir = intersections[cols][rows + 1];
 					}
 
 					// check to see if we hit the East/West borders
 					if (cols == 1) {
 						ewRoadDir = W_BORDER;
-					} else if (intersection[cols + 1][rows] == null) {
+					} else if (intersections[cols + 1][rows] == null) {
 						ewRoadDir = E_BORDER;
 					} else {
-						ewRoadDir = intersection[cols + 1][rows];
+						ewRoadDir = intersections[cols + 1][rows];
 					}
 
-					MapIntersection temp = new MapIntersection();
-					Road nsRoad = new Road();
-					Road ewRoad = new Road();
 					/* handle the NS road */
 					// set the road name to to first row for this column
-					nsRoad.setName(intersection[cols][0]);
-					// check which direction it is
-					// if it is neither, it is bidirectional
+					nsRoad.setName(intersections[cols][0]);
+
+					// Check for directional conditions
 					switch (nsRoadDir) {
 					case NORTH:
 						nsRoad.setDirection(Direction.NORTH);
@@ -143,16 +149,16 @@ public class Map {
 						break;
 					// secure the borders!
 					case N_BORDER:
-						if (intersection[cols][rows + 1].equalsIgnoreCase(SOUTH)
-								|| intersection[cols][rows + 1].equalsIgnoreCase(NS_BI)) {
+						if (intersections[cols][rows + 1].equalsIgnoreCase(SOUTH)
+								|| intersections[cols][rows + 1].equalsIgnoreCase(NS_BI)) {
 							nsRoad.setDirection(Direction.SOUTH);
 						} else {
 							nsRoad.setDirection(null);
 						}
 						break;
 					case S_BORDER:
-						if (intersection[cols][rows - 1].equalsIgnoreCase(NORTH)
-								|| intersection[cols][rows - 1].equalsIgnoreCase(NS_BI)) {
+						if (intersections[cols][rows - 1].equalsIgnoreCase(NORTH)
+								|| intersections[cols][rows - 1].equalsIgnoreCase(NS_BI)) {
 							nsRoad.setDirection(Direction.NORTH);
 						} else {
 							nsRoad.setDirection(null);
@@ -162,13 +168,12 @@ public class Map {
 						nsRoad.setDirection(Direction.NORTH);
 						nsRoad.setBidirectional(true);
 					}
-					temp.setNSroad(nsRoad);
+					tempIntersection.setNSroad(nsRoad);
 
 					/* Handle EW road */
 					// set the road name to to first column for this row
-					ewRoad.setName(intersection[0][rows]);
-					// check which direction it is
-					// if it is neither, it is bidirectional
+					ewRoad.setName(intersections[0][rows]);
+					// check directional conditions
 					switch (ewRoadDir) {
 					case WEST:
 						ewRoad.setDirection(Direction.WEST);
@@ -177,16 +182,16 @@ public class Map {
 						ewRoad.setDirection(Direction.EAST);
 						break;
 					case E_BORDER:
-						if (intersection[cols - 1][rows].equalsIgnoreCase(WEST)
-								|| intersection[cols - 1][rows].equalsIgnoreCase(EW_BI)) {
+						if (intersections[cols - 1][rows].equalsIgnoreCase(WEST)
+								|| intersections[cols - 1][rows].equalsIgnoreCase(EW_BI)) {
 							ewRoad.setDirection(Direction.WEST);
 						} else {
 							ewRoad.setDirection(null);
 						}
 						break;
 					case W_BORDER:
-						if (intersection[cols + 1][rows].equalsIgnoreCase(EAST)
-								|| intersection[cols + 1][rows].equalsIgnoreCase(EW_BI)) {
+						if (intersections[cols + 1][rows].equalsIgnoreCase(EAST)
+								|| intersections[cols + 1][rows].equalsIgnoreCase(EW_BI)) {
 							ewRoad.setDirection(Direction.EAST);
 						} else {
 							ewRoad.setDirection(null);
@@ -196,35 +201,15 @@ public class Map {
 						ewRoad.setDirection(Direction.EAST);
 						ewRoad.setBidirectional(true);
 					}
-					temp.setEWroad(ewRoad);
+					tempIntersection.setEWroad(ewRoad);
 
+					// store the intersection into the proper location on the map
 					int mapRows = rows / 2, mapCols = cols / 2;
-					// set the intersection in our map
-					map[mapRows][mapCols] = temp;
+					map[mapRows][mapCols] = tempIntersection;
 
 					// check for the intersection closure state
-					if (intersection[cols][rows].equalsIgnoreCase(CLOSED)) {
-						// if the closure is in the closures array, set the date
-						map[mapRows][mapCols].setClosedIndefinitely(true);
-						// check to see if it is in the closures list
-						for (int row = 0; row < closures[0].length; row++) {
-							for (int col = 0; col < 4; col++) {
-								if (closures[row][col] != null) {
-									if (ewRoad.getName().equals(closures[row][0])) {
-										if (nsRoad.getName().equals(closures[row][1])) {
-											// assign the closure dates
-											map[mapRows][mapCols]
-													.setClosedFrom(LocalDate.parse(closures[row][2], formatter));
-											map[mapRows][mapCols]
-													.setClosedTo(LocalDate.parse(closures[row][3], formatter));
-											// don't close it indefinitely
-											map[mapRows][mapCols].setClosedIndefinitely(false);
-											break;
-										}
-									}
-								}
-							}
-						}
+					if (intersections[cols][rows].equalsIgnoreCase(CLOSED)) {
+						setClosures(mapRows, mapCols);
 					}
 				}
 
@@ -234,15 +219,6 @@ public class Map {
 		// set the homebase
 		setHomeBase(3, 3);
 
-		// test all the directions
-		// testDirection();
-
-		// test closures
-		testClosure();
-	}
-
-	private void setHomeBase(int NS, int EW) {
-		this.homeBase = map[NS][EW];
 	}
 
 	public MapIntersection[][] getMap() {
@@ -253,12 +229,41 @@ public class Map {
 		return homeBase;
 	}
 
+	private void setHomeBase(int NS, int EW) {
+		this.homeBase = map[NS][EW];
+	}
+
+	private void setClosures(int mapRow, int mapCol) {
+		// set the intersection to closed
+		map[mapRow][mapCol].setClosedIndefinitely(true);
+		// Check for closure dates
+		for (int row = 0; row < closures[0].length; row++) {
+			for (int col = 0; col < 4; col++) {
+				if (closures[row][col] != null) {
+					if (map[mapRow][mapCol].getEWroad().getName().equals(closures[row][0])) {
+						if (map[mapRow][mapCol].getNSroad().getName().equals(closures[row][1])) {
+							// assign the closure dates
+							map[mapRow][mapCol].setClosedFrom(LocalDate.parse(closures[row][2], formatter));
+							map[mapRow][mapCol].setClosedTo(LocalDate.parse(closures[row][3], formatter));
+							// This intersection is not closed indefinitely
+							map[mapRow][mapCol].setClosedIndefinitely(false);
+							break;
+						} // end if NS road
+					} // end if EW road
+				} // end if closures is not null
+			} // end for columns
+		} // end for rows
+	}
+
+	/* Test only functions that help confirm the closures and intersections */
 	public void testClosure() {
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 7; j++) {
 				System.out.println(map[i][j].getIntersectionName());
-				System.out.println((map[i][j].isClosedIndefinitely()) );
-				if (map[i][j].getClosedFrom()!= null) {System.out.println(map[i][j].getClosedFrom() + " " + map[i][j].getClosedTo());}
+				System.out.println((map[i][j].isClosedIndefinitely()));
+				if (map[i][j].getClosedFrom() != null) {
+					System.out.println(map[i][j].getClosedFrom() + " " + map[i][j].getClosedTo());
+				}
 				System.out.print("\n");
 			}
 			System.out.print("\n");
@@ -285,4 +290,5 @@ public class Map {
 			System.out.print("\n");
 		}
 	}
+
 }
