@@ -1,7 +1,10 @@
 package acme.pd;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,14 +25,18 @@ public class Map {
 	private static final String E_BORDER = "eb";
 	private static final String W_BORDER = "wb";
 	private static final String CLOSED = "X";
+	private static final String OPEN = "O";
 	private static final String EW_BI = "-";
 	private static final String NS_BI = "|";
+	private static final String CLOSURES = "IntersectionClosures";
 	private String[][] closures;
 	private String[][] intersections;
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
 	Map(File file) {
 		importMap(file);
+		// TODO call export function on shutdown
+		// exportMap(file);
 		// TODO export map
 	}
 
@@ -73,7 +80,7 @@ public class Map {
 			int columnNo = 0;
 			for (String value : line) {
 				// Check for the intersection closure portion of the CSV
-				if (value.equalsIgnoreCase("IntersectionClosures")) {
+				if (value.equalsIgnoreCase(CLOSURES)) {
 					closuresSection = true;
 					columnNo = 0;
 					lineNo = 0;
@@ -217,8 +224,8 @@ public class Map {
 		}
 
 		// set the homeBase
-		setHomeBase(3, 3);		
-		
+		setHomeBase(3, 3);
+
 	}
 
 	public MapIntersection[][] getMap() {
@@ -254,4 +261,68 @@ public class Map {
 			} // end for columns
 		} // end for rows
 	}
+
+	private void exportMap(File file) {
+		try {
+			BufferedWriter br = new BufferedWriter(new FileWriter(file));
+			StringBuilder sb = new StringBuilder();
+			// handle the map information
+			for (int i = 0; i < intersections.length; i++) {
+				for (int j = 0; j < intersections.length; j++) {
+					if (intersections[j][i] != null) {
+						// if we are on an intersection
+						if (j % 2 == 1 && i % 2 == 1) {
+							// is it closed
+							if (map[(i / 2)][(j / 2)].isClosedIndefinitely()
+									|| !map[i / 2][j / 2].isClosed(LocalDate.MAX)) {
+								sb.append(CLOSED);
+							}
+							// it must be open
+							else {
+								sb.append(OPEN);
+							}
+						}
+						// we aren't on an intersection, assume it is a label or direction
+						else {
+							sb.append(intersections[j][i]);
+						}
+						sb.append(",");
+					}
+				}
+
+				// remove trailing commas
+				sb.setLength(sb.length() - 1);
+				// go to next line if we are still parsing map info
+				sb.append("\n");
+				if (intersections[0][i] == null) {
+					break;
+				}
+
+			}
+			
+			// handle the closure information
+			sb.append(CLOSURES);
+			sb.append("\n");
+			for (int i = 0; i < map[0].length; i++) {
+				for (int j = 0; j < map.length; j++) {
+					if (!map[i][j].isClosed(LocalDate.MAX)) {
+						sb.append(map[i][j].getEWroad().getName());
+						sb.append(",");
+						sb.append(map[i][j].getNSroad().getName());
+						sb.append(",");
+						sb.append(map[i][j].getClosedFrom().format(formatter));
+						sb.append(",");
+						sb.append(map[i][j].getClosedTo().format(formatter));
+						sb.append("\n");
+					}
+				}
+			}
+			br.write(sb.toString());
+			br.close();
+		} catch (IOException e) {
+			// TODO can't access map file for export
+			e.printStackTrace();
+		}
+	}
+
 }
