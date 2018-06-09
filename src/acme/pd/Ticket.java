@@ -29,6 +29,12 @@ public class Ticket {
     private Path path;
     private String note;
 
+    public Ticket(Company company) {
+        this.creationDateTime = LocalDateTime.now();
+        this.setCompany(company);
+        this.setClerk(this.company.getCurrentUser());
+    }
+
     public ArrayList<String> getDeliveryInstructions() {
         return path.getDeliveryInstructions();
     }
