@@ -16,17 +16,21 @@ public class SeedDatabase {
         company.setFlatBillingRate(new BigDecimal(25.00));
         // TODO save
 
+        // admin account
         User user = new User();
         user.setUsername("admin");
         user.setPassword("password");
         user.setAdmin(true);
         // TODO save
+
+        // clerk account
         user = new User();
         user.setUsername("clerk");
         user.setPassword("password");
         user.setAdmin(false);
         // TODO save
 
+        // Two couriers
         Courier courier = new Courier();
         courier.setName("John Doe");
         courier.setCourierNumber(1000);
@@ -36,6 +40,7 @@ public class SeedDatabase {
         courier.setCourierNumber(1001);
         // TODO save
 
+        // A couple customers
         Customer customer = new Customer();
         customer.setName("Company One");
         customer.setAvenueName("A");
@@ -48,6 +53,8 @@ public class SeedDatabase {
         customer.setStreetName("5th");
         // TODO save
 
+        // TODO path generation for tickets??
+        // Open ticket
         Ticket ticket = new Ticket();
         ticket.setCompany(company);
         ticket.setDeliveryCustomer(customer);
@@ -59,6 +66,7 @@ public class SeedDatabase {
         ticket.setClerk(user);
         // TODO save
 
+        // Open ticket with courier
         Ticket ticket2 = new Ticket();
         ticket.setCompany(company);
         ticket.setDeliveryCustomer(customer2);
@@ -68,8 +76,10 @@ public class SeedDatabase {
         ticket.setBillToSender(true);
         ticket.setNote("This is a note");
         ticket.setClerk(user);
+        ticket.setCourier(courier);
         // TODO save
 
+        // Closed ticket
         Ticket ticket3 = new Ticket();
         ticket.setCompany(company);
         ticket.setDeliveryCustomer(customer2);
