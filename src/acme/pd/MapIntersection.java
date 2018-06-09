@@ -1,13 +1,14 @@
 package acme.pd;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
 
 public class MapIntersection {
     private Road NSroad;
     private Road EWroad;
-    private LocalDateTime closedTo;
-    private LocalDateTime closedFrom;
+    private LocalDate closedTo;
+    private LocalDate closedFrom;
     private boolean closedIndefinitely;
 
     MapIntersection() {
@@ -47,19 +48,19 @@ public class MapIntersection {
         this.EWroad = EWroad;
     }
 
-    public LocalDateTime getClosedTo() {
+    public LocalDate getClosedTo() {
         return closedTo;
     }
 
-    public void setClosedTo(LocalDateTime closedTo) {
-        this.closedTo = closedTo;
+    public void setClosedTo(LocalDate localDate) {
+        this.closedTo = localDate;
     }
 
-    public LocalDateTime getClosedFrom() {
+    public LocalDate getClosedFrom() {
         return closedFrom;
     }
 
-    public void setClosedFrom(LocalDateTime closedFrom) {
+    public void setClosedFrom(LocalDate closedFrom) {
         this.closedFrom = closedFrom;
     }
 

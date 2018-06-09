@@ -2,6 +2,8 @@ package acme.pd;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,9 @@ public class Map {
 	private static final String CLOSED = "X";
 	private static final String EW_BI = "-";
 	private static final String NS_BI = "|";
+	private String[][] closures;
+	private String[][] intersection;
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
 	Map(File file) {
 		importMap(file);
@@ -37,8 +42,8 @@ public class Map {
 		 * will be a max of 40x40 for each (40 was an arbitrarily selected number but
 		 * there is no requirement for 40)
 		 */
-		String[][] intersection = new String[40][40];
-		String[][] closures = new String[40][40];
+		intersection = new String[40][40];
+		closures = new String[40][40];
 
 		Scanner inputStream = null;
 		// read in the file and put it into a 2d list
@@ -73,7 +78,7 @@ public class Map {
 					lineNo = 0;
 				}
 				if (closuresSection == true) {
-					closures[columnNo][lineNo] = value;
+					closures[lineNo][columnNo] = value;
 				} else { // add the info to the map array
 					intersection[columnNo][lineNo] = value;
 				}
@@ -193,9 +198,36 @@ public class Map {
 					}
 					temp.setEWroad(ewRoad);
 
+					int mapRows = rows / 2, mapCols = cols / 2;
 					// set the intersection in our map
-					map[rows / 2][cols / 2] = temp;
+					map[mapRows][mapCols] = temp;
+
+					// check for the intersection closure state
+					if (intersection[cols][rows].equalsIgnoreCase(CLOSED)) {
+						// if the closure is in the closures array, set the date
+						map[mapRows][mapCols].setClosedIndefinitely(true);
+						// check to see if it is in the closures list
+						for (int row = 0; row < closures[0].length; row++) {
+							for (int col = 0; col < 4; col++) {
+								if (closures[row][col] != null) {
+									if (ewRoad.getName().equals(closures[row][0])) {
+										if (nsRoad.getName().equals(closures[row][1])) {
+											// assign the closure dates
+											map[mapRows][mapCols]
+													.setClosedFrom(LocalDate.parse(closures[row][2], formatter));
+											map[mapRows][mapCols]
+													.setClosedTo(LocalDate.parse(closures[row][3], formatter));
+											// don't close it indefinitely
+											map[mapRows][mapCols].setClosedIndefinitely(false);
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
 				}
+
 			}
 		}
 
@@ -203,7 +235,10 @@ public class Map {
 		setHomeBase(3, 3);
 
 		// test all the directions
-		testDirection();
+		// testDirection();
+
+		// test closures
+		testClosure();
 	}
 
 	private void setHomeBase(int NS, int EW) {
@@ -216,6 +251,18 @@ public class Map {
 
 	public MapIntersection getHomeBase() {
 		return homeBase;
+	}
+
+	public void testClosure() {
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 7; j++) {
+				System.out.println(map[i][j].getIntersectionName());
+				System.out.println((map[i][j].isClosedIndefinitely()) );
+				if (map[i][j].getClosedFrom()!= null) {System.out.println(map[i][j].getClosedFrom() + " " + map[i][j].getClosedTo());}
+				System.out.print("\n");
+			}
+			System.out.print("\n");
+		}
 	}
 
 	public void testDirection() {
