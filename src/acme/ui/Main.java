@@ -1,9 +1,9 @@
 package acme.ui;
 
-import acme.pd.Company;
-
 public class Main {
     public static void main(String[] args) {
-        Company company = new Company();
+//        Company company = new Company();
+//    	new CompanyUI();
+    	new UserUI();
     }
 }
