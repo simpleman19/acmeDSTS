@@ -2,8 +2,8 @@ package acme.pd;
 
 public enum Direction {
     WEST("West"),
-    EAST("East"),
     NORTH("North"),
+    EAST("East"),
     SOUTH("South");
 
     Direction(String name) {

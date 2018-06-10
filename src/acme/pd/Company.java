@@ -32,11 +32,11 @@ public class Company
     private int latenessMarginMinutes = 5;
     private double blocksPerMile = 5.2;
     private double courierMilesPerHour = 5.8;
-    
-    public Company()
-    {      
+    private String mapFile = "map/map.csv";
+
+    public Company() {
         // TODO initialize company
-        File file = new File("null");
+        File file = new File(mapFile);
         this.map = new Map(file);
 
         couriers = new HashMap<UUID, Courier>();
