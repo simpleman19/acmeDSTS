@@ -10,7 +10,7 @@ public class MapIntersection {
     private LocalDateTime closedFrom;
     private boolean closedIndefinitely;
 
-    MapIntersection() {
+    public MapIntersection() {
         this.closedIndefinitely = false;
         this.closedFrom = null;
         this.closedTo = null;
@@ -23,12 +23,21 @@ public class MapIntersection {
 
     public boolean isClosed(LocalDateTime dateTime) {
         // TODO closed intersection
-        return new Random().nextInt() % 2 == 0;
+        //return new Random().nextInt() % 2 == 0;
+      return false;
     }
 
     public boolean canTravelDirection(Direction dir) {
         // TODO can travel
-        return this.NSroad.canTravelDirection(dir) || this.EWroad.canTravelDirection(dir);
+      if(dir == Direction.NORTH || dir == Direction.SOUTH)
+      {
+        return this.NSroad.canTravelDirection(dir);
+      }
+      else
+      {
+        return this.EWroad.canTravelDirection(dir);
+      }
+         
     }
 
     public Road getNSroad() {
