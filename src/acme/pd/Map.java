@@ -28,6 +28,7 @@ public class Map {
 	private static final String OPEN = "O";
 	private static final String EW_BI = "-";
 	private static final String NS_BI = "|";
+	private static final String HOME = "H";
 	private static final String CLOSURES = "IntersectionClosures";
 	private String[][] closures;
 	private String[][] intersections;
@@ -36,7 +37,7 @@ public class Map {
 	Map(File file) {
 		importMap(file);
 		// TODO call export function on shutdown
-		// exportMap(file);
+		exportMap(file);
 		// TODO export map
 	}
 
@@ -218,13 +219,18 @@ public class Map {
 					if (intersections[cols][rows].equalsIgnoreCase(CLOSED)) {
 						setClosures(mapRows, mapCols);
 					}
+					// check for home
+					else if(intersections[cols][rows].equalsIgnoreCase(HOME)) {
+						setHomeBase(mapRows, mapCols);
+					}
+					
 				}
 
 			}
 		}
 
 		// set the homeBase
-		setHomeBase(3, 3);
+		// setHomeBase(3, 3);
 
 	}
 
@@ -272,10 +278,14 @@ public class Map {
 					if (intersections[j][i] != null) {
 						// if we are on an intersection
 						if (j % 2 == 1 && i % 2 == 1) {
-							// is it closed
+							// is it closed?
 							if (map[(i / 2)][(j / 2)].isClosedIndefinitely()
 									|| !map[i / 2][j / 2].isClosed(LocalDate.MAX)) {
 								sb.append(CLOSED);
+							}
+							// check for home base
+							else if (map[i/2][j/2].equals(homeBase)){
+								sb.append(HOME);
 							}
 							// it must be open
 							else {
