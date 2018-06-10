@@ -12,7 +12,9 @@ public class Ticket {
     private UUID id;
     private Company company;
     private Company deliveryCustomer;
+    private MapIntersection deliveryCustomerLocation;
     private Company pickupCustomer;
+    private MapIntersection pickupCustomerLocation;
     private LocalDateTime creationDateTime;
     private User clerk;
     private Courier courier;
@@ -42,15 +44,35 @@ public class Ticket {
     }
 
     public BigDecimal calcQuote() {
-        // TODO calc quote
-        return new BigDecimal(new Random().nextDouble());
+      double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
+      double quote = milesToTravel * company.getBlockBillingRate().doubleValue();
+      quote = quote + company.getFlatBillingRate().doubleValue();
+        return new BigDecimal(quote);
     }
 
     private void calcEstimatedTimes() {
-        // TODO estimate times
-        this.estimatedDepartureTime = LocalDateTime.now().plusHours(2);
-        this.estimatedPickupTime = this.estimatedDepartureTime.plusMinutes(16);
-        this.estimatedDeliveryTime = this.pickupTime.plusMinutes(27);
+      // TODO estimate times - needs refining
+      
+      double mphCouriers = company.getCourierMilesPerHour();
+      double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
+      double timeToTravel = milesToTravel / mphCouriers;
+      LocalDateTime resultOfCouriersAndMiles = deliveryTime.minusHours((long)timeToTravel);
+      resultOfCouriersAndMiles.plusMinutes(5);
+      
+      if(resultOfCouriersAndMiles.isBefore(LocalDateTime.now()))
+      {
+        this.estimatedDepartureTime = resultOfCouriersAndMiles;
+      }
+      
+      milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
+      timeToTravel = milesToTravel / mphCouriers;
+      this.estimatedPickupTime = this.estimatedDepartureTime.plusMinutes((long)timeToTravel);
+      
+      milesToTravel = path.getBlocksBetweenPickupandDropoff() * company.getBlocksPerMile();
+      timeToTravel = milesToTravel / mphCouriers;
+      this.estimatedDeliveryTime = this.pickupTime.plusMinutes((long)timeToTravel);
+      
+     
     }
 
     public Company getCompany() {
@@ -179,5 +201,25 @@ public class Ticket {
 
     public void setNote(String note) {
         this.note = note;
+    }
+    
+    public MapIntersection getDeliveryCustomerLocation()
+    {
+      return this.deliveryCustomerLocation;
+    }
+    
+    public void setDeliveryCustomerLocation(MapIntersection deliveryCustomerLocation)
+    {
+      this.deliveryCustomerLocation = deliveryCustomerLocation;
+    }
+    
+    public MapIntersection getPickupCustomerLocation()
+    {
+      return this.pickupCustomerLocation;
+    }
+    
+    public void setPickupCustomerLocation(MapIntersection pickupCustomerLocation)
+    {
+      this.pickupCustomerLocation = pickupCustomerLocation;
     }
 }

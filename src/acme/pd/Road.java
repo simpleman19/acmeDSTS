@@ -9,7 +9,18 @@ public class Road {
 
     public boolean canTravelDirection(Direction dir) {
         // TODO can travel direction
-        return new Random().nextInt() % 2 == 0;
+        //return new Random().nextInt() % 2 == 0;
+      boolean canTravel=false;
+      if(bidirectional)
+      {
+       canTravel = true; 
+      }
+      else if(direction == dir)
+      {
+        canTravel = true;
+      }
+      
+      return canTravel;
     }
 
     public Direction getDirection() {

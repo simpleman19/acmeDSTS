@@ -6,7 +6,10 @@ import java.util.stream.IntStream;
 
 public class Path {
     private ArrayList<MapIntersection> path;
+    private int blocksBetweenHomeandDropoff;
+    private int blocksBetweenHomeandPickup;
     private int blocksBetweenPickupandDropoff;
+
 
     public ArrayList<MapIntersection> getPath() {
         return path;
@@ -14,6 +17,22 @@ public class Path {
 
     public void setPath(ArrayList<MapIntersection> path) {
         this.path = path;
+    }
+    
+    public int getBlocksBetweenHomeandDropoff() {
+      return blocksBetweenHomeandDropoff;
+    }
+
+    public void setBlocksBetweenHomeandDropoff(int blocksBetweenHomeandDropoff) {
+      this.blocksBetweenHomeandDropoff = blocksBetweenHomeandDropoff;
+    }
+    
+    public int getBlocksBetweenHomepandPickup() {
+      return blocksBetweenHomeandPickup;
+    }
+
+    public void setBlocksBetweenHomeandPickup(int blocksBetweenHomeandPickup) {
+      this.blocksBetweenHomeandPickup = blocksBetweenHomeandPickup;
     }
 
     public int getBlocksBetweenPickupandDropoff() {
@@ -23,6 +42,7 @@ public class Path {
     public void setBlocksBetweenPickupandDropoff(int blocksBetweenPickupandDropoff) {
         this.blocksBetweenPickupandDropoff = blocksBetweenPickupandDropoff;
     }
+   
 
     public ArrayList<String> getDeliveryInstructions() {
         // TODO implement delivery instructions
