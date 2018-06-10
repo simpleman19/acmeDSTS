@@ -9,7 +9,7 @@ public class MapIntersection {
     private LocalDate closedFrom;
     private boolean closedIndefinitely;
 
-    MapIntersection() {
+    public MapIntersection() {
         this.closedIndefinitely = false;
         //prevent these from returning null when we check the date closures
         this.closedFrom = LocalDate.MAX;

@@ -40,7 +40,7 @@ public class Map {
     private String[][] intersections;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
-    Map(File file) {
+    public Map(File file) {
 
         importMap(file);
         // TODO call export function on shutdown
@@ -539,7 +539,7 @@ public class Map {
                         MapIntersectionInfo intersectionLookingAt = intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor];
 
                         if(intersectionLookingAt.getIntersection().isClosedIndefinitely() != true
-                                && intersectionLookingAt.getIntersection().isClosed(LocalDateTime.now()) != true)
+                                && intersectionLookingAt.getIntersection().isClosed(LocalDate.now()) != true) // TODO Dee Dee I change this to LocalDate instead of LocalDateTime
                         {
                             adjCurrentDistance = intersectionLookingAt.getDistance();
 
@@ -576,7 +576,7 @@ public class Map {
 
 
                         if(intersectionLookingAt.getIntersection().isClosedIndefinitely() !=true
-                                && intersectionLookingAt.getIntersection().isClosed(LocalDateTime.now()) != true)
+                                && intersectionLookingAt.getIntersection().isClosed(LocalDate.now()) != true) // TODO Dee Dee I change this to LocalDate instead of LocalDateTime
                         {
                             adjCurrentDistance = intersectionLookingAt.getDistance();
 
