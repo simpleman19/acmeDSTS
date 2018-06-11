@@ -4,19 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
-//////////GUI/////////
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-///////////////////////
+
 public class Company 
 {
     private UUID id;
@@ -32,11 +20,11 @@ public class Company
     private int latenessMarginMinutes = 5;
     private double blocksPerMile = 5.2;
     private double courierMilesPerHour = 5.8;
-    private String mapFile = "map/map.csv";
 
-    public Company() {
+    public Company() 
+    {
         // TODO initialize company
-        File file = new File(mapFile);
+        File file = new File("null");
         this.map = new Map(file);
 
         couriers = new HashMap<UUID, Courier>();
@@ -175,4 +163,17 @@ public class Company
     {
         this.courierMilesPerHour = courierMilesPerHour;
     }
+    
+    public static Company getDefaultAcme() {
+    	Company acme = new Company();
+    	
+    	acme.setName("Acme");
+    	acme.setCourierMilesPerHour(15);
+    	acme.setBlocksPerMile(5.5);
+    	acme.setLatenessMarginMinutes(2);
+    	
+    	return acme; 
+    }
+   
+    
 }
