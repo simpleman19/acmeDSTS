@@ -4,19 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
-//////////GUI/////////
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-///////////////////////
+
 public class Company 
 {
     private UUID id;
@@ -178,13 +166,11 @@ public class Company
     
     public static Company getDefaultAcme() {
     	Company acme = new Company();
+    	
     	acme.setName("Acme");
-    	acme.setBonus(acme.bonus);
     	acme.setCourierMilesPerHour(15);
     	acme.setBlocksPerMile(5.5);
     	acme.setLatenessMarginMinutes(2);
-    	acme.setFlatBillingRate(acme.flatBillingRate);
-    	acme.setBlockBillingRate(acme.blockBillingRate);
     	
     	return acme; 
     }
