@@ -34,6 +34,7 @@ public class Ticket implements PersistableEntity {
     private Customer deliveryCustomer;
 	@Transient
     private Customer pickupCustomer;
+	@Column(name = "CREATED_TIME")
     private LocalDateTime creationDateTime;
     @Transient
     private User clerk;
