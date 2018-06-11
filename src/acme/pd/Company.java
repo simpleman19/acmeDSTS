@@ -58,11 +58,11 @@ public class Company implements PersistableEntity {
     private double blocksPerMile = 5.2;
     @Column(name = "COURIER_MILES_PER_HOUR")
     private double courierMilesPerHour = 5.8;
-    private String mapFile = "map/map.csv";
 
-    public Company() {
+    public Company() 
+    {
         // TODO initialize company
-        File file = new File(mapFile);
+        File file = new File("null");
         this.map = new Map(file);
 
         couriers = new HashMap<UUID, Courier>();
@@ -201,4 +201,17 @@ public class Company implements PersistableEntity {
     {
         this.courierMilesPerHour = courierMilesPerHour;
     }
+    
+    public static Company getDefaultAcme() {
+    	Company acme = new Company();
+    	
+    	acme.setName("Acme");
+    	acme.setCourierMilesPerHour(15);
+    	acme.setBlocksPerMile(5.5);
+    	acme.setLatenessMarginMinutes(2);
+    	
+    	return acme; 
+    }
+   
+    
 }

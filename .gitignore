@@ -205,3 +205,6 @@ gradle-app.setting
 
 ## PostgreSQL
 db/
+
+## .DS_Store
+.DS_Store
