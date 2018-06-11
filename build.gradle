@@ -45,17 +45,13 @@ dependencies {
     // Hibernate ORM
     compile 'org.hibernate:hibernate-agroal:5.3.1.Final'
 
-    // Driver to connect to SQLite
-    //compile 'org.xerial:sqlite-jdbc:3.23.1' THIS IS BROKEN WE MADE A CUSTOM LOCAL ONE
-    compile name: 'sqlite-jdbc-3.23.2'
-    
-    // Dialect to talk to SQLite
-    compile 'com.enigmabridge:hibernate4-sqlite-dialect:0.1.2'
-    compile 'javax.xml.bind:jaxb-api:2.3.0'
+	// https://mvnrepository.com/artifact/org.postgresql/postgresql
+	compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
 
-    // https://mvnrepository.com/artifact/postgresql/postgresql
-    compile group: 'postgresql', name: 'postgresql', version: '9.1-901-1.jdbc4'
-
+	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+	compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+	
+	
 }
 
 // In this section you declare where to find the dependencies of your project
