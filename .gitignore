@@ -203,3 +203,5 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+## PostgreSQL
+db/

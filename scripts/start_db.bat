@@ -1,1 +1,1 @@
-pg_ctl start -D database
+pg_ctl start -D db

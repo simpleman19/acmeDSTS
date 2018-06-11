@@ -1,1 +1,1 @@
-rm -r database
+rm -r db

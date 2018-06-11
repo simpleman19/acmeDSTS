@@ -1,1 +1,1 @@
-pg_ctl stop -D database
+pg_ctl stop -D db
