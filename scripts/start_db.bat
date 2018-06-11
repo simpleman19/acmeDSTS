@@ -1,1 +1,1 @@
-runas postgres pg_ctl start -D database -U postgres
+pg_ctl start -D database
