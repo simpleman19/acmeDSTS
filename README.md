@@ -40,11 +40,18 @@ gradle eclipse
 ```
 2. Refresh Eclipse project
   * Left click on project -> `F5`
-3. Fix JRE reference
+3. Fix JRE reference (if needed)
   * Right click on project -> `Properties` -> `Java Build Path`
   * `Libraries` tab
   * Scroll down to `JRE System Library` and click `Edit`
-  * Set `Execution Environment` to `JavaSE-1.8`
+  * Set `Execution Environment` to `JavaSE-1.8` if it changed
+4. Remove duplicate `acmeDSTS/src` from classpath
+  * Project Properties
+  * Java Build Path
+  * `Source` Tab
+  * Select `acmeDSTS/src` where the Output Folder is "Default"
+  * Click Remove"
+  * Apply and Close
   
 ## Build & Run
 Build & run with Gradle dependencies:
