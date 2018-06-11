@@ -15,15 +15,19 @@ import acme.pd.Company;
 public class HibernateAdapter {	
 	@PersistenceUnit
 	protected static EntityManagerFactory entityManagerFactory;
-	private static void doWithEntityManager(Consumer<EntityManager> lambda) {
-		HashMap<String, Object> hints = new HashMap<>();
-		hints.put("javax.persistence.query.timeout", 1);
-		hints.put("javax.persistence.lock.timeout", 1);
-		hints.put("org.hibernate.timeout", 1);
+	
+	public static void startUp() {
 		if (entityManagerFactory == null)
-			entityManagerFactory = Persistence.createEntityManagerFactory("my-pu", hints);
-		
-		EntityManager em = entityManagerFactory.createEntityManager(hints);
+			entityManagerFactory = Persistence.createEntityManagerFactory("my-pu");
+	}
+
+	public static void shutDown() {
+		if (entityManagerFactory != null)
+			entityManagerFactory.close();
+	}
+	
+	private static void doWithEntityManager(Consumer<EntityManager> lambda) {		
+		EntityManager em = entityManagerFactory.createEntityManager();
 		lambda.accept(em);
 		em.close();
 	}
@@ -39,7 +43,6 @@ public class HibernateAdapter {
 	
 	public static void save(Object entity) {
 		transaction((em) -> em.persist(entity));
-		//doWithEntityManager((em) -> em.persist(entity));
 	}
 	
 	public static void delete(Object entity) {
