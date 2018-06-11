@@ -1,6 +1,5 @@
 package acme.ui;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -14,11 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
 import acme.pd.Company;
-
-
-
-
 public class CompanyUI extends JFrame {
 ////////////GUI/////////////////
 private static final long serialVersionUID = 1L;
@@ -28,6 +24,7 @@ private JPanel buttonPanel;
 private JButton saveButton;
 private JButton exitButton;
 private GridBagConstraints grid;
+
 private JTextField company_name;
 private JTextField bonus_amount;
 private JTextField courier_miles;
@@ -36,6 +33,7 @@ private JTextField lateness_margin;
 private JTextField flat_billing;
 private JTextField block_rate_name;
 private Company comp;
+
 //////////////////////////
 	public CompanyUI()
     {
@@ -171,12 +169,11 @@ private Company comp;
 
     private class ExitButtonListner implements ActionListener
     {
-    	
-    	
+      
         @Override
         public void actionPerformed(ActionEvent e)
         {
-        	
+
             System.exit(0);
 
         }
@@ -191,7 +188,7 @@ private Company comp;
         {
             // IMPLEMENT
             
-        	
+
 //            System.out.println(field1.getText());
 //            Integer.parseInt(field2.getText());
             
