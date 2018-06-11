@@ -56,7 +56,7 @@ public class User extends Person {
     	
     	 if ( 
     		 (this.getUsername().equalsIgnoreCase(u)) && 
-    	     (this.getPassword() == p)
+    	     (this.getPassword().equals(p))
     	     ) {
     		 
     		 System.out.println("Login Authenticated. Access Granted.");
