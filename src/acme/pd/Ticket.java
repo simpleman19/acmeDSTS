@@ -3,6 +3,7 @@ package acme.pd;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
@@ -45,8 +46,10 @@ public class Ticket {
 
     public BigDecimal calcQuote() {
       double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
-      double quote = milesToTravel * company.getBlockBillingRate().doubleValue();
+      double quote = path.getBlocksBetweenHomeandDropoff() * company.getBlockBillingRate().doubleValue();
       quote = quote + company.getFlatBillingRate().doubleValue();
+      
+      this.calcEstimatedTimes();
         return new BigDecimal(quote);
     }
 
@@ -54,9 +57,9 @@ public class Ticket {
       // TODO estimate times - needs refining
       
       double mphCouriers = company.getCourierMilesPerHour();
-      double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
+      double milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
       double timeToTravel = milesToTravel / mphCouriers;
-      LocalDateTime resultOfCouriersAndMiles = deliveryTime.minusHours((long)timeToTravel);
+      LocalDateTime resultOfCouriersAndMiles = deliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
       resultOfCouriersAndMiles.plusMinutes(5);
       
       if(resultOfCouriersAndMiles.isBefore(LocalDateTime.now()))
@@ -64,13 +67,13 @@ public class Ticket {
         this.estimatedDepartureTime = resultOfCouriersAndMiles;
       }
       
-      milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
+      milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
       timeToTravel = milesToTravel / mphCouriers;
-      this.estimatedPickupTime = this.estimatedDepartureTime.plusMinutes((long)timeToTravel);
+      this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
       
-      milesToTravel = path.getBlocksBetweenPickupandDropoff() * company.getBlocksPerMile();
+      milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenPickupandDropoff();
       timeToTravel = milesToTravel / mphCouriers;
-      this.estimatedDeliveryTime = this.pickupTime.plusMinutes((long)timeToTravel);
+      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
       
      
     }
@@ -168,10 +171,10 @@ public class Ticket {
     }
 
     public void setDeliveryTime(LocalDateTime deliveryTime) {
-        if (new Random().nextInt() % 3 == 0)
-            this.bonus = company.getBonus();
-        else
-            this.bonus = new BigDecimal(0);
+//        if (new Random().nextInt() % 3 == 0)
+//            //this.bonus = company.getBonus();
+//        else
+//            this.bonus = new BigDecimal(0);
         this.deliveryTime = deliveryTime;
     }
 

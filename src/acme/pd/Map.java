@@ -1,13 +1,219 @@
 package acme.pd;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import javafx.util.converter.LocalTimeStringConverter;
+
 public class Map {
+  
+  public static void main(String [] args) {
+    Company company = new Company();
+    
+    Ticket ticket = new Ticket();
+    
+    MapIntersection tempMap[][] = company.getMap().getMap();
+     
+    for(int x = 0; x < tempMap.length; x++)
+    {
+      System.out.println("");
+      for(int y = 0; y < tempMap.length; y++)
+      {
+        System.out.print(tempMap[x][y].getIntersectionName() + "    ");
+        System.out.print(tempMap[x][y].getEWroad().getDirection() + "    ");
+        System.out.print(tempMap[x][y].getNSroad().getDirection() + "    ");
+        
+      }
+    }
+    //Test 1-----------------------------------------------------------
+    MapIntersection tempPickUp = new MapIntersection();
+    Road tempPickUpRoad = new Road();
+    tempPickUpRoad.setName("3");
+    tempPickUpRoad.setBidirectional(false);
+    tempPickUpRoad.setDirection(Direction.NORTH);
+    tempPickUp.setNSroad(tempPickUpRoad);
+    tempPickUpRoad = new Road();
+    tempPickUpRoad.setName("E");
+    tempPickUpRoad.setBidirectional(false);
+    tempPickUpRoad.setDirection(Direction.WEST);
+    tempPickUp.setEWroad(tempPickUpRoad);
+    
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("Pick Up Location");
+    System.out.println(tempPickUp.getIntersectionName());
+    System.out.println(tempPickUp.getEWroad().getDirection());
+    System.out.println(tempPickUp.getNSroad().getDirection());
+    
+    MapIntersection tempDropOff = new MapIntersection();
+    Road tempDropOffRoad = new Road();
+    tempDropOffRoad.setName("5");
+    tempDropOffRoad.setBidirectional(false);
+    tempDropOffRoad.setDirection(Direction.NORTH);
+    tempDropOff.setNSroad(tempDropOffRoad);
+    tempDropOffRoad = new Road();
+    tempDropOffRoad.setName("C");
+    tempDropOffRoad.setBidirectional(false);
+    tempDropOffRoad.setDirection(Direction.WEST);
+    tempDropOff.setEWroad(tempDropOffRoad);
+    
+    String date = "2018-06-11 06:30";
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+    
+    
+    System.out.println("Date and Time Wanted For Delivery: " + date);
+    System.out.println("");
+    System.out.println("Delivery Location");
+    System.out.println(tempDropOff.getIntersectionName());
+    System.out.println(tempDropOff.getEWroad().getDirection());
+    System.out.println(tempDropOff.getNSroad().getDirection());
+    System.out.println("");
+    
+    Path testPath = company.getMap().getPath(tempPickUp,tempDropOff );
+    
+    ticket.setPath(testPath);
+    ticket.setCompany(company);
+    System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
+    System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
+    System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
+    System.out.println("Quote: " + ticket.calcQuote().shortValue());
+    System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
+    System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
+    System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());
+    //Test 1-----------------------------------------------------------
+    
+    //Test 2-----------------------------------------------------------
+    tempPickUp = new MapIntersection();
+    tempPickUpRoad = new Road();
+    tempPickUpRoad.setName("2");
+    tempPickUpRoad.setBidirectional(true);
+    tempPickUpRoad.setDirection(Direction.NORTH);
+    tempPickUp.setNSroad(tempPickUpRoad);
+    tempPickUpRoad = new Road();
+    tempPickUpRoad.setName("G");
+    tempPickUpRoad.setBidirectional(true);
+    tempPickUpRoad.setDirection(Direction.WEST);
+    tempPickUp.setEWroad(tempPickUpRoad);
+    
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("Pick Up Location");
+    System.out.println(tempPickUp.getIntersectionName());
+    System.out.println(tempPickUp.getEWroad().getDirection());
+    System.out.println(tempPickUp.getNSroad().getDirection());
+    
+    tempDropOff = new MapIntersection();
+    tempDropOffRoad = new Road();
+    tempDropOffRoad.setName("5");
+    tempDropOffRoad.setBidirectional(false);
+    tempDropOffRoad.setDirection(Direction.NORTH);
+    tempDropOff.setNSroad(tempDropOffRoad);
+    tempDropOffRoad = new Road();
+    tempDropOffRoad.setName("A");
+    tempDropOffRoad.setBidirectional(false);
+    tempDropOffRoad.setDirection(Direction.WEST);
+    tempDropOff.setEWroad(tempDropOffRoad);
+    
+    date = "2018-06-11 06:30";
+    format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+    
+    
+    System.out.println("Date and Time Wanted For Pickup: " + date);
+    System.out.println("");
+    System.out.println("Delivery Location");
+    System.out.println(tempDropOff.getIntersectionName());
+    System.out.println(tempDropOff.getEWroad().getDirection());
+    System.out.println(tempDropOff.getNSroad().getDirection());
+    System.out.println("");
+    
+    testPath = company.getMap().getPath(tempPickUp,tempDropOff );
+    
+    ticket.setPath(testPath);
+    ticket.setCompany(company);
+    System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
+    System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
+    System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
+    System.out.println("Quote: " + ticket.calcQuote().shortValue());
+    System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
+    System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
+    System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());
+    
+  //Test 3-----------------------------------------------------------
+    tempPickUp = new MapIntersection();
+    tempPickUpRoad = new Road();
+    tempPickUpRoad.setName("1");
+    tempPickUpRoad.setBidirectional(false);
+    tempPickUpRoad.setDirection(Direction.NORTH);
+    tempPickUp.setNSroad(tempPickUpRoad);
+    tempPickUpRoad = new Road();
+    tempPickUpRoad.setName("A");
+    tempPickUpRoad.setBidirectional(false);
+    tempPickUpRoad.setDirection(Direction.WEST);
+    tempPickUp.setEWroad(tempPickUpRoad);
+    
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("");
+    System.out.println("Pick Up Location");
+    System.out.println(tempPickUp.getIntersectionName());
+    System.out.println(tempPickUp.getEWroad().getDirection());
+    System.out.println(tempPickUp.getNSroad().getDirection());
+    
+    tempDropOff = new MapIntersection();
+    tempDropOffRoad = new Road();
+    tempDropOffRoad.setName("7");
+    tempDropOffRoad.setBidirectional(false);
+    tempDropOffRoad.setDirection(Direction.SOUTH);
+    tempDropOff.setNSroad(tempDropOffRoad);
+    tempDropOffRoad = new Road();
+    tempDropOffRoad.setName("G");
+    tempDropOffRoad.setBidirectional(true);
+    tempDropOffRoad.setDirection(Direction.WEST);
+    tempDropOff.setEWroad(tempDropOffRoad);
+    
+    date = "2018-06-11 06:30";
+    format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+    
+    
+    System.out.println("Date and Time Wanted For Delivery: " + date);
+    System.out.println("");
+    System.out.println("Delivery Location");
+    System.out.println(tempDropOff.getIntersectionName());
+    System.out.println(tempDropOff.getEWroad().getDirection());
+    System.out.println(tempDropOff.getNSroad().getDirection());
+    System.out.println("");
+    
+    testPath = company.getMap().getPath(tempPickUp,tempDropOff );
+    
+    ticket.setPath(testPath);
+    ticket.setCompany(company);
+    System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
+    System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
+    System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
+    System.out.println("Quote: " + ticket.calcQuote().shortValue());
+    System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
+    System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
+    System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());
+    
+    
+  }
     private MapIntersection[][] map;
     private MapIntersection homeBase;
 
@@ -84,10 +290,6 @@ public class Map {
       ArrayList<MapIntersection> pathToBe = new ArrayList<MapIntersection>();
       int totalBlocks = 0;
       pathToBe.addAll(pathDir1.getPath());
-      for(MapIntersection temp : pathToBe)
-      {
-        System.out.println(temp.getIntersectionName());
-      }
       totalBlocks = totalBlocks + pathDir1.getBlocksBetweenPickupandDropoff();
       pathDir.setBlocksBetweenHomeandPickup(pathDir1.getBlocksBetweenPickupandDropoff());
       pathToBe.addAll(pathDir2.getPath());
@@ -109,76 +311,6 @@ public class Map {
     
     private Path shortestPath(MapIntersection pickUp, MapIntersection dropOff)
     {
-      //this is a local class for keeping track of the details during the calculations
-      class MapIntersectionInfo
-      {
-        private MapIntersection intersection;
-        private int distance;
-        private MapIntersectionInfo intersectionBeforeIt;
-        private int xVal;
-        private int yVal;
-        
-        public MapIntersectionInfo(MapIntersection intersection, int distance, int xVal, int yVal)
-        {
-          this.intersection=intersection;
-          this.distance = distance;
-          this.intersectionBeforeIt = null;
-          this.xVal = xVal;
-          this.yVal = yVal;
-        }
-       
-        public void setDistance(int distance)
-        {
-          this.distance = distance;
-        }
-        
-        public int getDistance()
-        {
-          return this.distance;
-        }
-        
-        public void setIntersection(MapIntersection intersection)
-        {
-          this.intersection = intersection;
-        }
-        
-        public MapIntersection getIntersection()
-        {
-          return this.intersection;
-        }
-        
-        public void setIntersectionBefore(MapIntersectionInfo intersectionBeforeIt)
-        {
-          this.intersectionBeforeIt = intersectionBeforeIt;
-        }
-        
-        public MapIntersectionInfo getIntersectionBeforeIt()
-        {
-          return this.intersectionBeforeIt;
-        }
-        
-        public void setXVal(int xVal)
-        {
-          this.xVal = xVal;
-        }
-        
-        public int getXVal()
-        {
-          return this.xVal;
-        }
-        
-        public void setYVal(int yVal)
-        {
-          this.yVal = yVal;
-        }
-        
-        public int getYVal()
-        {
-          return this.yVal;
-        }
-        
-      }
-      
       //path that will be set to shortest path and returned
       Path shortestPath = new Path();
       
@@ -200,8 +332,8 @@ public class Map {
         for(int y = 0; y < map.length; y++)
         {
           intersections[x][y] = new MapIntersectionInfo(new MapIntersection(), Integer.MAX_VALUE, x, y);
-          intersections[x][y].getIntersection().setEWroad(map[x][y].getEWroad());
-          intersections[x][y].getIntersection().setNSroad(map[x][y].getNSroad());
+          intersections[x][y].intersection.setEWroad(map[x][y].getEWroad());
+          intersections[x][y].intersection.setNSroad(map[x][y].getNSroad());
           notVisitedIntersections.add(intersections[x][y]);
           if(map[x][y].getIntersectionName().equals(pickUp.getIntersectionName()))
           {
@@ -212,7 +344,7 @@ public class Map {
         }
       }
       
-      intersections[placeHolderX][placeHolderY].setDistance(0);
+      intersections[placeHolderX][placeHolderY].distance=0;
       MapIntersectionInfo currentIntersection =  intersections[placeHolderX][placeHolderY];
       
       
@@ -265,73 +397,71 @@ public class Map {
         
           if(i == 0 || i == 1)  //looking at East or West road
           {
-            if(currentIntersection.getYVal() != compareValue &&
-                currentIntersection.getIntersection().canTravelDirection(dir))
+            if(currentIntersection.yVal != compareValue &&
+                currentIntersection.intersection.canTravelDirection(dir))
             {
-              MapIntersectionInfo intersectionLookingAt = intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor];
+              MapIntersectionInfo intersectionLookingAt = intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor];
              
-              if(intersectionLookingAt.getIntersection().isClosedIndefinitely() != true
-                  && intersectionLookingAt.getIntersection().isClosed(LocalDateTime.now()) != true)
+              if(intersectionLookingAt.intersection.isClosedIndefinitely() != true
+                  && intersectionLookingAt.intersection.isClosed(LocalDateTime.now()) != true)
               {
-                adjCurrentDistance = intersectionLookingAt.getDistance();
+                adjCurrentDistance = intersectionLookingAt.distance;
                 
-                if((currentIntersection.getDistance() + 1) < adjCurrentDistance)
+                if((currentIntersection.distance + 1) < adjCurrentDistance)
                 {
-                  intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor].
-                  setDistance(currentIntersection.getDistance() +1);
-                  intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor].setIntersectionBefore(currentIntersection);
+                  intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor].distance = currentIntersection.distance +1;
+                  intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor].intersectionBeforeIt = currentIntersection;
                   
                   int removeIndex = 0;
                   int tempX = 0;
                   for(MapIntersectionInfo temp : notVisitedIntersections)
                   {
-                    if(intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor].getIntersection().getIntersectionName().equals(temp.getIntersection().getIntersectionName()))
+                    if(intersections[currentIntersection.xVal+ xFactor][currentIntersection.yVal + yFactor].intersection.getIntersectionName().equals(temp.intersection.getIntersectionName()))
                     {
                       removeIndex = tempX;
                     }
                     tempX++;
                   }
                   notVisitedIntersections.remove(removeIndex);
-                  notVisitedIntersections.add(intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor]);
+                  notVisitedIntersections.add(intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor]);
                 }
                 
-                listOfAdjacentIntersections.add(intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor]);
+                listOfAdjacentIntersections.add(intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor]);
               }
             }
           }
           else if(i == 2 || i == 3) //looking at North or South Road
           {
-            if(currentIntersection.getXVal() != compareValue &&
-                currentIntersection.getIntersection().canTravelDirection(dir))
+            if(currentIntersection.xVal != compareValue &&
+                currentIntersection.intersection.canTravelDirection(dir))
             {
-              MapIntersectionInfo intersectionLookingAt = intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor];
+              MapIntersectionInfo intersectionLookingAt = intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor];
              
               
-              if(intersectionLookingAt.getIntersection().isClosedIndefinitely() !=true
-                  && intersectionLookingAt.getIntersection().isClosed(LocalDateTime.now()) != true)
+              if(intersectionLookingAt.intersection.isClosedIndefinitely() !=true
+                  && intersectionLookingAt.intersection.isClosed(LocalDateTime.now()) != true)
               {
-                adjCurrentDistance = intersectionLookingAt.getDistance();
+                adjCurrentDistance = intersectionLookingAt.distance;
                 
-                if((currentIntersection.getDistance() + 1) < adjCurrentDistance)
+                if((currentIntersection.distance + 1) < adjCurrentDistance)
                 {
-                  intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor].
-                  setDistance(currentIntersection.getDistance() +1);
-                  intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor].setIntersectionBefore(currentIntersection);
+                  intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor].distance = currentIntersection.distance +1;
+                  intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor].intersectionBeforeIt = currentIntersection;
                   int removeIndex = 0;
                   int tempX = 0;
                   for(MapIntersectionInfo temp : notVisitedIntersections)
                   {
-                    if(intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor].getIntersection().getIntersectionName().equals(temp.getIntersection().getIntersectionName()))
+                    if(intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor].intersection.getIntersectionName().equals(temp.intersection.getIntersectionName()))
                     {
                       removeIndex = tempX;
                     }
                     tempX++;
                   }
                   notVisitedIntersections.remove(removeIndex);
-                  notVisitedIntersections.add(intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor]);
+                  notVisitedIntersections.add(intersections[currentIntersection.xVal+ xFactor][currentIntersection.yVal + yFactor]);
                 }
                 
-                listOfAdjacentIntersections.add(intersections[currentIntersection.getXVal() + xFactor][currentIntersection.getYVal() + yFactor]);
+                listOfAdjacentIntersections.add(intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor]);
               }
             }
           }
@@ -345,7 +475,7 @@ public class Map {
           int tempX = 0;
           for(MapIntersectionInfo temp : notVisitedIntersections)
           {
-            if(temp.getIntersection().getIntersectionName().equals(currentIntersection.getIntersection().getIntersectionName()))
+            if(temp.intersection.getIntersectionName().equals(currentIntersection.intersection.getIntersectionName()))
             {
               removeIndex=tempX;
             }
@@ -357,7 +487,7 @@ public class Map {
           //check if destination is in list of adjacent intersections
           for(MapIntersectionInfo temp : listOfAdjacentIntersections)
           {
-            if(temp.getIntersection().getIntersectionName().equals(dropOff.getIntersectionName()))
+            if(temp.intersection.getIntersectionName().equals(dropOff.getIntersectionName()))
             {
               foundDropOff = true;
               currentIntersection = temp;
@@ -373,8 +503,8 @@ public class Map {
             //get new current intersection
             for(MapIntersectionInfo temp : notVisitedIntersections)
             {
-              if(temp.getDistance() < leastDistance)
-              { leastDistance = temp.getDistance();
+              if(temp.distance < leastDistance)
+              { leastDistance = temp.distance;
                 currentIntersection = temp;
               }
             }
@@ -386,15 +516,35 @@ public class Map {
       int totalBlocks = 0;
       while(currentIntersection != null)
       {
-        totalBlocks = currentIntersection.getDistance() + totalBlocks;
-        pathToBe.add(currentIntersection.getIntersection());
-        currentIntersection = currentIntersection.getIntersectionBeforeIt();
+        totalBlocks = 1 + totalBlocks;
+        pathToBe.add(currentIntersection.intersection);
+        currentIntersection = currentIntersection.intersectionBeforeIt;
       }
       Collections.reverse(pathToBe);
       shortestPath.setPath(pathToBe);
       shortestPath.setBlocksBetweenPickupandDropoff(totalBlocks);
       
       return shortestPath;
+    }
+    
+  //this is a local class for keeping track of the details during the calculations
+    class MapIntersectionInfo
+    {
+      public MapIntersection intersection;
+      public int distance;
+      public MapIntersectionInfo intersectionBeforeIt;
+      public int xVal;
+      public int yVal;
+      
+      public MapIntersectionInfo(MapIntersection intersection, int distance, int xVal, int yVal)
+      {
+        this.intersection=intersection;
+        this.distance = distance;
+        this.intersectionBeforeIt = null;
+        this.xVal = xVal;
+        this.yVal = yVal;
+      }
+      
     }
     
 }
