@@ -4,8 +4,6 @@
         version="2.0">
     <persistence-unit name="my-pu">
    		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-   		<class>acme.pd.Company</class>
-   		<class>acme.pd.Courier</class>
     	<properties>
     		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect" />
     		<property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />
@@ -15,8 +13,8 @@
 		    <property name="javax.persistence.jdbc.password" value="" />
 		    <property name="show_sql" value="true" />
 		    <!-- Scan for annotated classes and Hibernate mapping XML files -->
-		    <!-- <property name="hibernate.archive.autodetection" value="class, hbm"/> -->
-		    <!-- <property name="hibernate.hbm2ddl.auto" value="validate" /> -->
+		    <property name="hibernate.archive.autodetection" value="class, hbm"/>
+		    <property name="hibernate.hbm2ddl.auto" value="create" />
     	</properties>
     </persistence-unit>
 </persistence>
