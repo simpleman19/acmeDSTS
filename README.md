@@ -11,10 +11,13 @@ There are some tools you must install that can't be managed with Gradle.
 
 ## Windows
 1. Install [`scoop`](https://scoop.sh/#installs-in-seconds) (requires [Powershell 3](https://www.microsoft.com/en-us/download/details.aspx?id=34595))
-2. Run `scripts/bootstrap.bat`
+2. Run `scripts/bootstrap_windows.bat`
 
-## Non-Windows
-1. Install [`homebrew`](https://brew.sh/) (Mac-only) or other package management tool
+## Mac
+1. Run `scripts/bootstrap_osx`
+
+## Chance
+1. Use yo`package management tool
 2. Run `cat scripts/bootstrap.bat`
 3. Install the tools listed but with your package manager
 
