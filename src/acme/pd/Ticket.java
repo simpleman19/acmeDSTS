@@ -1,5 +1,6 @@
 package acme.pd;
 
+import acme.data.PersistableEntity;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -8,27 +9,60 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-public class Ticket {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "TICKET")
+public class Ticket implements PersistableEntity {
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "ID")
     private UUID id;
+	@Transient
     private Company company;
+	@Transient
     private MapIntersection deliveryCustomerLocation;
+	@Transient
     private MapIntersection pickupCustomerLocation;
+	@Transient
     private Customer deliveryCustomer;
+	@Transient
     private Customer pickupCustomer;
+	@Column(name = "CREATED_TIME")
     private LocalDateTime creationDateTime;
+    @Transient
     private User clerk;
+    @Transient
     private Courier courier;
+    @Column(name = "IS_BILLED_TO_SENDER")
     private boolean billToSender;
+    @Column(name = "PACKAGE_ID")
     private String packageID;
+    @Column(name = "QUOTE")
     private BigDecimal quotedPrice;
+    @Column(name = "DEPARTURE_TIME")
     private LocalDateTime departureTime;
+    @Column(name = "EST_DEPARTURE_TIME")
     private LocalDateTime estimatedDepartureTime;
+    @Column(name = "PICKUP_TIME")
     private LocalDateTime pickupTime;
+    @Column(name = "EST_PICKUP_TIME")
     private LocalDateTime estimatedPickupTime;
+    @Column(name = "DELIVERY_TIME")
     private LocalDateTime deliveryTime;
+    @Column(name = "EST_DELIVERY_TIME")
     private LocalDateTime estimatedDeliveryTime;
+    @Column(name = "COURIER_BONUS")
     private BigDecimal bonus;
+    @Transient
     private Path path;
+    @Column(name = "NOTE")
     private String note;
 
     public ArrayList<String> getDeliveryInstructions() {
