@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -34,14 +32,13 @@ import javax.swing.JTextField;
 public class Company implements PersistableEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name = "COMPANY_ID")
+	@Column(name = "ID")
     private UUID id;
-	@Column(name = "COMPANY_NAME")
+	@Column(name = "NAME")
     private String name = "ACME";
 	@Transient
     private Map map;
-	//@OneToMany(mappedBy = "COURIER")
-	//@MapKey(name = "NUMBER")
+	@Transient
     private HashMap<UUID, Courier> couriers;
 	@Transient
     private HashMap<UUID, Ticket> tickets;
@@ -49,11 +46,17 @@ public class Company implements PersistableEntity {
     private HashMap<UUID, Customer> customer;
     @Transient
     private User currentUser;
+    @Column(name = "BONUS")
     private BigDecimal bonus = new BigDecimal(1.25);
+    @Column(name = "FLAT_BILLING_RATE")
     private BigDecimal flatBillingRate = new BigDecimal(25);
+    @Column(name = "BLOCK_BILLING_RATE")
     private BigDecimal blockBillingRate = new BigDecimal(5.36);
+    @Column(name = "LATENESS_MARGIN_MINUTES")
     private int latenessMarginMinutes = 5;
+    @Column(name = "BLOCKS_PER_MILE")
     private double blocksPerMile = 5.2;
+    @Column(name = "COURIER_MILES_PER_HOUR")
     private double courierMilesPerHour = 5.8;
     private String mapFile = "map/map.csv";
 
