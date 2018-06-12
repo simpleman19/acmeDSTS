@@ -4,8 +4,12 @@
         version="2.0">
     <persistence-unit name="my-pu">
    		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    	<properties>
-    		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect" />
+		<class>acme.pd.Company</class>
+		<class>acme.pd.Ticket</class>
+		<class>acme.pd.Courier</class>
+		<class>acme.pd.Customer</class>
+		<properties>
+    		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
     		<property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />
 	    	<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 		    <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/acme" />
@@ -18,4 +22,3 @@
     	</properties>
     </persistence-unit>
 </persistence>
-

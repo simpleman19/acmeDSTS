@@ -190,9 +190,13 @@ local.properties
 # Annotation Processing
 .apt_generated
 
+#ignore DS_store
+.DS_store
+
 ### Gradle ###
 .gradle
 **/build/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -206,5 +210,3 @@ gradle-app.setting
 ## PostgreSQL
 db/
 
-## .DS_Store
-.DS_Store

@@ -58,11 +58,13 @@ public class Company implements PersistableEntity {
     private double blocksPerMile = 5.2;
     @Column(name = "COURIER_MILES_PER_HOUR")
     private double courierMilesPerHour = 5.8;
+    @Transient
+    private String mapFile = "map/map.csv";
 
-    public Company() 
+    public Company()
     {
         // TODO initialize company
-        File file = new File("null");
+        File file = new File(mapFile);
         this.map = new Map(file);
 
         couriers = new HashMap<UUID, Courier>();
