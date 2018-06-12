@@ -49,6 +49,30 @@ Build & run with Gradle dependencies:
 gradle run
 ```
 
+# Tests
+## Run tests
+Gradle uses JUnit 4 for tests. You can run the tests like so:
+```bash
+gradle test
+```
+If tests fail, Gradle with give you a `file://` url that you can copy/paste into your browser to see a pretty report of which tests failed and their stack traces.
+
+## Making new tests
+See [this tutorial](http://www.vogella.com/tutorials/JUnit/article.html) to learn how to make your own JUnit tests.
+
+Eclipse can do some of the work for you:
+1. Right click on `test` folder
+2. `New` -> `JUnit Test Case`
+* `Package`: the package for the class you are testing (i.e. `acme.pd`)
+* `Name`: `<tested-class>Test` (i.e. `CompanyTest`)
+* Check all of the methods to auto-generate them, you can delete what you don't need
+* `Class under test`: `<tested-class>` (i.e. `Company`)
+4. Click `Finish`
+5. Add your methods.
+* By convention, the name of the methods should describe what you are testing.
+* Try to make many smaller tests instead of a few large tests
+
+
 # Database
 1. Initialize the database: in the repo folder call `scripts/init_db.bat`.
 2. Whenever you start working on the app: call `scripts/start_db.bat`.
