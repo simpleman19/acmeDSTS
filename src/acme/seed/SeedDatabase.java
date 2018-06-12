@@ -1,6 +1,10 @@
 package acme.seed;
 
+import acme.data.HibernateAdapter;
 import acme.pd.*;
+import org.hibernate.Session;
+
+import javax.persistence.EntityManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -8,7 +12,7 @@ import java.util.Scanner;
 
 public class SeedDatabase {
     public static void main(String[] args) {
-
+        HibernateAdapter.startUp();
         Scanner sc = new Scanner(System.in);
         String input = "";
         do {
@@ -16,6 +20,10 @@ public class SeedDatabase {
             input = sc.nextLine().toUpperCase();
             if (input.equals("Y")) {
                 // TODO drop tables
+                EntityManager em = HibernateAdapter.getEntityManager();
+                Session sess = em.unwrap(Session.class);
+                sess.createQuery("DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres; GRANT ALL ON SCHEMA public TO public;").executeUpdate();
+                em.close();
                 System.out.println("Dropped tables");
             } else {
                 System.out.println("[WARN]: Not Dropping Tables");
@@ -30,7 +38,7 @@ public class SeedDatabase {
         company.setBlocksPerMile(5.2);
         company.setCourierMilesPerHour(5.8);
         company.setFlatBillingRate(new BigDecimal(25.00));
-        // TODO save
+        company.save();
         System.out.println("Added company");
 
         // admin account
@@ -51,12 +59,12 @@ public class SeedDatabase {
         // Two couriers
         Courier courier = new Courier();
         courier.setName("John Doe");
-        courier.setCourierNumber(1000);
-        // TODO save
-        courier = new Courier();
-        courier.setName("Jane Doe");
-        courier.setCourierNumber(1001);
-        // TODO save
+        //courier.setCourierNumber(1000);
+        courier.save();
+        Courier courier2 = new Courier();
+        courier2.setName("Jane Doe");
+        //courier2.setCourierNumber(1001);
+        courier2.save();
         System.out.println("Added 2 couriers");
 
         // A couple customers
@@ -65,12 +73,12 @@ public class SeedDatabase {
         customer.setAvenueName("A");
         customer.setStreetName("1st");
         customer.setCustomerNumber(5000);
-        // TODO save
+        customer.save();
         Customer customer2 = new Customer();
-        customer.setName("Company Two");
-        customer.setAvenueName("F");
-        customer.setStreetName("5th");
-        // TODO save
+        customer2.setName("Company Two");
+        customer2.setAvenueName("F");
+        customer2.setStreetName("5th");
+        customer2.save();
         System.out.println("Added 2 customers");
 
         // TODO path generation for tickets??
@@ -84,7 +92,7 @@ public class SeedDatabase {
         ticket.setBillToSender(false);
         ticket.setNote("This is a note");
         ticket.setClerk(user);
-        // TODO save
+        ticket.save();
 
         // Open ticket with courier
         Ticket ticket2 = new Ticket();
@@ -97,7 +105,7 @@ public class SeedDatabase {
         ticket.setNote("This is a note");
         ticket.setClerk(user);
         ticket.setCourier(courier);
-        // TODO save
+        ticket2.save();
 
         // Closed ticket
         Ticket ticket3 = new Ticket();
@@ -113,9 +121,9 @@ public class SeedDatabase {
         ticket.setDeliveryTime(LocalDateTime.now().minusHours(2));
         ticket.setPickupTime(LocalDateTime.now().minusHours(3));
         ticket.setDepartureTime(LocalDateTime.now().minusHours(4));
-        // TODO save
+        ticket3.save();
         System.out.println("Added an open ticket, open with courier, and closed ticket");
-
+        HibernateAdapter.shutDown();
     }
 
 

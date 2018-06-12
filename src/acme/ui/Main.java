@@ -77,6 +77,7 @@ public class Main {
        company.getMap().getPath(tempPickUp,tempDropOff );
      
     	 new UserUI();
+    	 new CompanyUI();
     }
     
 }
