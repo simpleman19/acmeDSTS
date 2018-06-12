@@ -1,16 +1,12 @@
 package acme.data;
 
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
-
-import acme.pd.Company;
 
 public class HibernateAdapter {	
 	@PersistenceUnit
@@ -30,32 +26,42 @@ public class HibernateAdapter {
 		return entityManagerFactory.createEntityManager();
 	}
 	
-	private static void doWithEntityManager(Consumer<EntityManager> lambda) {		
+	private static <T> T doWithEntityManager(Function<EntityManager, T> lambda) {		
 		EntityManager em = entityManagerFactory.createEntityManager();
-		lambda.accept(em);
+		T returnVal = lambda.apply(em);
 		em.close();
+		return returnVal;
 	}
 
-	private static void transaction(Consumer<EntityManager> lambda) {
-		doWithEntityManager((em) -> {
+	private static <T> T transaction(Function<EntityManager, T> lambda) {
+		return doWithEntityManager((em) -> {
 			EntityTransaction transaction = em.getTransaction();
 			transaction.begin();
-			lambda.accept(em);
+			T returnVal = lambda.apply(em);
 			transaction.commit();
+			return returnVal;
 		});
 	}
 	
-	public static void save(Object entity) {
-		transaction((em) -> em.persist(entity));
+	public static void create(Object entity) {
+		transaction((em) -> {
+			em.persist(entity);
+			return null;
+		});
+	}
+	
+	public static Object update(Object entity) {
+		return transaction((em) -> em.merge(entity));
 	}
 	
 	public static void delete(Object entity) {
-		transaction((em) -> em.remove(entity));
+		transaction((em) -> {
+			em.remove(em.contains(entity) ? entity : em.merge(entity));
+			return null;
+		});
 	}
 	
 	public static <T> T get(Class<T> classOfEntity, Object id) {
-		AtomicReference<T> object = new AtomicReference<T>(null);
-		doWithEntityManager((em) -> object.set((T) em.find(classOfEntity, id)));
-		return object.get();
+		return doWithEntityManager((em) -> (T) em.find(classOfEntity, id));
 	}
 }

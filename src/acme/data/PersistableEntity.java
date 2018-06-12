@@ -1,10 +1,17 @@
 package acme.data;
 import acme.data.HibernateAdapter;
 public interface PersistableEntity {
-	default public void save() {
-		HibernateAdapter.save(this);
+	
+	public <K> K getId();
+	
+	default public void create() {
+		HibernateAdapter.create(this);
 	}
 	
+	default public <T> T update() {
+		return (T) HibernateAdapter.update(this);
+	}
+
 	default public void delete() {
 		HibernateAdapter.delete(this);
 	}

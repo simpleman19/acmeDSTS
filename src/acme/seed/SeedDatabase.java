@@ -39,7 +39,7 @@ public class SeedDatabase {
         company.setBlocksPerMile(5.2);
         company.setCourierMilesPerHour(5.8);
         company.setFlatBillingRate(new BigDecimal(25.00));
-        company.save();
+        company.create();
         System.out.println("Added company");
 
         // admin account
@@ -61,11 +61,11 @@ public class SeedDatabase {
         Courier courier = new Courier();
         courier.setName("John Doe");
         //courier.setCourierNumber(1000);
-        courier.save();
+        //courier.create();
         Courier courier2 = new Courier();
         courier2.setName("Jane Doe");
         //courier2.setCourierNumber(1001);
-        courier2.save();
+        //courier2.create();
         System.out.println("Added 2 couriers");
 
         // A couple customers
@@ -75,12 +75,12 @@ public class SeedDatabase {
         customer.setStreetName("1st");
         customer.setCustomerNumber(5000);
 
-        customer.save();
+        customer.create();
         Customer customer2 = new Customer();
         customer2.setName("Company Two");
         customer2.setAvenueName("F");
         customer2.setStreetName("5th");
-        customer2.save();
+        customer2.create();
         System.out.println("Added 2 customers");
 
         // TODO path generation for tickets??
@@ -94,7 +94,7 @@ public class SeedDatabase {
         ticket.setBillToSender(false);
         ticket.setNote("This is a note");
         ticket.setClerk(user);
-        ticket.save();
+        ticket.create();
 
         // Open ticket with courier
         Ticket ticket2 = new Ticket();
@@ -107,7 +107,7 @@ public class SeedDatabase {
         ticket.setNote("This is a note");
         ticket.setClerk(user);
         ticket.setCourier(courier);
-        ticket2.save();
+        ticket2.create();
 
         // Closed ticket
         Ticket ticket3 = new Ticket();
@@ -123,7 +123,7 @@ public class SeedDatabase {
         ticket.setDeliveryTime(LocalDateTime.now().minusHours(2));
         ticket.setPickupTime(LocalDateTime.now().minusHours(3));
         ticket.setDepartureTime(LocalDateTime.now().minusHours(4));
-        ticket3.save();
+        ticket3.create();
         System.out.println("Added an open ticket, open with courier, and closed ticket");
         HibernateAdapter.shutDown();
     }

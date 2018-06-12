@@ -24,19 +24,28 @@ public class HibernateAdapterTest {
 	}
 
 	@Test
-	public void testSave() {
+	public void testCreate() {
         Company company = new Company();
         company.setName("ACME");
-        company.save();
+        company.create();
+        company = company.update();
         assertNotNull(company);
         assertNotNull(company.getId());
+	}
+	
+	@Test(expected = javax.persistence.PersistenceException.class)
+	public void testMultipleCreates() {
+        Company company = new Company();
+        company.setName("ACME");
+        company.create();
+        company.create();
 	}
 	
 	@Test
 	public void testGetWithSavedId() {
         Company company = new Company();
         company.setName("ACME");
-        company.save();
+        company.create();
         Company company2 = PersistableEntity.get(Company.class, company.getId());
         assertNotNull(company2);
         assertEquals(company.getId(), company2.getId());
@@ -47,21 +56,21 @@ public class HibernateAdapterTest {
 	public void testUpdate() {
         Company company = new Company();
         company.setName("ACME");
-        company.save();
-        company = PersistableEntity.get(Company.class, company.getId());
-        assertNotNull(company);
-        company.setName("Rebranded ACME");
-        company.save();
-        company.save();
+        company.create();
         Company company2 = PersistableEntity.get(Company.class, company.getId());
-        assertEquals("Rebranded ACME", company2.getName());
+        assertNotNull(company);
+        company2.setName("Rebranded ACME");
+        company2.update();
+        company2.update();
+        Company company3 = PersistableEntity.get(Company.class, company2.getId());
+        assertEquals("Rebranded ACME", company3.getName());
 	}
 	
 	@Test
 	public void testDelete() {
         Company company = new Company();
         company.setName("ACME");
-        company.save();
+        company = company.update();
         UUID companyId = company.getId();
         company = PersistableEntity.get(Company.class, companyId);
         assertNotNull(company);

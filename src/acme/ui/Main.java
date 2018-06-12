@@ -1,10 +1,6 @@
 package acme.ui;
 
-import acme.data.HibernateAdapter;
-import acme.data.PersistableEntity;
 import acme.pd.Company;
-import acme.pd.Courier;
-
 import acme.pd.Direction;
 import acme.pd.MapIntersection;
 import acme.pd.Road;
