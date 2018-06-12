@@ -4,10 +4,10 @@
         version="2.0">
     <persistence-unit name="my-pu">
    		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+<<<<<<< HEAD
 		<class>acme.pd.Company</class>
 		<class>acme.pd.Ticket</class>
 		<class>acme.pd.Courier</class>
-		<class>acme.pd.Customer</class>
 		<properties>
     		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
     		<property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />
@@ -19,6 +19,21 @@
 		    <!-- Scan for annotated classes and Hibernate mapping XML files -->
 		    <property name="hibernate.archive.autodetection" value="class, hbm"/>
 		    <property name="hibernate.hbm2ddl.auto" value="create" />
+=======
+   		<class>acme.pd.Company</class>
+   		<class>acme.pd.Courier</class>
+    	<properties>
+    		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+	    	<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+		    <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/acme" />
+		    <property name="javax.persistence.jdbc.user" value="acme" />
+		    <property name="javax.persistence.jdbc.password" value="password" />
+		    <property name="show_sql" value="true" />
+		    <!-- Scan for annotated classes and Hibernate mapping XML files -->
+		    <!-- <property name="hibernate.archive.autodetection" value="class, hbm"/> -->
+		    <property name="hibernate.hbm2ddl.auto" value="update" />
+>>>>>>> 976145e75ca5a6b09f3a66e74e263bd299af4ce6
     	</properties>
     </persistence-unit>
 </persistence>
+
