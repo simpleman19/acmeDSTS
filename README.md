@@ -11,10 +11,13 @@ There are some tools you must install that can't be managed with Gradle.
 
 ## Windows
 1. Install [`scoop`](https://scoop.sh/#installs-in-seconds) (requires [Powershell 3](https://www.microsoft.com/en-us/download/details.aspx?id=34595))
-2. Run `scripts/bootstrap.bat`
+2. Run `scripts/bootstrap_windows.bat`
 
-## Non-Windows
-1. Install [`homebrew`](https://brew.sh/) (Mac-only) or other package management tool
+## Mac
+1. Run `scripts/bootstrap_osx`
+
+## Chance
+1. Use yo`package management tool
 2. Run `cat scripts/bootstrap.bat`
 3. Install the tools listed but with your package manager
 
@@ -37,11 +40,18 @@ gradle eclipse
 ```
 2. Refresh Eclipse project
   * Left click on project -> `F5`
-3. Fix JRE reference
+3. Fix JRE reference (if needed)
   * Right click on project -> `Properties` -> `Java Build Path`
   * `Libraries` tab
   * Scroll down to `JRE System Library` and click `Edit`
-  * Set `Execution Environment` to `JavaSE-1.8`
+  * Set `Execution Environment` to `JavaSE-1.8` if it changed
+4. Remove duplicate `acmeDSTS/src` from classpath
+  * Project Properties
+  * Java Build Path
+  * `Source` Tab
+  * Select `acmeDSTS/src` where the Output Folder is "Default"
+  * Click Remove"
+  * Apply and Close
   
 ## Build & Run
 Build & run with Gradle dependencies:
