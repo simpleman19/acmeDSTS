@@ -26,4 +26,13 @@ public class AcmeJPanelBase extends JPanel {
             return null;
         }
     }
+
+    public AcmeUI getAcmeUI() {
+        Object ui = this.getTopLevelAncestor();
+        if (ui instanceof AcmeUI) {
+            return (AcmeUI) ui;
+        } else {
+            return null;
+        }
+    }
 }
