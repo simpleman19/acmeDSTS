@@ -11,20 +11,11 @@ import acme.pd.Road;
 
 public class Main {
     public static void main(String[] args) {
-    	HibernateAdapter.startUp();
-        Company company = new Company();
-        company.setName("The coolest delivery company");
-        Courier courier = new Courier();
-        courier.setName("Bill");
-        company.save();
-        Company company2 = PersistableEntity.get(Company.class, company.getId());
-        System.out.println(company2.getId() == company.getId());
-        courier.save();
-        HibernateAdapter.shutDown();
+    	
     	new UserUI();
     	new CompanyUI();
         
-  
+    	Company company = new Company();
         MapIntersection tempMap[][] = company.getMap().getMap();
         
        for(int x = 0; x < tempMap.length; x++)
