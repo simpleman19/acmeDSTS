@@ -1,19 +1,19 @@
 package acme.pd;
 
-import java.time.LocalDateTime;
-import java.util.Random;
+import java.time.LocalDate;
 
 public class MapIntersection {
     private Road NSroad;
     private Road EWroad;
-    private LocalDateTime closedTo;
-    private LocalDateTime closedFrom;
+    private LocalDate closedTo;
+    private LocalDate closedFrom;
     private boolean closedIndefinitely;
 
     public MapIntersection() {
         this.closedIndefinitely = false;
-        this.closedFrom = null;
-        this.closedTo = null;
+        //prevent these from returning null when we check the date closures
+        this.closedFrom = LocalDate.MAX;
+        this.closedTo = LocalDate.MAX;
     }
 
     public String getIntersectionName() {
@@ -21,23 +21,20 @@ public class MapIntersection {
         return NSroad.getName() + " & " + EWroad.getName();
     }
 
-    public boolean isClosed(LocalDateTime dateTime) {
-        // TODO closed intersection
-        //return new Random().nextInt() % 2 == 0;
-      return false;
+    public boolean isClosed(LocalDate date) {
+        /*
+         * if the intersection is closed now, during the date range, or closed
+         * indefinitely
+         */
+        return (date.isAfter(this.getClosedFrom()) && date.isBefore(this.getClosedTo()))
+                || (date.isEqual(this.getClosedFrom()) || date.isEqual(this.getClosedTo()))
+                || (this.isClosedIndefinitely());
+
     }
 
     public boolean canTravelDirection(Direction dir) {
         // TODO can travel
-      if(dir == Direction.NORTH || dir == Direction.SOUTH)
-      {
-        return this.NSroad.canTravelDirection(dir);
-      }
-      else
-      {
-        return this.EWroad.canTravelDirection(dir);
-      }
-         
+        return this.NSroad.canTravelDirection(dir) || this.EWroad.canTravelDirection(dir);
     }
 
     public Road getNSroad() {
@@ -56,19 +53,19 @@ public class MapIntersection {
         this.EWroad = EWroad;
     }
 
-    public LocalDateTime getClosedTo() {
+    public LocalDate getClosedTo() {
         return closedTo;
     }
 
-    public void setClosedTo(LocalDateTime closedTo) {
-        this.closedTo = closedTo;
+    public void setClosedTo(LocalDate localDate) {
+        this.closedTo = localDate;
     }
 
-    public LocalDateTime getClosedFrom() {
+    public LocalDate getClosedFrom() {
         return closedFrom;
     }
 
-    public void setClosedFrom(LocalDateTime closedFrom) {
+    public void setClosedFrom(LocalDate closedFrom) {
         this.closedFrom = closedFrom;
     }
 
