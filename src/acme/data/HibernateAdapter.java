@@ -25,6 +25,10 @@ public class HibernateAdapter {
 		if (entityManagerFactory != null)
 			entityManagerFactory.close();
 	}
+
+	public static EntityManager getEntityManager() {
+		return entityManagerFactory.createEntityManager();
+	}
 	
 	private static void doWithEntityManager(Consumer<EntityManager> lambda) {		
 		EntityManager em = entityManagerFactory.createEntityManager();
