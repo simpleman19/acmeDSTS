@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
+import acme.pd.Company;
 public class CompanyUI extends JFrame {
 ////////////GUI/////////////////
 private static final long serialVersionUID = 1L;
@@ -22,13 +24,16 @@ private JPanel buttonPanel;
 private JButton saveButton;
 private JButton exitButton;
 private GridBagConstraints grid;
-private JTextField field1;
-private JTextField field2;
-private JTextField field3;
-private JTextField field4;
-private JTextField field5;
-private JTextField field6;
-private JTextField field7;
+
+private JTextField company_name;
+private JTextField bonus_amount;
+private JTextField courier_miles;
+private JTextField blocks_per_mile;
+private JTextField lateness_margin;
+private JTextField flat_billing;
+private JTextField block_rate_name;
+private Company comp;
+
 //////////////////////////
 	public CompanyUI()
     {
@@ -95,33 +100,47 @@ private JTextField field7;
         grid.gridy = 0;
         grid.anchor = GridBagConstraints.LINE_START;
 
-        field1 = new JTextField (10);
-        panelForm.add(field1, grid);
-        ++grid.gridy;
-
-        field2 = new JTextField (10);
-        panelForm.add(field2, grid);
-        ++grid.gridy;
-
-        field3 = new JTextField (10);
-        panelForm.add(field3, grid);
-        ++grid.gridy;
-
-        field4 = new JTextField (10);
-        panelForm.add(field4, grid);
-        ++grid.gridy;
-
-        field5 = new JTextField (10);
-        panelForm.add(field5, grid);
-        ++grid.gridy;
-
-        field6 = new JTextField (10);
-        panelForm.add(field6, grid);
+        company_name = new JTextField (10);
+        panelForm.add(company_name, grid);
         ++grid.gridy;
         
-        field7 = new JTextField (10);
-        panelForm.add(field7, grid);
+        company_name.setText(comp.getDefaultAcme().getName());
+        
+        
+        bonus_amount = new JTextField (10);
+        panelForm.add(bonus_amount, grid);
         ++grid.gridy;
+        
+        bonus_amount.setText(comp.getDefaultAcme().getBonus().toString());
+        
+
+        courier_miles = new JTextField (10);
+        panelForm.add(courier_miles, grid);
+        ++grid.gridy;
+        
+        courier_miles.setText(Double.toString(comp.getDefaultAcme().getCourierMilesPerHour()));
+        
+        
+        blocks_per_mile = new JTextField (10);
+        panelForm.add(blocks_per_mile, grid);
+        ++grid.gridy;
+        blocks_per_mile.setText(Double.toString(comp.getDefaultAcme().getBlocksPerMile()));
+        
+        
+        lateness_margin = new JTextField (10);
+        panelForm.add(lateness_margin, grid);
+        ++grid.gridy;
+        lateness_margin.setText(Integer.toString(comp.getDefaultAcme().getLatenessMarginMinutes()));
+
+        flat_billing = new JTextField (10);
+        panelForm.add(flat_billing, grid);
+        ++grid.gridy;
+        flat_billing.setText(comp.getDefaultAcme().getFlatBillingRate().toString());
+        
+        block_rate_name = new JTextField (10);
+        panelForm.add(block_rate_name, grid);
+        ++grid.gridy;
+        block_rate_name.setText(Double.toString(comp.getDefaultAcme().getBlocksPerMile()));
     }
 
     private void buildButtonPanel()
@@ -150,10 +169,11 @@ private JTextField field7;
 
     private class ExitButtonListner implements ActionListener
     {
-
+      
         @Override
         public void actionPerformed(ActionEvent e)
         {
+
             System.exit(0);
 
         }
@@ -168,7 +188,7 @@ private JTextField field7;
         {
             // IMPLEMENT
             
-            
+
 //            System.out.println(field1.getText());
 //            Integer.parseInt(field2.getText());
             
