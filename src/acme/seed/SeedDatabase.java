@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class SeedDatabase {
     public static void main(String[] args) {
         HibernateAdapter.startUp();
+
         Scanner sc = new Scanner(System.in);
         String input = "";
         do {
@@ -73,6 +74,7 @@ public class SeedDatabase {
         customer.setAvenueName("A");
         customer.setStreetName("1st");
         customer.setCustomerNumber(5000);
+
         customer.save();
         Customer customer2 = new Customer();
         customer2.setName("Company Two");
