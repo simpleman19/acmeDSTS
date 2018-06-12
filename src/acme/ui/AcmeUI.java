@@ -24,6 +24,19 @@ public class AcmeUI extends JFrame {
         loginScreen();
     }
 
+    private void buildMenu() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu ticketMenu = new JMenu("Tickets");
+        menuBar.add(ticketMenu);
+
+        // TODO actually implement.  This is temporary to get a base for everyone
+        ticketMenu.add(new JMenuItem("Create"));
+        ticketMenu.add(new JMenuItem("List"));
+
+        this.setJMenuBar(menuBar);
+    }
+
     public void setPanel(AcmeJPanelBase panel) {
         this.getContentPane().removeAll();
         this.getContentPane().add(panel);
@@ -118,19 +131,6 @@ public class AcmeUI extends JFrame {
     public void reports() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
-    }
-
-    private void buildMenu() {
-        JMenuBar menuBar = new JMenuBar();
-
-        JMenu ticketMenu = new JMenu("Tickets");
-        menuBar.add(ticketMenu);
-
-        // TODO actually implement.  This is temporary to get a base for everyone
-        ticketMenu.add(new JMenuItem("Create"));
-        ticketMenu.add(new JMenuItem("List"));
-
-        this.setJMenuBar(menuBar);
     }
 
     public Company getCompany() {
