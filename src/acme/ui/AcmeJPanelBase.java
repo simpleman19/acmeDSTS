@@ -10,11 +10,11 @@ public class AcmeJPanelBase extends JPanel {
 
     public AcmeJPanelBase() {
         super();
-
     }
 
 
     public void buildPanel() {
+        // Initialize your panel here
         throw new NotImplementedException();
     }
 
