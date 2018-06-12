@@ -21,6 +21,8 @@ public class Main {
         System.out.println(company2.getId() == company.getId());
         courier.save();
         HibernateAdapter.shutDown();
+    	new UserUI();
+    	new CompanyUI();
         
   
         MapIntersection tempMap[][] = company.getMap().getMap();
@@ -75,9 +77,5 @@ public class Main {
 
        
        company.getMap().getPath(tempPickUp,tempDropOff );
-     
-    	 new UserUI();
-    	 new CompanyUI();
     }
-    
 }
