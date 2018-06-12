@@ -51,7 +51,12 @@ gradle run
 
 # Tests
 ## Run tests
-Gradle uses JUnit 4 for tests. You can run the tests like so:
+Gradle uses JUnit 4 for tests.
+
+## Eclipse
+With the `XXTest.java` file selected in `Package Explorer` click `Run`
+
+## Command line
 ```bash
 gradle test
 ```
