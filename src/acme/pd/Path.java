@@ -27,7 +27,7 @@ public class Path {
       this.blocksBetweenHomeandDropoff = blocksBetweenHomeandDropoff;
     }
     
-    public int getBlocksBetweenHomepandPickup() {
+    public int getBlocksBetweenHomeandPickup() {
       return blocksBetweenHomeandPickup;
     }
 
