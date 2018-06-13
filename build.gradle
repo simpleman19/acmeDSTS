@@ -31,6 +31,11 @@ sourceSets {
             srcDirs = ['resources']
         }
     }
+    test {
+    	java {
+    		srcDirs = ['test']
+    	}
+    }
 }
 // Define the main class for the application
 mainClassName = 'acme.ui.Main'
