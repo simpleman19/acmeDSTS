@@ -37,7 +37,7 @@ public class AcmeUI extends JFrame {
         this.setJMenuBar(menuBar);
     }
 
-    public void setPanel(AcmeJPanelBase panel) {
+    public void setPanel(AcmeBaseJPanel panel) {
         this.getContentPane().removeAll();
         this.getContentPane().add(panel);
         panel.buildPanel();

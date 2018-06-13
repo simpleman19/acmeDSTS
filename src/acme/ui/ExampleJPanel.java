@@ -4,10 +4,8 @@ import acme.pd.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class ExampleJPanel extends AcmeJPanelBase {
+public class ExampleJPanel extends AcmeBaseJPanel {
 
     JLabel companyName;
 

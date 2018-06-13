@@ -1,21 +1,19 @@
 package acme.ui;
 
 import acme.pd.Company;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
 
-public class AcmeJPanelBase extends JPanel {
+public class AcmeBaseJPanel extends JPanel {
 
-    public AcmeJPanelBase() {
+    public AcmeBaseJPanel() {
         super();
     }
 
 
     public void buildPanel() {
         // Initialize your panel here
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not Implemented");
     }
 
     public Company getCompany() {
