@@ -45,7 +45,7 @@ public class Company implements PersistableEntity {
 	@Transient
     private HashMap<UUID, Customer> customer;
     @Transient
-    private User currentUser;
+    private User currentUser = null;
     @Column(name = "BONUS")
     private BigDecimal bonus = new BigDecimal(1.25);
     @Column(name = "FLAT_BILLING_RATE")
@@ -70,7 +70,6 @@ public class Company implements PersistableEntity {
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
         customer = new HashMap<UUID, Customer>();
-        currentUser = new User();
     }
     
 

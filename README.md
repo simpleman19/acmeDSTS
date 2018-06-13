@@ -94,6 +94,28 @@ Eclipse can do some of the work for you:
 3. When you're done working: call `scripts/stop_db.bat`.
 4. If you need to nuke the database and recreate it: call `scripts/destroy_db.bat`.
 
+
+# UI adding a new panel
+Almost Everything should be in a panel and extend AcmeBaseJPanel (see ExampleJPanel)
+
+Feel free to add a main to your panel class that will create your panel directly for
+easier development (see main in ExampleJPanel)
+
+After creating your panel, you will need to connect it using the functions in AcmeUI
+Chance is handling all of the menu based navigation
+
+I have stubbed everything out with ExampleJPanel so you will just replace ExampleJPanel
+with whatever you need to correctly use your panel.
+
+For example if you are making the login screen, you would replace my code in AcmeUI.loginScreen()
+with the code to create your panel and call this.setPanel(panel) to add it to the gui
+
+If you would like to navigate then just call getAcmeUI() from your panel and call the
+function corresponding to where you want to go ex. to navigate to the login screen it would
+be this.getAcmeUI.loginScreen() (See Login button on ExampleJPanel for more details)
+
+Any questions, ask Chance
+
 # git
 
 To pull down the repo:
