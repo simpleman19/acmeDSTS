@@ -1,0 +1,5 @@
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install gradle
+brew tap homebrew/cask
+brew cask install java8
+brew install postgresql

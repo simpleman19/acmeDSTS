@@ -1,10 +1,6 @@
 package acme.ui;
 
-import acme.data.HibernateAdapter;
-import acme.data.PersistableEntity;
 import acme.pd.Company;
-import acme.pd.Courier;
-
 import acme.pd.Direction;
 import acme.pd.MapIntersection;
 import acme.pd.Road;
@@ -21,7 +17,7 @@ public class Main {
         System.out.println(company2.getId() == company.getId());
         courier.save();
         HibernateAdapter.shutDown();
-  
+      
         MapIntersection tempMap[][] = company.getMap().getMap();
         
        for(int x = 0; x < tempMap.length; x++)

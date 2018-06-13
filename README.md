@@ -11,10 +11,13 @@ There are some tools you must install that can't be managed with Gradle.
 
 ## Windows
 1. Install [`scoop`](https://scoop.sh/#installs-in-seconds) (requires [Powershell 3](https://www.microsoft.com/en-us/download/details.aspx?id=34595))
-2. Run `scripts/bootstrap.bat`
+2. Run `scripts/bootstrap_windows.bat`
 
-## Non-Windows
-1. Install [`homebrew`](https://brew.sh/) (Mac-only) or other package management tool
+## Mac
+1. Run `scripts/bootstrap_osx`
+
+## Chance
+1. Use yo`package management tool
 2. Run `cat scripts/bootstrap.bat`
 3. Install the tools listed but with your package manager
 
@@ -37,17 +40,53 @@ gradle eclipse
 ```
 2. Refresh Eclipse project
   * Left click on project -> `F5`
-3. Fix JRE reference
+3. Fix JRE reference (if needed)
   * Right click on project -> `Properties` -> `Java Build Path`
   * `Libraries` tab
   * Scroll down to `JRE System Library` and click `Edit`
-  * Set `Execution Environment` to `JavaSE-1.8`
+  * Set `Execution Environment` to `JavaSE-1.8` if it changed
+4. Remove duplicate `acmeDSTS/src` from classpath
+  * Project Properties
+  * Java Build Path
+  * `Source` Tab
+  * Select `acmeDSTS/src` where the Output Folder is "Default"
+  * Click Remove"
+  * Apply and Close
   
 ## Build & Run
 Build & run with Gradle dependencies:
 ```bash
 gradle run
 ```
+
+# Tests
+## Run tests
+Gradle uses JUnit 4 for tests.
+
+## Eclipse
+With the `XXTest.java` file selected in `Package Explorer` click `Run`
+
+## Command line
+```bash
+gradle test
+```
+If tests fail, Gradle with give you a `file://` url that you can copy/paste into your browser to see a pretty report of which tests failed and their stack traces.
+
+## Making new tests
+See [this tutorial](http://www.vogella.com/tutorials/JUnit/article.html) to learn how to make your own JUnit tests.
+
+Eclipse can do some of the work for you:
+1. Right click on `test` folder
+2. `New` -> `JUnit Test Case`
+* `Package`: the package for the class you are testing (i.e. `acme.pd`)
+* `Name`: `<tested-class>Test` (i.e. `CompanyTest`)
+* Check all of the methods to auto-generate them, you can delete what you don't need
+* `Class under test`: `<tested-class>` (i.e. `Company`)
+4. Click `Finish`
+5. Add your methods.
+* By convention, the name of the methods should describe what you are testing.
+* Try to make many smaller tests instead of a few large tests
+
 
 # Database
 1. Initialize the database: in the repo folder call `scripts/init_db.bat`.
