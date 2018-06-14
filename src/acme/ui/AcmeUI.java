@@ -20,8 +20,12 @@ public class AcmeUI extends JFrame {
         setSize(550, 550);
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
+        
+        //TODO shutdownlistener
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        loginScreen();
+        reports();
+        //loginScreen();
     }
 
     private void buildMenu() {
@@ -127,10 +131,10 @@ public class AcmeUI extends JFrame {
         this.setPanel(exampleJPanel);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Generate Reports Panel
     public void reports() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ReportsPanel rp = new ReportsPanel(getCompany());
+        this.setPanel(rp);
     }
 
     public Company getCompany() {
@@ -140,7 +144,7 @@ public class AcmeUI extends JFrame {
 
 class ShutdownListener implements WindowListener {
     public void windowClosing(WindowEvent event) {
-
+    	
     }
     public void windowOpened(WindowEvent event) {}
     public void windowClosed(WindowEvent event) {}

@@ -70,6 +70,16 @@ public class Company implements PersistableEntity {
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
         customer = new HashMap<UUID, Customer>();
+        
+        /*TODO remove test customers and couriers*/
+        for (int i = 0; i < 10; i++) {
+        	Courier c1 = new Courier();
+        	c1.setName("That Guy " + i);
+        	couriers.put(UUID.randomUUID(), c1);
+        	Customer c2 = new Customer();
+        	c2.setName("That Customer " + (1000+i));
+        	customer.put(UUID.randomUUID(), c2);
+        }
     }
     
 

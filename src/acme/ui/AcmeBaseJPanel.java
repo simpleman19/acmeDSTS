@@ -13,7 +13,7 @@ public class AcmeBaseJPanel extends JPanel {
 
     public void buildPanel() {
         // Initialize your panel here
-        throw new UnsupportedOperationException("Not Implemented");
+        //throw new UnsupportedOperationException("Not Implemented");
     }
 
     public Company getCompany() {
