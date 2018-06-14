@@ -33,11 +33,13 @@ import acme.pd.Customer;
 
 public class ReportsPanel extends AcmeBaseJPanel {
 
+	private static final long serialVersionUID = 1L;
 	/* Declarations */
 	Company company;
 	// main label
 	private JLabel reportsLbl = new JLabel("Reports");
 	// preview table
+	//TODO finish table models for different report types
 	DefaultTableModel courierModel = new DefaultTableModel(null, new String[] { "Date", "Pick Up", "Pick Up Time",
 			"Delivery", "Estimate Delivery Time", "Actual Delivery Time", "Bonus" });
 	DefaultTableModel customerModel = new DefaultTableModel(null, new String[] { "Date", "Time of Order",
@@ -73,8 +75,13 @@ public class ReportsPanel extends AcmeBaseJPanel {
 	static final String SELECTALL = "(Select All)";
 
 	/* Constructor */
-	public ReportsPanel(Company comp) {
-		company = comp;
+	public ReportsPanel() {
+
+	}
+
+	@Override
+	public void buildPanel() {
+		company = this.getCompany();
 		initNorthPane();
 		initSouthPane();
 		initDefaults();
@@ -90,8 +97,8 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
 			@Override
 			public void dateChanged(DateChangeEvent e) {
-				fromSettings.setDateRangeLimits(today.minusYears(5), toDate.getDate());
-				toSettings.setDateRangeLimits(today.minusYears(5), today);
+				fromSettings.setDateRangeLimits(null, toDate.getDate());
+				toSettings.setDateRangeLimits(null, today);
 				if (fromDate.getDate().isAfter(toDate.getDate())) {
 					fromDate.setDate(toDate.getDate().minusDays(7));
 				}
@@ -104,7 +111,6 @@ public class ReportsPanel extends AcmeBaseJPanel {
 		goBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO generate report
 				String type = typeSel.getSelectedItem().toString();
 
 				System.out.println("generate report");
@@ -156,26 +162,12 @@ public class ReportsPanel extends AcmeBaseJPanel {
 			}
 		});
 
-		// name of courier or customer changed
-		nameSel.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO customer or courier name changed
-
-				System.out.println("name changed");
-
-			}
-
-		});
-
 	}
 
 	/* Generate the report in th preview table */
 	private void generateReport(String type, String name, LocalDate from, LocalDate to) {
-		// TODO make preview table
+		// TODO generate report and 
 		previewTbl.repaint();
-
 	}
 
 	public void updateNameSel() {
@@ -227,8 +219,8 @@ public class ReportsPanel extends AcmeBaseJPanel {
 		fromDate.setDate(LocalDate.now().minusDays(7));
 		fromDate.setSettings(fromSettings);
 		toDate.setSettings(toSettings);
-		fromSettings.setDateRangeLimits(today.minusYears(5), today.minusDays(1));
-		toSettings.setDateRangeLimits(today.minusYears(5), today);
+		fromSettings.setDateRangeLimits(null, today.minusDays(1));
+		toSettings.setDateRangeLimits(null, today);
 
 		// set report type defaults
 		typeSel.addItem(COURIER);
@@ -348,8 +340,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
 		gbc_previewLbl.gridy = 1;
 		southPane.add(previewLbl, gbc_previewLbl);
 		previewTbl.setFillsViewportHeight(true);
-		previewTbl.setEnabled(true);
-		previewTbl.setVisible(true);
+		previewTbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		previewScrll.setViewportView(previewTbl);
 		GridBagConstraints gbc_previewScrll = new GridBagConstraints();
 		gbc_previewScrll.fill = GridBagConstraints.BOTH;
