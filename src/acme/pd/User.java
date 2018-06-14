@@ -1,16 +1,27 @@
 package acme.pd;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
+
+import acme.data.PersistableEntity;
+
 // Creates the class and extends methods
 // from the Person class for User to use.
-
-public class User extends Person {
+@Entity
+@Table(name = "APP_USER")
+public class User extends Person implements PersistableEntity {
 	
 	// Create Class attributes to store
 	// username, password and isAdmin
 	// datatypes. 
-	
+	@Column(name = "USERNAME")
     private String username;
+	@Column(name = "PASSWORD")
     private String password;
+	@Column(name = "IS_ADMIN")
     private boolean isAdmin;
 
     // Constructor for the User object.

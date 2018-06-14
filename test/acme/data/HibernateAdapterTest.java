@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import acme.pd.Company;
 import acme.pd.Courier;
+import acme.pd.User;
 
 public class HibernateAdapterTest {
 	@BeforeClass
@@ -93,5 +94,20 @@ public class HibernateAdapterTest {
 		assertEquals("Sue", courier.getName());
 		courier.delete();
 		assertNull(PersistableEntity.get(Courier.class, courier.getId()));
+	}
+	
+	@Test
+	public void testUser() {
+		User user = new User();
+		user.setUsername("user");
+		user.create();
+		user = PersistableEntity.get(User.class, user.getId());
+		assertNotNull(user);
+		assertEquals("user", user.getUsername());
+		user.setUsername("admin");
+		user = user.update();
+		assertEquals("admin", user.getUsername());
+		user.delete();
+		assertNull(PersistableEntity.get(User.class, user.getId()));
 	}
 }
