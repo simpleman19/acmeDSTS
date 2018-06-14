@@ -39,7 +39,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
 	// main label
 	private JLabel reportsLbl = new JLabel("Reports");
 	// preview table
-	//TODO finish table models for different report types
+	// TODO finish table models for different report types
 	DefaultTableModel courierModel = new DefaultTableModel(null, new String[] { "Date", "Pick Up", "Pick Up Time",
 			"Delivery", "Estimate Delivery Time", "Actual Delivery Time", "Bonus" });
 	DefaultTableModel customerModel = new DefaultTableModel(null, new String[] { "Date", "Time of Order",
@@ -131,8 +131,8 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO print report
 				System.out.println("print report");
+				printReport();
 			}
 
 		});
@@ -166,8 +166,13 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
 	/* Generate the report in th preview table */
 	private void generateReport(String type, String name, LocalDate from, LocalDate to) {
-		// TODO generate report and 
+		// TODO generate report 
 		previewTbl.repaint();
+	}
+	
+	/* Print the report to PDF */
+	private void printReport() {
+		// TODO print report
 	}
 
 	public void updateNameSel() {
