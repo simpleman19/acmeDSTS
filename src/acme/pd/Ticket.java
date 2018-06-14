@@ -21,21 +21,21 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "TICKET")
 public class Ticket implements PersistableEntity {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name = "ID")
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "ID")
     private UUID id;
-	@Transient
+    @Transient
     private Company company;
-	@Transient
+    @Transient
     private MapIntersection deliveryCustomerLocation;
-	@Transient
+    @Transient
     private MapIntersection pickupCustomerLocation;
-	@Transient
+    @Transient
     private Customer deliveryCustomer;
-	@Transient
+    @Transient
     private Customer pickupCustomer;
-	@Column(name = "CREATED_TIME")
+    @Column(name = "CREATED_TIME")
     private LocalDateTime creationDateTime;
     @Transient
     private User clerk;

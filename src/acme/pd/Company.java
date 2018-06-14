@@ -30,19 +30,19 @@ import javax.swing.JTextField;
 @Entity
 @Table(name = "COMPANY")
 public class Company implements PersistableEntity {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name = "ID")
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "ID")
     private UUID id;
-	@Column(name = "NAME")
+    @Column(name = "NAME")
     private String name = "ACME";
-	@Transient
+    @Transient
     private Map map;
-	@Transient
+    @Transient
     private HashMap<UUID, Courier> couriers;
-	@Transient
+    @Transient
     private HashMap<UUID, Ticket> tickets;
-	@Transient
+    @Transient
     private HashMap<UUID, Customer> customer;
     @Transient
     private User currentUser = null;
@@ -204,14 +204,14 @@ public class Company implements PersistableEntity {
     }
     
     public static Company getDefaultAcme() {
-    	Company acme = new Company();
-    	
-    	acme.setName("Acme");
-    	acme.setCourierMilesPerHour(15);
-    	acme.setBlocksPerMile(5.5);
-    	acme.setLatenessMarginMinutes(2);
-    	
-    	return acme; 
+        Company acme = new Company();
+
+        acme.setName("Acme");
+        acme.setCourierMilesPerHour(15);
+        acme.setBlocksPerMile(5.5);
+        acme.setLatenessMarginMinutes(2);
+
+        return acme;
     }
    
     

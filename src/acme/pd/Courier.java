@@ -11,9 +11,9 @@ import acme.data.PersistableEntity;
 @Entity
 @Table(name = "COURIER")
 public class Courier extends Person {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name = "NUMBER")
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "NUMBER")
     private int courierNumber;
 
     public int getCourierNumber() {
