@@ -1,9 +1,8 @@
 package acme.ui;
 
-import acme.pd.Company;
-import acme.pd.Direction;
-import acme.pd.MapIntersection;
-import acme.pd.Road;
+import acme.data.HibernateAdapter;
+import acme.data.PersistableEntity;
+import acme.pd.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,10 +11,10 @@ public class Main {
         company.setName("The coolest delivery company");
         Courier courier = new Courier();
         courier.setName("Bill");
-        company.save();
+        company.create();
         Company company2 = PersistableEntity.get(Company.class, company.getId());
         System.out.println(company2.getId() == company.getId());
-        courier.save();
+        //courier.create();
         HibernateAdapter.shutDown();
       
         MapIntersection tempMap[][] = company.getMap().getMap();
