@@ -12,6 +12,8 @@ import org.junit.Test;
 
 import acme.pd.Company;
 import acme.pd.Courier;
+import acme.pd.Customer;
+import acme.pd.Ticket;
 import acme.pd.User;
 
 public class HibernateAdapterTest {
@@ -94,6 +96,36 @@ public class HibernateAdapterTest {
 		assertEquals("Sue", courier.getName());
 		courier.delete();
 		assertNull(PersistableEntity.get(Courier.class, courier.getId()));
+	}
+
+	@Test
+	public void testCustomer() {
+		Customer customer = new Customer();
+		customer.setName("Bickers & Bickers");
+		customer.create();
+		customer = PersistableEntity.get(Customer.class, customer.getId());
+		assertNotNull(customer);
+		assertEquals("Bickers & Bickers", customer.getName());
+		customer.setName("Only Bickers now");
+		customer = customer.update();
+		assertEquals("Only Bickers now", customer.getName());
+		customer.delete();
+		assertNull(PersistableEntity.get(Customer.class, customer.getId()));
+	}
+	
+	@Test
+	public void testTicket() {
+		Ticket ticket = new Ticket();
+		ticket.setNote("go to lobby");
+		ticket.create();
+		ticket = PersistableEntity.get(Ticket.class, ticket.getId());
+		assertNotNull(ticket);
+		assertEquals("go to lobby", ticket.getNote());
+		ticket.setNote("go to 3rd floor");
+		ticket = ticket.update();
+		assertEquals("go to 3rd floor", ticket.getNote());
+		ticket.delete();
+		assertNull(PersistableEntity.get(Ticket.class, ticket.getId()));
 	}
 	
 	@Test
