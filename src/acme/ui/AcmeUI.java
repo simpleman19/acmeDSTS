@@ -20,9 +20,6 @@ public class AcmeUI extends JFrame {
         setSize(550, 550);
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
-        
-        //TODO shutdownlistener
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         reports();
         //loginScreen();
@@ -133,7 +130,7 @@ public class AcmeUI extends JFrame {
 
     // Generate Reports Panel
     public void reports() {
-        ReportsPanel rp = new ReportsPanel(getCompany());
+        ReportsPanel rp = new ReportsPanel();
         this.setPanel(rp);
     }
 
@@ -144,7 +141,7 @@ public class AcmeUI extends JFrame {
 
 class ShutdownListener implements WindowListener {
     public void windowClosing(WindowEvent event) {
-    	
+
     }
     public void windowOpened(WindowEvent event) {}
     public void windowClosed(WindowEvent event) {}
