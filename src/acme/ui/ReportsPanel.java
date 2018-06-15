@@ -147,15 +147,12 @@ public class ReportsPanel extends AcmeBaseJPanel {
                 if (type.equals(COMPANY)) {
                     nameSel.setVisible(false);
                     nameLbl.setVisible(false);
+                    goBtn.setEnabled(true);
                 } else {
                     nameSel.setVisible(true);
                     nameLbl.setVisible(true);
-                    try {
-                        updateNameSel();
-                        nameSel.setSelectedIndex(0);
-                    } catch (IllegalArgumentException arg0) {
-                        nameSel.addItem("No Items Found");
-                    }
+                    nameSel.setEnabled(true);
+                    updateNameSel();
                 }
                 // trim it for the label
                 nameLbl.setText(type.replaceAll(" Performance", ""));
@@ -178,32 +175,45 @@ public class ReportsPanel extends AcmeBaseJPanel {
     public void updateNameSel() {
         ArrayList<String> items = new ArrayList<>();
         // clear out the comboBox
-        nameSel.removeAllItems();
+        try {
 
-        switch (typeSel.getSelectedItem().toString()) {
-        case COURIER:
-            // get the list of couriers
-            for (Map.Entry<UUID, Courier> courier : company.getCouriers().entrySet()) {
-                items.add(courier.getValue().getName());
-            }
-            break;
-        case CUSTOMER:
-            // get the list of customers
-            for (Map.Entry<UUID, Customer> customer : company.getCustomer().entrySet()) {
-                items.add(customer.getValue().getName());
-            }
-            // add a select all for customers
-            nameSel.addItem(SELECTALL);
-            break;
-        default:
-            break;
-        }
+            nameSel.removeAllItems();
 
-        // sort the items
-        Collections.sort(items);
-        // put items in the comboBox
-        for (String values : items) {
-            nameSel.addItem(values);
+            switch (typeSel.getSelectedItem().toString()) {
+            case COURIER:
+                // get the list of couriers
+                for (Map.Entry<UUID, Courier> courier : company.getCouriers().entrySet()) {
+                    items.add(courier.getValue().getName());
+                }
+                break;
+            case CUSTOMER:
+                // get the list of customers
+                for (Map.Entry<UUID, Customer> customer : company.getCustomer().entrySet()) {
+                    items.add(customer.getValue().getName());
+                }
+                if (items.size() > 1) {
+                    // add a select all for customers
+                    nameSel.addItem(SELECTALL);
+                }
+                break;
+            default:
+                break;
+            }
+
+            // sort the items
+            Collections.sort(items);
+            // put items in the comboBox
+            for (String values : items) {
+                nameSel.addItem(values);
+            }
+
+            goBtn.setEnabled(true);
+            nameSel.setSelectedIndex(0);
+
+        } catch (IllegalArgumentException arg0) {
+            nameSel.addItem("No Items Found");
+            nameSel.setEnabled(false);
+            goBtn.setEnabled(false);
         }
     }
 
@@ -233,6 +243,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
         typeSel.addItem(COMPANY);
 
         typeSel.setSelectedItem(COURIER);
+
         updateNameSel();
 
     }
@@ -307,8 +318,22 @@ public class ReportsPanel extends AcmeBaseJPanel {
         gbc_goBtn.fill = GridBagConstraints.VERTICAL;
         gbc_goBtn.anchor = GridBagConstraints.WEST;
         gbc_goBtn.gridx = 2;
-        gbc_goBtn.gridy = 2;
+        gbc_goBtn.gridy = 3;
         northPane.add(goBtn, gbc_goBtn);
+
+        // move to north
+        GridBagConstraints gbc_nameLbl = new GridBagConstraints();
+        gbc_nameLbl.anchor = GridBagConstraints.EAST;
+        gbc_nameLbl.insets = new Insets(0, 0, 5, 5);
+        gbc_nameLbl.gridx = 0;
+        gbc_nameLbl.gridy = 3;
+        northPane.add(nameLbl, gbc_nameLbl);
+        GridBagConstraints gbc_nameSel = new GridBagConstraints();
+        gbc_nameSel.fill = GridBagConstraints.BOTH;
+        gbc_nameSel.insets = new Insets(0, 0, 5, 5);
+        gbc_nameSel.gridx = 1;
+        gbc_nameSel.gridy = 3;
+        northPane.add(nameSel, gbc_nameSel);
     }
 
     private void initSouthPane() {
@@ -320,23 +345,11 @@ public class ReportsPanel extends AcmeBaseJPanel {
         add(southPane, gbc_southPane);
         GridBagLayout gbl_southPane = new GridBagLayout();
         gbl_southPane.columnWidths = new int[] { 75, 200, 150, 0, 0 };
-        gbl_southPane.rowHeights = new int[] { 33, 0, 0, 0, 0, 0 };
+        gbl_southPane.rowHeights = new int[] { 0, 0, 0, 0, 0 };
         gbl_southPane.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
         gbl_southPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
         southPane.setLayout(gbl_southPane);
 
-        GridBagConstraints gbc_nameLbl = new GridBagConstraints();
-        gbc_nameLbl.anchor = GridBagConstraints.EAST;
-        gbc_nameLbl.insets = new Insets(0, 0, 5, 5);
-        gbc_nameLbl.gridx = 0;
-        gbc_nameLbl.gridy = 0;
-        southPane.add(nameLbl, gbc_nameLbl);
-        GridBagConstraints gbc_nameSel = new GridBagConstraints();
-        gbc_nameSel.fill = GridBagConstraints.BOTH;
-        gbc_nameSel.insets = new Insets(0, 0, 5, 5);
-        gbc_nameSel.gridx = 1;
-        gbc_nameSel.gridy = 0;
-        southPane.add(nameSel, gbc_nameSel);
         GridBagConstraints gbc_previewLbl = new GridBagConstraints();
         gbc_previewLbl.fill = GridBagConstraints.VERTICAL;
         gbc_previewLbl.anchor = GridBagConstraints.EAST;
