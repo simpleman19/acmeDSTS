@@ -196,16 +196,18 @@ public class AcmeUI extends JFrame {
     public Company getCompany() {
         return company;
     }
-}
 
-class ShutdownListener implements WindowListener {
-    public void windowClosing(WindowEvent event) {
-
+    class ShutdownListener implements WindowListener {
+        public void windowClosing(WindowEvent event) {
+            setVisible(false); //you can't see me!
+            dispose(); //Destroy the JFrame object
+        }
+        public void windowOpened(WindowEvent event) {}
+        public void windowClosed(WindowEvent event) {}
+        public void windowIconified(WindowEvent event) {}
+        public void windowDeiconified(WindowEvent event) {}
+        public void windowActivated(WindowEvent event) {}
+        public void windowDeactivated(WindowEvent event) {}
     }
-    public void windowOpened(WindowEvent event) {}
-    public void windowClosed(WindowEvent event) {}
-    public void windowIconified(WindowEvent event) {}
-    public void windowDeiconified(WindowEvent event) {}
-    public void windowActivated(WindowEvent event) {}
-    public void windowDeactivated(WindowEvent event) {}
 }
+
