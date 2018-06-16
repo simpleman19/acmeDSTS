@@ -21,7 +21,8 @@ public class AcmeUI extends JFrame {
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
 
-        reports();
+        userList();
+        //reports();
         //loginScreen();
     }
 
@@ -90,17 +91,17 @@ public class AcmeUI extends JFrame {
         this.setPanel(exampleJPanel);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // List of clerks in the system that can be added to or updated
     public void userList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksListPanel cp = new ClerksListPanel();
+        this.setPanel(cp);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
-    public void userAddUpdate(User customer) {
+    // Update or add clerks into the system. Accessed by the userList page
+    public void userAddUpdate(User user) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksUpdatePanel cu = new ClerksUpdatePanel(user);
+        this.setPanel(cu);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code

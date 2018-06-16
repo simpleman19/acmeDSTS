@@ -34,6 +34,8 @@ public class Company implements PersistableEntity {
     @Transient
     private HashMap<UUID, Customer> customer;
     @Transient
+    private HashMap<UUID, User> users;
+    @Transient
     private User currentUser = null;
     @Column(name = "BONUS")
     private BigDecimal bonus = new BigDecimal(1.25);
@@ -58,6 +60,7 @@ public class Company implements PersistableEntity {
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
         customer = new HashMap<UUID, Customer>();
+        users = new HashMap<UUID, User>();
 
         // TODO remove test customers and couriers
         for (int i = 0; i < 10; i++) {
@@ -67,6 +70,18 @@ public class Company implements PersistableEntity {
             Customer c2 = new Customer();
             c2.setName("That Customer " + (1000 + i));
             customer.put(UUID.randomUUID(), c2);
+
+            User u1 = new User();
+            u1.setName("First " + "Last" + i);
+            u1.setUsername("uname " + i);
+            if (i % 2 == 0) {
+                u1.setActive(true);
+            } else {
+                u1.setActive(false);
+            }
+            u1.setAdmin(false);
+            u1.setPassword("pass"+i);
+            users.put(UUID.randomUUID(), u1);
         }
     }
 
@@ -116,6 +131,14 @@ public class Company implements PersistableEntity {
 
     public void setCustomer(HashMap<UUID, Customer> customer) {
         this.customer = customer;
+    }
+
+    public HashMap<UUID, User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(HashMap<UUID, User> users) {
+        this.users = users;
     }
 
     public User getCurrentUser() {
