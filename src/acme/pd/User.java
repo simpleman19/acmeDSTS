@@ -1,5 +1,9 @@
 package acme.pd;
 
+import acme.ui.AcmeUI;
+import acme.ui.CompanyUI;
+import acme.ui.ExampleJPanel;
+
 // Creates the class and extends methods
 // from the Person class for User to use.
 
@@ -70,6 +74,11 @@ public class User extends Person {
     	 	 
     }
     
+    public void logOut() {
+        this.username=null;
+        this.password=null;
+    }
+
     
     public static void main(String []args) {   
 
