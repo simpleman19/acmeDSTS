@@ -1,10 +1,18 @@
 package acme.ui;
 
-import acme.pd.*;
-
-import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
+import acme.pd.Company;
+import acme.pd.Courier;
+import acme.pd.Customer;
+import acme.pd.Ticket;
+import acme.pd.User;
 
 public class AcmeUI extends JFrame {
 
@@ -19,9 +27,12 @@ public class AcmeUI extends JFrame {
         setVisible(true);
         setSize(550, 550);
         setLocationRelativeTo(null);
+        
         addWindowListener(new ShutdownListener());
-
-        reports();
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        importIntoCompany();
+        //reports();
         //loginScreen();
     }
 
@@ -115,6 +126,12 @@ public class AcmeUI extends JFrame {
         this.setPanel(exampleJPanel);
     }
 
+    // imports selection and processing panel
+    public void importIntoCompany() {
+        ImportsPanel ip = new ImportsPanel();
+        this.setPanel(ip);
+    }
+    
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void courierAddUpdate(Courier courier) {
         // This will be called with null to create
@@ -141,7 +158,7 @@ public class AcmeUI extends JFrame {
 
 class ShutdownListener implements WindowListener {
     public void windowClosing(WindowEvent event) {
-
+        
     }
     public void windowOpened(WindowEvent event) {}
     public void windowClosed(WindowEvent event) {}
