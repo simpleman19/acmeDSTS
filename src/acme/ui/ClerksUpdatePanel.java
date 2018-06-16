@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import acme.pd.Company;
@@ -28,7 +29,12 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
     private JTextField nameFld = new JTextField();
     private JLabel uNameLbl = new JLabel("Username");
     private JTextField uNameFld = new JTextField();
+    private JPanel resetPanel = new JPanel();
     private JButton rstBtn = new JButton("Reset Password");
+    private JLabel newPassLbl = new JLabel("New Password");
+    private JLabel confPassLbl = new JLabel("Confirm Password");
+    private JTextField newPass = new JTextField();
+    private JTextField confPass = new JTextField();
     private JCheckBox activeChk = new JCheckBox("Active");
     private JButton cnclBtn = new JButton("Cancel");
     private JButton saveBtn = new JButton("Save");
@@ -44,7 +50,6 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
             subLbl.setText(" - (Update) " + user.getName());
         }
         this.user = user;
-
     }
 
     public void buildPanel() {
@@ -77,7 +82,7 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
                     break;
                 case RESET:
                     // pop-up for the password reset
-                    resetPassword();
+                    disaplyPassword();
                     break;
                 case ACTIVE:
                     // set the user active or inactive based on the selection
@@ -98,14 +103,27 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
     }
 
     private void initDefaults() {
+
         if (subLbl.getText().equals(NEW_USER)) {
             nameFld.setText("First Last");
             uNameFld.setText("username");
             activeChk.setSelected(true);
+            newPassLbl.setVisible(true);
+            newPass.setVisible(true);
+            confPassLbl.setVisible(true);
+            confPass.setVisible(true);
+            rstBtn.setVisible(false);
         } else {
             nameFld.setText(user.getName());
             uNameFld.setText(user.getUsername());
             activeChk.setSelected(user.isActive());
+            newPassLbl.setVisible(false);
+            newPass.setText(user.getPassword());
+            newPass.setVisible(false);
+            confPassLbl.setVisible(false);
+            confPass.setText(user.getPassword());
+            confPass.setVisible(false);
+            rstBtn.setVisible(true);
         }
 
     }
@@ -118,8 +136,7 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
         for (Map.Entry<UUID, User> users : company.getUsers().entrySet()) {
             if (users.getValue().getUsername().equals(uNameFld.getText())) {
                 overwrite = true;
-                String infoMessage = "Are you sure you want to update \"" + uNameFld.getText()
-                        + "\" ?";
+                String infoMessage = "Are you sure you want to update \"" + uNameFld.getText() + "\" ?";
                 if (JOptionPane.showConfirmDialog(null, infoMessage, "Wait",
                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     // switch to the user we found so we can update it
@@ -141,11 +158,17 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
                 user.setUsername(uNameFld.getText());
                 user.setActive(activeChk.isSelected());
                 // set password for new users
+                boolean good = checkPassword();
+                if (good) {
+                    user.setPassword(newPass.getText());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid Password");
+                    return;
+                }
                 if (subLbl.getText().equals(NEW_USER) && !overwrite) {
-                    String pass = resetPassword();
-                    user.setPassword(pass);
                     company.getUsers().put(UUID.randomUUID(), user);
                 }
+
                 System.out.println(user.getPassword());
                 getAcmeUI().userList();
             }
@@ -153,15 +176,17 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
 
     }
 
-    private String resetPassword() {
-        
-        String pass = JOptionPane.showInputDialog("New Password");
-        if (pass == JOptionPane.showInputDialog("Confirm Password")) {
-            return pass;
-        }
-        else {
-            return user.getPassword();
-        }
+    private void disaplyPassword() {
+
+        newPassLbl.setVisible(true);
+        newPass.setVisible(true);
+        confPassLbl.setVisible(true);
+        confPass.setVisible(true);
+
+    }
+
+    private boolean checkPassword() {
+        return (newPass.getText().equals(confPass.getText()) && !newPass.getText().isEmpty());
     }
 
     private void initLayout() {
@@ -169,9 +194,9 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
         subLbl.setFont(new Font(subLbl.getFont().toString(), Font.PLAIN, 16));
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[] { 35, 76, 170, 65, 0, 0 };
-        gridBagLayout.rowHeights = new int[] { 0, 0, 29, 0, 0, 0, 0 };
+        gridBagLayout.rowHeights = new int[] { 0, 0, 29, 0, 0, 0 };
         gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
-        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
+        gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
         setLayout(gridBagLayout);
         GridBagConstraints gbc_mainLbl = new GridBagConstraints();
         gbc_mainLbl.anchor = GridBagConstraints.EAST;
@@ -180,7 +205,9 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
         gbc_mainLbl.gridy = 0;
         add(mainLbl, gbc_mainLbl);
         GridBagConstraints gbc_subLbl = new GridBagConstraints();
-        gbc_subLbl.insets = new Insets(15, 0, 25, 0);
+        gbc_subLbl.gridx = 2;
+        gbc_subLbl.gridy = 0;
+        gbc_subLbl.insets = new Insets(15, 0, 25, 5);
         gbc_subLbl.anchor = GridBagConstraints.WEST;
         add(subLbl, gbc_subLbl);
         GridBagConstraints gbc_nameLbl = new GridBagConstraints();
@@ -214,21 +241,57 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
         gbc_uNameFld.gridx = 2;
         gbc_uNameFld.gridy = 2;
         add(uNameFld, gbc_uNameFld);
+        GridBagConstraints gbc_resetPanel = new GridBagConstraints();
+        gbc_resetPanel.gridwidth = 2;
+        gbc_resetPanel.fill = GridBagConstraints.BOTH;
+        gbc_resetPanel.insets = new Insets(0, 0, 5, 5);
+        gbc_resetPanel.gridx = 2;
+        gbc_resetPanel.gridy = 3;
+        add(resetPanel, gbc_resetPanel);
+        GridBagLayout gbl_resetPanel = new GridBagLayout();
+        gbl_resetPanel.columnWidths = new int[] { 162, 0, 0 };
+        gbl_resetPanel.rowHeights = new int[] { 23, 0, 0, 0 };
+        gbl_resetPanel.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+        gbl_resetPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+        resetPanel.setLayout(gbl_resetPanel);
         GridBagConstraints gbc_rstBtn = new GridBagConstraints();
-        gbc_rstBtn.insets = new Insets(0, 0, 5, 5);
         gbc_rstBtn.anchor = GridBagConstraints.NORTHWEST;
-        gbc_rstBtn.gridx = 2;
-        gbc_rstBtn.gridy = 3;
-        add(rstBtn, gbc_rstBtn);
+        gbc_rstBtn.insets = new Insets(15, 0, 5, 5);
+        gbc_rstBtn.gridx = 0;
+        gbc_rstBtn.gridy = 0;
+        resetPanel.add(rstBtn, gbc_rstBtn);
+        GridBagConstraints gbc_newPass = new GridBagConstraints();
+        gbc_newPass.fill = GridBagConstraints.HORIZONTAL;
+        gbc_newPass.insets = new Insets(0, 0, 5, 5);
+        gbc_newPass.gridx = 0;
+        gbc_newPass.gridy = 1;
+        resetPanel.add(newPass, gbc_newPass);
+        GridBagConstraints gbc_newPassLbl = new GridBagConstraints();
+        gbc_newPassLbl.anchor = GridBagConstraints.WEST;
+        gbc_newPassLbl.insets = new Insets(0, 0, 5, 0);
+        gbc_newPassLbl.gridx = 1;
+        gbc_newPassLbl.gridy = 1;
+        resetPanel.add(newPassLbl, gbc_newPassLbl);
+        GridBagConstraints gbc_confPass = new GridBagConstraints();
+        gbc_confPass.fill = GridBagConstraints.HORIZONTAL;
+        gbc_confPass.insets = new Insets(0, 0, 0, 5);
+        gbc_confPass.gridx = 0;
+        gbc_confPass.gridy = 2;
+        resetPanel.add(confPass, gbc_confPass);
+        GridBagConstraints gbc_confPassLbl = new GridBagConstraints();
+        gbc_confPassLbl.anchor = GridBagConstraints.WEST;
+        gbc_confPassLbl.gridx = 1;
+        gbc_confPassLbl.gridy = 2;
+        resetPanel.add(confPassLbl, gbc_confPassLbl);
         GridBagConstraints gbc_cnclBtn = new GridBagConstraints();
         gbc_cnclBtn.insets = new Insets(0, 0, 15, 15);
         gbc_cnclBtn.gridx = 3;
-        gbc_cnclBtn.gridy = 5;
+        gbc_cnclBtn.gridy = 4;
         add(cnclBtn, gbc_cnclBtn);
         GridBagConstraints gbc_saveBtn = new GridBagConstraints();
         gbc_saveBtn.insets = new Insets(0, 0, 15, 15);
         gbc_saveBtn.gridx = 4;
-        gbc_saveBtn.gridy = 5;
+        gbc_saveBtn.gridy = 4;
         add(saveBtn, gbc_saveBtn);
     }
 
