@@ -11,10 +11,13 @@ There are some tools you must install that can't be managed with Gradle.
 
 ## Windows
 1. Install [`scoop`](https://scoop.sh/#installs-in-seconds) (requires [Powershell 3](https://www.microsoft.com/en-us/download/details.aspx?id=34595))
-2. Run `scripts/bootstrap.bat`
+2. Run `scripts/bootstrap_windows.bat`
 
-## Non-Windows
-1. Install [`homebrew`](https://brew.sh/) (Mac-only) or other package management tool
+## Mac
+1. Run `scripts/bootstrap_osx`
+
+## Chance
+1. Use yo`package management tool
 2. Run `cat scripts/bootstrap.bat`
 3. Install the tools listed but with your package manager
 
@@ -37,11 +40,18 @@ gradle eclipse
 ```
 2. Refresh Eclipse project
   * Left click on project -> `F5`
-3. Fix JRE reference
+3. Fix JRE reference (if needed)
   * Right click on project -> `Properties` -> `Java Build Path`
   * `Libraries` tab
   * Scroll down to `JRE System Library` and click `Edit`
-  * Set `Execution Environment` to `JavaSE-1.8`
+  * Set `Execution Environment` to `JavaSE-1.8` if it changed
+4. Remove duplicate `acmeDSTS/src` from classpath
+  * Project Properties
+  * Java Build Path
+  * `Source` Tab
+  * Select `acmeDSTS/src` where the Output Folder is "Default"
+  * Click Remove"
+  * Apply and Close
   
 ## Build & Run
 Build & run with Gradle dependencies:
@@ -83,6 +93,28 @@ Eclipse can do some of the work for you:
 2. Whenever you start working on the app: call `scripts/start_db.bat`.
 3. When you're done working: call `scripts/stop_db.bat`.
 4. If you need to nuke the database and recreate it: call `scripts/destroy_db.bat`.
+
+
+# UI adding a new panel
+Almost Everything should be in a panel and extend AcmeBaseJPanel (see ExampleJPanel)
+
+Feel free to add a main to your panel class that will create your panel directly for
+easier development (see main in ExampleJPanel)
+
+After creating your panel, you will need to connect it using the functions in AcmeUI
+Chance is handling all of the menu based navigation
+
+I have stubbed everything out with ExampleJPanel so you will just replace ExampleJPanel
+with whatever you need to correctly use your panel.
+
+For example if you are making the login screen, you would replace my code in AcmeUI.loginScreen()
+with the code to create your panel and call this.setPanel(panel) to add it to the gui
+
+If you would like to navigate then just call getAcmeUI() from your panel and call the
+function corresponding to where you want to go ex. to navigate to the login screen it would
+be this.getAcmeUI.loginScreen() (See Login button on ExampleJPanel for more details)
+
+Any questions, ask Chance
 
 # git
 
