@@ -21,8 +21,7 @@ public class AcmeUI extends JFrame {
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
 
-        reports();
-        //loginScreen();
+        loginScreen();
     }
 
     private void buildMenu() {
