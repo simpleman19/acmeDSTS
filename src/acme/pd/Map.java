@@ -361,12 +361,12 @@ public class Map {
         pathDir.setBlocksBetweenHomeandDropoff(totalBlocks);
         pathDir.setPath(pathToBe);
 
-        System.out.println("----Directions-----");
+        /*System.out.println("----Directions-----");
 
         for(MapIntersection temp : pathDir.getPath())
         {
           System.out.println(temp.getIntersectionName());
-        }
+        }*/
         return pathDir;
       }
 
@@ -659,7 +659,7 @@ public class Map {
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
-        System.out.println("Quote: " + ticket.calcQuote().shortValue());
+        System.out.println("Quote: " + ticket.getQuotedPrice().shortValue());
         System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
         System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
         System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());
@@ -718,7 +718,7 @@ public class Map {
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
-        System.out.println("Quote: " + ticket.calcQuote().shortValue());
+        System.out.println("Quote: " + ticket.getQuotedPrice().shortValue());
         System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
         System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
         System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());
@@ -776,7 +776,7 @@ public class Map {
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
-        System.out.println("Quote: " + ticket.calcQuote().shortValue());
+        System.out.println("Quote: " + ticket.getQuotedPrice().shortValue());
         System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
         System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
         System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());

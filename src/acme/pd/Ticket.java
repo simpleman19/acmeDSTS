@@ -111,18 +111,16 @@ public class Ticket implements PersistableEntity {
                     this.getDeliveryCustomerLocation()
             );
             calcEstimatedTimes();
+            calculateQuote();
         } else {
             this.path = null;
         }
     }
 
-    public BigDecimal calcQuote() {
-      double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
-      double quote = path.getBlocksBetweenHomeandDropoff() * company.getBlockBillingRate().doubleValue();
-      quote = quote + company.getFlatBillingRate().doubleValue();
-
-      this.calcEstimatedTimes();
-        return new BigDecimal(quote);
+    private void calculateQuote() {
+        double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
+        double quote = path.getBlocksBetweenHomeandDropoff() * company.getBlockBillingRate().doubleValue();
+        this.quotedPrice = new BigDecimal(quote + company.getFlatBillingRate().doubleValue());
     }
 
     private void calcEstimatedTimes() {

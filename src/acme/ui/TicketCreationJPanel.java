@@ -1,23 +1,26 @@
 package acme.ui;
 
 import java.awt.*;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.UUID;
 import javax.swing.*;
 import javax.swing.border.*;
-import acme.pd.Company;
-import acme.pd.Customer;
-import acme.pd.Ticket;
-import acme.pd.User;
+
+import acme.pd.*;
 
 public class TicketCreationJPanel extends AcmeBaseJPanel {
 
     Company c;
     Ticket ticket;
-
+    // This courier is used to be able to not set courier at creation time
+    Courier tbdCourier;
 
     public TicketCreationJPanel() {
         super();
+        tbdCourier = new Courier();
+        tbdCourier.setName("TBD");
     }
 
     @Override
@@ -194,6 +197,8 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         deliveryCMB = new JComboBox(customers.values().toArray());
         // If set in ticket then use that customer
         if (ticket.getDeliveryCustomer() != null) deliveryCMB.setSelectedItem(ticket.getDeliveryCustomer());
+        deliveryCMB.addActionListener((e) -> updateTicket());
+
         dropOffPanel.add(deliveryCMB, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -235,18 +240,20 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 5), 0, 0));
 
-        quoteLabel.setText("$12.63");
+        BigDecimal quote = ticket.getQuotedPrice();
+        String quoteStr = NumberFormat.getCurrencyInstance().format(quote);
+        quoteLabel.setText(quoteStr);
         quoteLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         quotePanel.add(quoteLabel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
 
-        label9.setText("Package ID");
+        label9.setText("Package ID: ");
         quotePanel.add(label9, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 5), 0, 0));
 
-        packageIDLabel.setText("123");
+        packageIDLabel.setText(ticket.getPackageID());
         packageIDLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         quotePanel.add(packageIDLabel, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -288,8 +295,13 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
         // Combo Box
         courierCMB = new JComboBox(c.getCouriers().values().toArray());
-        courierCMB.addItem("TBD");
-        courierCMB.setSelectedItem("TBD");
+        courierCMB.addItem(tbdCourier);
+        courierCMB.addActionListener((e) -> updateTicket());
+        if (ticket.getCourier() == null){
+            courierCMB.setSelectedItem(tbdCourier);
+        } else {
+            courierCMB.setSelectedItem(ticket.getCourier());
+        }
         courierPanel.add(courierCMB, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
@@ -336,6 +348,9 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
         // Update pickup customer
         this.ticket.setPickupCustomer((Customer) this.pickupCMB.getSelectedItem());
+
+        // Update Drop Off Customer
+        this.ticket.setDeliveryCustomer((Customer) this.deliveryCMB.getSelectedItem());
 
         this.buildPanel();
     }
