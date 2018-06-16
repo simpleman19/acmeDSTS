@@ -25,6 +25,9 @@ public class AcmeUI extends JFrame {
     }
 
     private void buildMenu() {
+
+        boolean admin = company.getCurrentUser().isAdmin();
+
         JMenuBar menuBar = new JMenuBar();
 
         JMenu ticketMenu = new JMenu("Tickets");
