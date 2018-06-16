@@ -1,7 +1,5 @@
 package acme.ui;
-
 import acme.pd.Company;
-
 import javax.swing.JPanel;
 
 public class AcmeBaseJPanel extends JPanel {

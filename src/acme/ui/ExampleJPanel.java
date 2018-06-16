@@ -1,5 +1,4 @@
 package acme.ui;
-
 import acme.pd.User;
 
 import javax.swing.*;

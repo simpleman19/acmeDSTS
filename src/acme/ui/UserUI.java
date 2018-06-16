@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class UserUI extends JFrame {
+public class UserUI extends AcmeBaseJPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel panel;
@@ -26,25 +26,17 @@ public class UserUI extends JFrame {
 
 	public UserUI() {
 
-		super("Acme Ticketing System");
-
-		buildForm();
-
-		buildButtonPanel();
-
-		setVisible(true);
-		setSize(500, 400);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		buildForm();
-
-		buildButtonPanel();
+		super();
+	}
+	
+	public void buildPanel (){
+	       buildForm();
+	       buildButtonPanel();
 	}
 
 	public void buildForm() {
 		panel = new JPanel();
-		getContentPane().add(panel);
+		this.add(panel);
 
 		panelForm = new JPanel(new GridBagLayout());
 		panel.add(panelForm);
@@ -96,7 +88,7 @@ public class UserUI extends JFrame {
 
 	}
 
-	private class LoginButtonListner implements ActionListener {
+	public class LoginButtonListner implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

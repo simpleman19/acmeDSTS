@@ -15,7 +15,8 @@ import javax.swing.JTextField;
 
 
 import acme.pd.Company;
-public class CompanyUI extends JFrame {
+import acme.pd.User;
+public class CompanyUI extends AcmeBaseJPanel {
 ////////////GUI/////////////////
 private static final long serialVersionUID = 1L;
 private JPanel panel;
@@ -38,17 +39,9 @@ private Company comp;
 	public CompanyUI()
     {
 
-        super("Acme Ticketing System");
+        super();
 
-        buildForm();
-
-        buildButtonPanel();
-
-        setVisible(true);
-        setSize(550, 550);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+     
 //        // TODO initialize company
 //        File file = new File("null");
 //        this.map = new Map(file);
@@ -59,14 +52,17 @@ private Company comp;
 //        currentUser = new User();
     }
 	
+	//Create panel
+	public void buildPanel (){
+	       buildForm();
+	       buildButtonPanel();
+	}
 	
     public void buildForm () 
     {
-        panel = new JPanel();
-        getContentPane().add(panel);
-
+     
         panelForm = new JPanel(new GridBagLayout());
-        panel.add(panelForm);
+        this.add(panelForm);
 
         grid = new GridBagConstraints();
         grid.gridx = 0;
@@ -159,25 +155,15 @@ private Company comp;
         add(buttonPanel, BorderLayout.SOUTH);
 
         // Register the action listeners
-        ExitButtonListner exit = new ExitButtonListner();
-        exitButton.addActionListener(exit);
 
         SaveButtonListner save = new SaveButtonListner();
         saveButton.addActionListener(save);
 
     }
-
-    private class ExitButtonListner implements ActionListener
-    {
-      
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-
-            System.exit(0);
-
-        }
-
+    
+    public static void main(String [] args) {
+        AcmeUI acme = new AcmeUI();
+        acme.setPanel(new CompanyUI());
     }
 
     private class SaveButtonListner implements ActionListener
@@ -192,7 +178,7 @@ private Company comp;
 //            System.out.println(field1.getText());
 //            Integer.parseInt(field2.getText());
             
-            
+              getAcmeUI().ticketList();
         }
     }
 }
