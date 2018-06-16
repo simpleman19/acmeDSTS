@@ -190,3 +190,25 @@ local.properties
 # Annotation Processing
 .apt_generated
 
+# JFormDesigner
+*.jfd
+
+#ignore DS_store
+.DS_store
+
+### Gradle ###
+.gradle
+**/build/
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+## PostgreSQL
+db/

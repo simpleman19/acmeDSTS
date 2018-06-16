@@ -10,4 +10,8 @@ public class Courier extends Person {
     public void setCourierNumber(int courierNumber) {
         this.courierNumber = courierNumber;
     }
+
+    public String toString() {
+        return this.getName();
+    }
 }

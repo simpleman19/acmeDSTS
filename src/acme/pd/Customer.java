@@ -68,5 +68,7 @@ public class Customer {
 
     private MapIntersection intersection;
 
-
+    public String toString() {
+        return this.name;
+    }
 }

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -37,6 +38,19 @@ public class Ticket {
         this.setCompany(company);
         this.generatePackageId();
         this.setClerk(this.getCompany().getCurrentUser());
+
+        this.setCompany(company);
+        HashMap<UUID, Customer> customers = new HashMap<>(company.getCustomer());
+        // Set the pickup customer to a customer (Useful for UI)
+        Customer tmpCust = (Customer) customers.values().toArray()[0];
+        this.setPickupCustomer(tmpCust);
+        // Remove customer from map to be sure that pickup and destination are different
+        customers.remove(tmpCust.getId());
+        // Set destination customer to a customer (Useful for UI)
+        this.setDeliveryCustomer((Customer) customers.values().toArray()[0]);
+        this.setDeliveryTime(LocalDateTime.now().plusHours(6));
+        updatePath();
+
     }
 
     public ArrayList<String> getDeliveryInstructions() {
@@ -51,16 +65,50 @@ public class Ticket {
         return id;
     }
 
+    private void updatePath() {
+        // Only update if pickup and delivery are set
+        if (this.getPickupCustomer() != null
+                && this.getDeliveryCustomer() != null
+                && this.getDeliveryTime() != null) {
+            this.path = company.getMap().getPath(
+                    this.getPickupCustomerLocation(),
+                    this.getDeliveryCustomerLocation()
+            );
+            calcEstimatedTimes();
+        } else {
+            this.path = null;
+        }
+    }
+
     public BigDecimal calcQuote() {
         // TODO calc quote
         return new BigDecimal(new Random().nextDouble());
     }
 
     private void calcEstimatedTimes() {
-        // TODO estimate times
-        this.estimatedDepartureTime = LocalDateTime.now().plusHours(2);
-        this.estimatedPickupTime = this.estimatedDepartureTime.plusMinutes(16);
-        this.estimatedDeliveryTime = this.pickupTime.plusMinutes(27);
+      // TODO estimate times - needs refining
+        // Altered this slightly
+      
+      double mphCouriers = company.getCourierMilesPerHour();
+      double milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
+      double timeToTravel = milesToTravel / mphCouriers;
+      LocalDateTime resultOfCouriersAndMiles = deliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
+      resultOfCouriersAndMiles.minusMinutes(5);
+      
+      if(resultOfCouriersAndMiles.isAfter(LocalDateTime.now()))
+      {
+          this.estimatedDepartureTime = resultOfCouriersAndMiles;
+      } else {
+          this.estimatedDepartureTime = LocalDateTime.now();
+      }
+      
+      milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
+      timeToTravel = milesToTravel / mphCouriers;
+      this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
+      
+      milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenPickupandDropoff();
+      timeToTravel = milesToTravel / mphCouriers;
+      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
     }
 
     public Company getCompany() {
@@ -77,6 +125,7 @@ public class Ticket {
 
     public void setDeliveryCustomer(Customer deliveryCustomer) {
         this.deliveryCustomer = deliveryCustomer;
+        this.updatePath();
     }
 
     public Customer getPickupCustomer() {
@@ -85,6 +134,7 @@ public class Ticket {
 
     public void setPickupCustomer(Customer pickupCustomer) {
         this.pickupCustomer = pickupCustomer;
+        this.updatePath();
     }
 
     public LocalDateTime getCreationDateTime() {
@@ -167,19 +217,12 @@ public class Ticket {
     }
 
     public void setDeliveryTime(LocalDateTime deliveryTime) {
-        if (new Random().nextInt() % 3 == 0)
-            this.bonus = company.getBonus();
-        else
-            this.bonus = new BigDecimal(0);
         this.deliveryTime = deliveryTime;
+        this.updatePath();
     }
 
     public LocalDateTime getEstimatedDeliveryTime() {
         return estimatedDeliveryTime;
-    }
-
-    public void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
-        this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 
     public BigDecimal getBonus() {
@@ -202,9 +245,14 @@ public class Ticket {
         this.note = note;
     }
 
-    public static void main(String [] args) {
-        for (int i = 0; i < 100; i++) {
-            Ticket ticket = new Ticket(new Company());
-        }
+    
+    public MapIntersection getDeliveryCustomerLocation()
+    {
+      return this.deliveryCustomer.getIntersection();
+    }
+    
+    public MapIntersection getPickupCustomerLocation()
+    {
+      return this.pickupCustomer.getIntersection();
     }
 }
