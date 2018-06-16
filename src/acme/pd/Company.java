@@ -4,11 +4,15 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -38,12 +42,12 @@ public class Company implements PersistableEntity {
     private String name = "ACME";
 	@Transient
     private Map map;
-	@Transient
-    private HashMap<UUID, Courier> couriers;
-	@Transient
-    private HashMap<UUID, Ticket> tickets;
-	@Transient
-    private HashMap<UUID, Customer> customer;
+	@OneToMany(fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Courier> couriers;	
+	@OneToMany(fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Ticket> tickets;
+	@OneToMany(fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Customer> customers;
     @Transient
     private User currentUser;
     @Column(name = "BONUS")
@@ -69,7 +73,7 @@ public class Company implements PersistableEntity {
 
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
-        customer = new HashMap<UUID, Customer>();
+        customers = new HashMap<UUID, Customer>();
         currentUser = new User();
     }
     
@@ -104,35 +108,35 @@ public class Company implements PersistableEntity {
         this.map = map;
     }
 
-    public HashMap<UUID, Courier> getCouriers()
+    public java.util.Map<UUID, Courier> getCouriers()
     {
         return couriers;
     }
-
-    public void setCouriers(HashMap<UUID, Courier> couriers)
+    
+    public void addCourier(Courier courier)
     {
-        this.couriers = couriers;
-    }
+		this.couriers.put(courier.getId(), courier);		
+	}
 
-    public HashMap<UUID, Ticket> getTickets()
+    public java.util.Map<UUID, Ticket> getTickets()
     {
         return tickets;
     }
 
-    public void setTickets(HashMap<UUID, Ticket> tickets)
+    public void addTicket(Ticket ticket)
     {
-        this.tickets = tickets;
+		tickets.put(ticket.getId(), ticket);		
+	}
+
+    public java.util.Map<UUID, Customer> getCustomers()
+    {
+        return customers;
     }
 
-    public HashMap<UUID, Customer> getCustomer()
+    public void addCustomer(Customer customer)
     {
-        return customer;
-    }
-
-    public void setCustomer(HashMap<UUID, Customer> customer)
-    {
-        this.customer = customer;
-    }
+		customers.put(customer.getId(), customer);		
+	}
 
     public User getCurrentUser()
     {
@@ -214,6 +218,4 @@ public class Company implements PersistableEntity {
     	
     	return acme; 
     }
-   
-    
 }

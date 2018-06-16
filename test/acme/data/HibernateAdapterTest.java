@@ -142,4 +142,39 @@ public class HibernateAdapterTest {
 		user.delete();
 		assertNull(PersistableEntity.get(User.class, user.getId()));
 	}
+	
+	@Test
+	public void testTicketAssociation() {
+		Company company = new Company();
+        company.setName("ACME");
+        company.create();
+        Customer customer = new Customer();
+        customer.setName("Bickers & Bickers");
+        customer.create();
+
+        Ticket ticket = new Ticket();
+        ticket.setDeliveryCustomer(customer);
+        ticket.create();
+        ticket.setCompany(company);
+        company = company.update();
+
+        assertEquals(company.getId(), ticket.getCompany().getId());
+        assertEquals(customer.getId(), ticket.getDeliveryCustomer().getId());
+	}
+	
+	@Test
+	public void testBidirectionalAssociation() {
+		Company company = new Company();
+        company.setName("ACME");
+        company.create();
+        assertEquals(0, company.getCouriers().size());
+        
+        Courier courier = new Courier();
+        courier.create();
+        company.addCourier(courier);
+        company = company.update();
+        
+        assertEquals(1, company.getCouriers().size());
+        assertNotNull(company.getCouriers().get(courier.getId()));
+	}
 }

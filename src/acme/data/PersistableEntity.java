@@ -2,7 +2,7 @@ package acme.data;
 import acme.data.HibernateAdapter;
 public interface PersistableEntity {
 	
-	public <K> K getId();
+	public Object getId();
 	
 	default public void create() {
 		HibernateAdapter.create(this);
