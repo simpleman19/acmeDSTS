@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class Map {
     private MapIntersection[][] map;
@@ -47,7 +46,7 @@ public class Map {
         exportMap(file);
         // TODO export map
     }
-    
+
     public void importMap(File file) {
         // this gives you a 2-dimensional array of strings
         List<List<String>> lines = new ArrayList<>();
@@ -657,7 +656,6 @@ public class Map {
         Path testPath = company.getMap().getPath(tempPickUp,tempDropOff );
 
         ticket.setPath(testPath);
-        ticket.setCompany(company);
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
@@ -717,7 +715,6 @@ public class Map {
         testPath = company.getMap().getPath(tempPickUp,tempDropOff );
 
         ticket.setPath(testPath);
-        ticket.setCompany(company);
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
@@ -776,7 +773,6 @@ public class Map {
         testPath = company.getMap().getPath(tempPickUp,tempDropOff );
 
         ticket.setPath(testPath);
-        ticket.setCompany(company);
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());

@@ -86,39 +86,31 @@ public class SeedDatabase {
         // TODO path generation for tickets??
         // Open ticket
         Ticket ticket = new Ticket(company);
-        ticket.setCompany(company);
         ticket.setDeliveryCustomer(customer);
         ticket.setPickupCustomer(customer2);
         ticket.setDeliveryTime(LocalDateTime.now().plusHours(4).plusMinutes(45));
-        ticket.setCreationDateTime(LocalDateTime.now());
         ticket.setBillToSender(false);
         ticket.setNote("This is a note");
-        ticket.setClerk(user);
         ticket.create();
 
         // Open ticket with courier
+
         Ticket ticket2 = new Ticket(company);
-        ticket.setCompany(company);
         ticket.setDeliveryCustomer(customer2);
         ticket.setPickupCustomer(customer);
         ticket.setDeliveryTime(LocalDateTime.now().plusDays(2));
-        ticket.setCreationDateTime(LocalDateTime.now());
         ticket.setBillToSender(true);
         ticket.setNote("This is a note");
-        ticket.setClerk(user);
         ticket.setCourier(courier);
         ticket2.create();
 
         // Closed ticket
         Ticket ticket3 = new Ticket(company);
-        ticket.setCompany(company);
         ticket.setDeliveryCustomer(customer2);
         ticket.setPickupCustomer(customer);
         ticket.setDeliveryTime(LocalDateTime.now().minusHours(2));
-        ticket.setCreationDateTime(LocalDateTime.now());
         ticket.setBillToSender(true);
         ticket.setNote("This is a note");
-        ticket.setClerk(user);
         ticket.setCourier(courier);
         ticket.setDeliveryTime(LocalDateTime.now().minusHours(2));
         ticket.setPickupTime(LocalDateTime.now().minusHours(3));

@@ -9,7 +9,9 @@ public class Road {
 
     public boolean canTravelDirection(Direction dir) {
         // TODO can travel direction
-        return new Random().nextInt() % 2 == 0;
+        return this.getDirection() == dir
+                || (this.isBidirectional()
+                && (dir.ordinal() % 2 == this.getDirection().ordinal() % 2));
     }
 
     public Direction getDirection() {
