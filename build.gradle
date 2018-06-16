@@ -56,6 +56,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
 	compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
 	
+	// https://mvnrepository.com/artifact/com.github.lgooddatepicker/LGoodDatePicker
+    compile group: 'com.github.lgooddatepicker', name: 'LGoodDatePicker', version: '10.3.1' 
+	
 	
 }
 
