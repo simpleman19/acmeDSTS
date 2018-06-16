@@ -3,12 +3,17 @@ package acme.ui;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.components.DateTimePicker;
+
 import acme.pd.*;
+import com.github.lgooddatepicker.components.TimePickerSettings;
 
 public class TicketCreationJPanel extends AcmeBaseJPanel {
 
@@ -39,14 +44,13 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         label3 = new JLabel();
         newCustomer = new JButton();
         label4 = new JLabel();
-        REPLACEME = new JTextField();
+        pickupTimeLabel = new JLabel();
         billPickUp = new JRadioButton();
         dropOffPanel = new JPanel();
         label5 = new JLabel();
         label6 = new JLabel();
         newCustomer2 = new JButton();
         label7 = new JLabel();
-        REPLACEME2 = new JTextField();
         billDropOff = new JRadioButton();
         quotePanel = new JPanel();
         label8 = new JLabel();
@@ -93,6 +97,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         //---- cancelButton ----
         cancelButton.setText("Cancel");
         cancelButton.setPreferredSize(new Dimension(100, 36));
+        cancelButton.addActionListener((e) -> cancelButton());
         buttonsPanel.add(cancelButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 5), 0, 0));
@@ -100,6 +105,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         //---- saveButton ----
         saveButton.setText("Save");
         saveButton.setPreferredSize(new Dimension(100, 36));
+        saveButton.addActionListener((e) -> saveButton());
         buttonsPanel.add(saveButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 0), 0, 0));
@@ -147,11 +153,15 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
 
-        label4.setText("Time");
+        label4.setText("Pickup Time");
         pickupPanel.add(label4, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 5), 0, 0));
-        pickupPanel.add(REPLACEME, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+
+        LocalDateTime pickupTime = this.ticket.getEstimatedPickupTime();
+        // This is using a date formatter in company to stay consistant
+        pickupTimeLabel.setText(c.acmeDF.format(pickupTime));
+        pickupPanel.add(pickupTimeLabel, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
 
@@ -212,7 +222,16 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         dropOffPanel.add(label7, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 5), 0, 0));
-        dropOffPanel.add(REPLACEME2, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+
+        // Drop off date picker
+        DatePickerSettings dateSettings = new DatePickerSettings();
+        TimePickerSettings timeSettings = new TimePickerSettings();
+        dateSettings.setAllowEmptyDates(false);
+        timeSettings.setAllowEmptyTimes(false);
+        dropOffPicker = new DateTimePicker(dateSettings, timeSettings);
+        dropOffPicker.setDateTimePermissive(this.ticket.getDeliveryTime());
+        dropOffPicker.addDateTimeChangeListener((e) -> updateTicket());
+        dropOffPanel.add(dropOffPicker, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
 
@@ -281,9 +300,8 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 5), 0, 0));
 
-        label14.setText("4/22/2018 11:54am");
-        label14.setMinimumSize(new Dimension(320, 22));
-        label14.setMaximumSize(new Dimension(220, 22));
+        LocalDateTime departureTime = this.ticket.getEstimatedDepartureTime();
+        label14.setText(c.acmeDF.format(departureTime));
         courierPanel.add(label14, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -296,12 +314,12 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Combo Box
         courierCMB = new JComboBox(c.getCouriers().values().toArray());
         courierCMB.addItem(tbdCourier);
-        //courierCMB.addActionListener((e) -> updateTicket());
         if (ticket.getCourier() == null){
             courierCMB.setSelectedItem(tbdCourier);
         } else {
             courierCMB.setSelectedItem(ticket.getCourier());
         }
+        courierCMB.addActionListener((e) -> updateTicket());
         courierPanel.add(courierCMB, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
@@ -324,7 +342,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Scroll Pane
         {
             //---- notesTextArea ----
-            notesTextArea.setText("This is an area for notes and notes and notes");
+            notesTextArea.setText("This is an area for notes");
             notesTextArea.setBackground(Color.white);
             notesTextArea.setFont(notesTextArea.getFont().deriveFont(notesTextArea.getFont().getSize() - 2f));
             notesTextArea.setMinimumSize(new Dimension(171, 120));
@@ -342,6 +360,17 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
     }
 
+    private void saveButton() {
+        this.updateTicket();
+        // TODO null pointer somewhere??
+        //this.ticket.create();
+        this.getAcmeUI().courierList();
+    }
+
+    private void cancelButton() {
+        this.getAcmeUI().courierList();
+    }
+
     private void updateTicket() {
         // Update bill to
         this.ticket.setBillToSender(this.billPickUp.isSelected());
@@ -351,6 +380,14 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
         // Update Drop Off Customer
         this.ticket.setDeliveryCustomer((Customer) this.deliveryCMB.getSelectedItem());
+
+        // Only set courier if courier has been set
+        if (courierCMB.getSelectedItem() != tbdCourier) {
+            this.ticket.setCourier((Courier) courierCMB.getSelectedItem());
+        }
+
+        // Drop off date time
+        this.ticket.setDeliveryTime(dropOffPicker.getDateTimeStrict());
 
         this.buildPanel();
     }
@@ -362,7 +399,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
     private JComboBox pickupCMB;
     private JButton newCustomer;
     private JLabel label4;
-    private JTextField REPLACEME;
+    private JLabel pickupTimeLabel;
     private JRadioButton billPickUp;
     private JPanel dropOffPanel;
     private JLabel label5;
@@ -370,7 +407,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
     private JComboBox deliveryCMB;
     private JButton newCustomer2;
     private JLabel label7;
-    private JTextField REPLACEME2;
+    private DateTimePicker dropOffPicker;
     private JRadioButton billDropOff;
     private JPanel quotePanel;
     private JLabel label8;

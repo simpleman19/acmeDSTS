@@ -2,6 +2,7 @@ package acme.pd;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
@@ -52,6 +53,8 @@ public class Company implements PersistableEntity {
     private double courierMilesPerHour = 5.8;
     @Transient
     private String mapFile = "map/map.csv";
+
+    public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
 
     public Company() {
         // TODO initialize company

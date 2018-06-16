@@ -31,10 +31,6 @@ public class Ticket implements PersistableEntity {
     @Transient
     private Company company;
     @Transient
-    private MapIntersection deliveryCustomerLocation;
-    @Transient
-    private MapIntersection pickupCustomerLocation;
-    @Transient
     private Customer deliveryCustomer;
     @Transient
     private Customer pickupCustomer;
