@@ -20,12 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import acme.pd.Company;
+import acme.pd.Customer;
 
 public class ImportsPanel extends AcmeBaseJPanel {
 
     private static final long serialVersionUID = 1L;
     /* Declarations */
     Company company;
+    Customer cus;
     JLabel mainLbl = new JLabel("Import");
     static final String COURIER = "Courier", CUSTOMER = "Customer";
     JComboBox<String> typeSel = new JComboBox<String>();
@@ -109,17 +111,21 @@ public class ImportsPanel extends AcmeBaseJPanel {
                 String[] values = line.split(",");
                 // this adds the currently parsed line to the 2-dimensional string array
                 lines.add(Arrays.asList(values));
-                System.out.println(lines);
+                //System.out.println(lines);
             }
             inputStream.close();
         } catch (FileNotFoundException e) {
             // TODO add a popup for when there is no file
             e.printStackTrace();
         }
+        
+        for (List<String> object: lines) {
+            System.out.println(object);
+        }
     }
 
     private void parseCustomer() {
-
+        
     }
 
     private void initLayout() {
