@@ -1,26 +1,13 @@
 package acme.ui;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerDateModel;
-
-import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DateTimePicker;
-import com.github.lgooddatepicker.components.DatePickerSettings;
-import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
-import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
-
 import acme.pd.Courier;
 import acme.pd.Ticket;
 import acme.pd.User;
@@ -42,13 +29,16 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     this.removeAll();
     this.setLayout(null);
     
+    //Keeping with the color scheme
     Color lightBlue = new Color(93, 184, 202);
   
+    //title label
     JLabel lblCompleteTicket = new JLabel("Complete Ticket");
     lblCompleteTicket.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
     lblCompleteTicket.setBounds(20, 20, 200, 27);
     add(lblCompleteTicket);
     
+    //information section-------------------------------------------
     JLabel lblPackageId = new JLabel("Package ID");
     lblPackageId.setBounds(30, 59, 83, 16);
     add(lblPackageId);
@@ -64,7 +54,10 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     JLabel lblActCourier = new JLabel(this.ticketToComplete.getCourier().getName() + "");
     lblActCourier.setBounds(125, 87, 150, 16);
     add(lblActCourier);
+    //--------------------------------------------------------------
     
+    
+    //times section-------------------------------------------------
     JLabel lblActualDepartureTime = new JLabel("Actual Departure time");
     lblActualDepartureTime.setBounds(30, 155, 145, 16);
     add(lblActualDepartureTime);
@@ -88,7 +81,9 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     this.dateTimePickerDelivery = new DateTimePicker();
     this.dateTimePickerDelivery.setBounds(200, 255, 400, 30);
     add(this.dateTimePickerDelivery);
+    //-------------------------------------------------------------
     
+    //cancel and save buttons 
     JButton btnCancel = new JButton("Cancel");
     btnCancel.setBounds(364, 305, 117, 29);
     btnCancel.setBackground(lightBlue);
@@ -115,6 +110,8 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     this.repaint();
   }
   
+  //this method checks to make sure the times make sense in the basic sense of things and then 
+  //completes the ticket
   public void clickedSave()
   {
     if(this.dateTimePickerDeparture.getDateTimeStrict() != null && this.dateTimePickerPickup.getDateTimeStrict() != null
@@ -127,6 +124,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
         this.ticketToComplete.setPickupTime(this.dateTimePickerPickup.getDateTimeStrict());
         this.ticketToComplete.setDeliveryTime(this.dateTimePickerDelivery.getDateTimeStrict());
         
+        //TO DO
         //go to TicketList Page
       }
       else
@@ -143,8 +141,10 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     }
   }
   
+  //This is just to go back
   public void clickedCancel()
   {
+    //TO DO
     //go to TicketList Page
   }
   
