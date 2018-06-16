@@ -21,7 +21,8 @@ public class AcmeUI extends JFrame {
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
 
-        loginScreen();
+        reports();
+        //loginScreen();
     }
 
     private void buildMenu() {
@@ -127,10 +128,10 @@ public class AcmeUI extends JFrame {
         this.setPanel(exampleJPanel);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Generate Reports Panel
     public void reports() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ReportsPanel rp = new ReportsPanel();
+        this.setPanel(rp);
     }
 
     public Company getCompany() {
