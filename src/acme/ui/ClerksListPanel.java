@@ -121,7 +121,6 @@ public class ClerksListPanel extends AcmeBaseJPanel {
         final int ACT_COL = 2;
         final int EDIT_COL = 3;
         final int ID_COL = 4;
-        // Icon water = new ImageIcon("resources/pen.jpg");
         ImageIcon pen = new ImageIcon(
                 new ImageIcon("resources/pen.jpg").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         listTbl.setAutoCreateRowSorter(true);
