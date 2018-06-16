@@ -26,7 +26,6 @@ import acme.pd.MapIntersection;
 import acme.pd.Road;
 
 public class CustomerListUI extends AcmeBaseJPanel {
-  JTable table;
   
   public CustomerListUI() {
     super();
@@ -36,6 +35,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
   
     setLayout(null);
     
+    //title label
     JLabel lblCustomers = new JLabel("Customers");
     lblCustomers.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
     lblCustomers.setBounds(20, 20, 200, 27);
@@ -45,8 +45,9 @@ public class CustomerListUI extends AcmeBaseJPanel {
     Customer[] testData = getTestData();
     
 
-    JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-    JTable jTable1 = new javax.swing.JTable();
+    //scroll and table. I made this in netbeans, so it looks a little different
+    JScrollPane jScrollPane1 = new JScrollPane();
+    JTable jTable1 = new JTable();
 
     //set up table
     jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -312,7 +313,6 @@ private class ButtonEditor extends DefaultCellEditor
     };
     
     return data;
-    
     
   }
   
