@@ -296,7 +296,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Combo Box
         courierCMB = new JComboBox(c.getCouriers().values().toArray());
         courierCMB.addItem(tbdCourier);
-        courierCMB.addActionListener((e) -> updateTicket());
+        //courierCMB.addActionListener((e) -> updateTicket());
         if (ticket.getCourier() == null){
             courierCMB.setSelectedItem(tbdCourier);
         } else {
