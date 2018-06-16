@@ -21,6 +21,7 @@ import acme.pd.User;
 
 public class ClerksUpdatePanel extends AcmeBaseJPanel {
     private static final long serialVersionUID = 1L;
+    /* Declarations */
     private Company company;
     private User user;
     private JLabel mainLbl = new JLabel("Clerk");
@@ -29,12 +30,14 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
     private JTextField nameFld = new JTextField();
     private JLabel uNameLbl = new JLabel("Username");
     private JTextField uNameFld = new JTextField();
+    /* Reset Password segment */
     private JPanel resetPanel = new JPanel();
     private JButton rstBtn = new JButton("Reset Password");
     private JLabel newPassLbl = new JLabel("New Password");
     private JLabel confPassLbl = new JLabel("Confirm Password");
-    private JTextField newPass = new JTextField();
-    private JTextField confPass = new JTextField();
+    private JTextField newPassFld = new JTextField();
+    private JTextField confPassFld = new JTextField();
+    /* User is active */
     private JCheckBox activeChk = new JCheckBox("Active");
     private JButton cnclBtn = new JButton("Cancel");
     private JButton saveBtn = new JButton("Save");
@@ -43,15 +46,17 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
     /* Constructor */
     public ClerksUpdatePanel(User user) {
 
+        // If the parameter is null, assume it is a new user
         if (user == null) {
             user = new User();
             subLbl.setText(NEW_USER);
         } else {
-            subLbl.setText(" - (Update) " + user.getName());
+            subLbl.setText(" - (Update) " + user.getUsername());
         }
         this.user = user;
     }
 
+    @Override
     public void buildPanel() {
         company = this.getCompany();
         initLayout();
@@ -59,6 +64,7 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
         initListeners();
     }
 
+    /* All listeners for the page */
     private void initListeners() {
 
         final String CANCEL = "c", SAVE = "s", RESET = "r", ACTIVE = "a";
@@ -82,12 +88,16 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
                     break;
                 case RESET:
                     // pop-up for the password reset
-                    disaplyPassword();
+                    displayPassword(!newPassLbl.isVisible());
+                    if (newPassLbl.isVisible()) {
+                        rstBtn.setText("Hide Password");
+                    } else {
+                        rstBtn.setText("Show Password");
+                    }
                     break;
                 case ACTIVE:
                     // set the user active or inactive based on the selection
                     user.setActive(activeChk.isSelected());
-                    System.out.println("User set to " + user.isActive());
                 default:
                     break;
                 }
@@ -102,6 +112,7 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
 
     }
 
+    /* Setup the panel component defaults */
     private void initDefaults() {
 
         if (subLbl.getText().equals(NEW_USER)) {
@@ -109,44 +120,46 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
             uNameFld.setText("username");
             activeChk.setSelected(true);
             newPassLbl.setVisible(true);
-            newPass.setVisible(true);
+            newPassFld.setVisible(true);
             confPassLbl.setVisible(true);
-            confPass.setVisible(true);
-            rstBtn.setVisible(false);
+            confPassFld.setVisible(true);
+            rstBtn.setText("Hide Password");
         } else {
             nameFld.setText(user.getName());
             uNameFld.setText(user.getUsername());
             activeChk.setSelected(user.isActive());
             newPassLbl.setVisible(false);
-            newPass.setText(user.getPassword());
-            newPass.setVisible(false);
+            newPassFld.setText(user.getPassword());
+            newPassFld.setVisible(false);
             confPassLbl.setVisible(false);
-            confPass.setText(user.getPassword());
-            confPass.setVisible(false);
+            confPassFld.setText(user.getPassword());
+            confPassFld.setVisible(false);
             rstBtn.setVisible(true);
         }
 
     }
 
     private void saveInfo() {
-        // TODO save info
         // check for userName exists
         boolean saveUser = true;
         boolean overwrite = false;
         for (Map.Entry<UUID, User> users : company.getUsers().entrySet()) {
             if (users.getValue().getUsername().equals(uNameFld.getText())) {
+                // The user is in the system, do we want to update?
                 overwrite = true;
                 String infoMessage = "Are you sure you want to update \"" + uNameFld.getText() + "\" ?";
                 if (JOptionPane.showConfirmDialog(null, infoMessage, "Wait",
                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    // switch to the user we found so we can update it
+                    // switch to the user we found so we can update that one
                     user = users.getValue();
                 } else {
+                    // We decided no to save overwrite the user
                     saveUser = false;
                 }
             }
         }
 
+        // If we are supposed to save the user, do some simple checks
         if (saveUser) {
             // check for fields
             if (nameFld.getText().isEmpty() || uNameFld.getText().isEmpty()) {
@@ -157,38 +170,38 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
                 user.setName(nameFld.getText());
                 user.setUsername(uNameFld.getText());
                 user.setActive(activeChk.isSelected());
-                // set password for new users
-                boolean good = checkPassword();
-                if (good) {
-                    user.setPassword(newPass.getText());
+                // If the password fields are good, update the user's password
+                if (checkPassword()) {
+                    user.setPassword(newPassFld.getText());
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid Password");
                     return;
                 }
+                /* If this was a new user, we need to add it to the users map */
                 if (subLbl.getText().equals(NEW_USER) && !overwrite) {
                     company.getUsers().put(UUID.randomUUID(), user);
                 }
-
-                System.out.println(user.getPassword());
+                // return to the Clerks list page
                 getAcmeUI().userList();
             }
         }
 
     }
 
-    private void disaplyPassword() {
-
-        newPassLbl.setVisible(true);
-        newPass.setVisible(true);
-        confPassLbl.setVisible(true);
-        confPass.setVisible(true);
-
+    // This will display all of the password fields
+    private void displayPassword(boolean on) {
+        newPassLbl.setVisible(on);
+        newPassFld.setVisible(on);
+        confPassLbl.setVisible(on);
+        confPassFld.setVisible(on);
     }
 
+    /* Returns true if the passwords match and fields aren't empty */
     private boolean checkPassword() {
-        return (newPass.getText().equals(confPass.getText()) && !newPass.getText().isEmpty());
+        return (newPassFld.getText().equals(confPassFld.getText()) && !newPassFld.getText().isEmpty());
     }
 
+    /* All of the layout for the panel */
     private void initLayout() {
         mainLbl.setFont(new Font(mainLbl.getFont().toString(), Font.BOLD, 16));
         subLbl.setFont(new Font(subLbl.getFont().toString(), Font.PLAIN, 16));
@@ -265,7 +278,7 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
         gbc_newPass.insets = new Insets(0, 0, 5, 5);
         gbc_newPass.gridx = 0;
         gbc_newPass.gridy = 1;
-        resetPanel.add(newPass, gbc_newPass);
+        resetPanel.add(newPassFld, gbc_newPass);
         GridBagConstraints gbc_newPassLbl = new GridBagConstraints();
         gbc_newPassLbl.anchor = GridBagConstraints.WEST;
         gbc_newPassLbl.insets = new Insets(0, 0, 5, 0);
@@ -277,7 +290,7 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
         gbc_confPass.insets = new Insets(0, 0, 0, 5);
         gbc_confPass.gridx = 0;
         gbc_confPass.gridy = 2;
-        resetPanel.add(confPass, gbc_confPass);
+        resetPanel.add(confPassFld, gbc_confPass);
         GridBagConstraints gbc_confPassLbl = new GridBagConstraints();
         gbc_confPassLbl.anchor = GridBagConstraints.WEST;
         gbc_confPassLbl.gridx = 1;

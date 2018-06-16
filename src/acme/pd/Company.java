@@ -83,12 +83,6 @@ public class Company implements PersistableEntity {
             u1.setPassword("pass"+i);
             users.put(UUID.randomUUID(), u1);
         }
-        User current = new User();
-        current.setActive(true);
-        current.setName("Guy");
-        current.setUsername("thatGuy");
-        current.setActive(true);
-        this.setCurrentUser(current);
     }
 
     public UUID getId() {
