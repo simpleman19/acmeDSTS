@@ -21,7 +21,10 @@ public class AcmeUI extends JFrame {
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
 
-        reports();
+        //TODO implement shutdownlistener and remove this
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        userList();
+        //reports();
         //loginScreen();
     }
 
@@ -92,8 +95,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void userList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksListPanel cp = new ClerksListPanel();
+        this.setPanel(cp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
