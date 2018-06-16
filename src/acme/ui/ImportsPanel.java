@@ -23,11 +23,12 @@ import acme.pd.Company;
 
 public class ImportsPanel extends AcmeBaseJPanel {
 
+    private static final long serialVersionUID = 1L;
     /* Declarations */
     Company company;
     JLabel mainLbl = new JLabel("Import");
     static final String COURIER = "Courier", CUSTOMER = "Customer";
-    JComboBox typeSel = new JComboBox();
+    JComboBox<String> typeSel = new JComboBox<String>();
     JFileChooser chooser = new JFileChooser();
     JButton selectBtn = new JButton("Select File");
     JButton saveBtn = new JButton("Save");
@@ -58,7 +59,7 @@ public class ImportsPanel extends AcmeBaseJPanel {
                 switch (e.getActionCommand()) {
                 case SAVE:
                     // TODO save list to HashMap
-                    // check for exisiting
+                    // check for existing
 
                     // save to hashmap
 
@@ -72,8 +73,7 @@ public class ImportsPanel extends AcmeBaseJPanel {
                         importFile = chooser.getSelectedFile();
                         if (typeSel.getSelectedItem().toString().equals(COURIER)) {
                             parseCourier();
-                        }
-                        else {
+                        } else {
                             parseCustomer();
                         }
                         saveBtn.setVisible(true);
