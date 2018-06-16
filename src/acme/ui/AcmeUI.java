@@ -21,8 +21,6 @@ public class AcmeUI extends JFrame {
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
 
-        //TODO implement shutdownlistener and remove this
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         userList();
         //reports();
         //loginScreen();
