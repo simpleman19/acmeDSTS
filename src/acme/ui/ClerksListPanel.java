@@ -3,6 +3,7 @@ package acme.ui;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,8 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -108,7 +111,6 @@ public class ClerksListPanel extends AcmeBaseJPanel {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 getAcmeUI().userAddUpdate(null);
-                System.out.println("New User");
             }
         });
     }
@@ -119,7 +121,9 @@ public class ClerksListPanel extends AcmeBaseJPanel {
         final int ACT_COL = 2;
         final int EDIT_COL = 3;
         final int ID_COL = 4;
-
+        // Icon water = new ImageIcon("resources/pen.jpg");
+        ImageIcon pen = new ImageIcon(
+                new ImageIcon("resources/pen.jpg").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         listTbl.setAutoCreateRowSorter(true);
         listTbl.getTableHeader().setReorderingAllowed(false);
         listTbl.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -134,6 +138,7 @@ public class ClerksListPanel extends AcmeBaseJPanel {
         listTbl.setModel(model);
         listTbl.getColumnModel().getColumn(ACT_COL).setMaxWidth(65);
         listTbl.getColumnModel().getColumn(EDIT_COL).setMaxWidth(65);
+        listTbl.setRowHeight(35);
 
         /* Sort by active users, then by name */
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(listTbl.getModel());
@@ -176,7 +181,7 @@ public class ClerksListPanel extends AcmeBaseJPanel {
             row.add(users.getValue().getName());
             row.add(users.getValue().getUsername());
             row.add(users.getValue().isActive());
-            row.add("Edit");
+            row.add(pen);
             row.add(users.getValue().getId());
             model.addRow(row);
         }
