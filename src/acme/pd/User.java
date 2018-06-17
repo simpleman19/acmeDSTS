@@ -67,7 +67,7 @@ public class User extends Person implements PersistableEntity {
     	parameters.put("password", p);
     	try {
     		PersistableEntity.querySingle(User.class,
-       			 "select * from APP_USER where USERNAME = :username and PASWORD = :password",
+       			 "select u from APP_USER u where USERNAME = :username and PASSWORD = :password",
        			 parameters);
     		System.out.println("Login Authenticated. Access Granted.");
    		 	return true;

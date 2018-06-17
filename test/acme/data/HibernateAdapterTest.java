@@ -20,12 +20,12 @@ import acme.pd.User;
 
 public class HibernateAdapterTest {
 	@BeforeClass
-	public static void setUp() throws Exception {
+	public static void setUpBeforeClass() throws Exception {
 		HibernateAdapter.startUp();
 	}
 
 	@AfterClass
-	public static void tearDown() throws Exception {
+	public static void tearDownAfterClass() throws Exception {
 		HibernateAdapter.shutDown();
 	}
 
