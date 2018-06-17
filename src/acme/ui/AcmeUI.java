@@ -4,6 +4,7 @@ import acme.pd.*;
 
 import javax.swing.*;
 import java.awt.*;
+
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -126,8 +127,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void ticketComplete(Ticket ticket) {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CompleteATicketUI ticketCompleteUI = new CompleteATicketUI(ticket);
+        this.setPanel(ticketCompleteUI);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -156,7 +157,13 @@ public class AcmeUI extends JFrame {
         this.setPanel(exampleJPanel);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // List of clerks in the system that can be added to or updated
+    public void userList() {
+        ClerksListPanel cp = new ClerksListPanel();
+        this.setPanel(cp);
+    }
+
+      // Everyone will tie in their panel like this.  Replace my example with your code
     public void courierList() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
@@ -176,15 +183,17 @@ public class AcmeUI extends JFrame {
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
-    public void mapView() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
-    }
+    
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void companyEdit() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
+    }
+  
+    public void mapView() {
+        MapUI mapUI = new MapUI();
+        this.setPanel(mapUI);
     }
 
     // Generate Reports Panel
@@ -196,7 +205,6 @@ public class AcmeUI extends JFrame {
     public Company getCompany() {
         return company;
     }
-
     class ShutdownListener implements WindowListener {
         public void windowClosing(WindowEvent event) {
             setVisible(false); //you can't see me!
