@@ -3,10 +3,8 @@ package acme.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,14 +12,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableCellEditor;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -41,7 +40,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
   
   public void buildPanel() {
   
-    setLayout(null);
+    GroupLayout groupLayout = new GroupLayout(this);
     
     Color lightBlue = new Color(93, 184, 202);
     
@@ -92,7 +91,6 @@ public class CustomerListUI extends AcmeBaseJPanel {
     
     //needed for buttons in table
     TableColumn editCol = jTable1.getColumnModel().getColumn(4);
-    JButton editButton = new JButton("edit");
     editCol.setCellRenderer(new ButtonRenderer());;
     editCol.setCellEditor(new ButtonEditor(new JTextField()));
   
@@ -101,19 +99,16 @@ public class CustomerListUI extends AcmeBaseJPanel {
     jTable1.getTableHeader().setFont(new Font("Lucida Grande", 0, 18)); 
     jTable1.setRowHeight(24);
     jTable1.setRowMargin(2);
-    
     jTable1.setSelectionBackground(new Color(93, 184, 202));
     jTable1.setSelectionForeground(new java.awt.Color(0, 0, 0));
     jTable1.setShowGrid(true);
-    jTable1.setPreferredScrollableViewportSize(jTable1.getPreferredSize());
-    jTable1.setFillsViewportHeight( true );
-    jScrollPane1 = new JScrollPane( jTable1 );
-    jScrollPane1.setBounds(25, 75, 600, 200);
-    add(jScrollPane1);
+    jScrollPane1 = new JScrollPane(jTable1, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
     
     //new customer button
     JButton btnNewCustomer = new JButton("New Customer");
-    btnNewCustomer.setBounds(25, 280, 120, 40);
+    btnNewCustomer.setSize(120,40);
     btnNewCustomer.setBackground(lightBlue);
     btnNewCustomer.setOpaque(true);
     btnNewCustomer.addActionListener(new ActionListener() {
@@ -121,7 +116,37 @@ public class CustomerListUI extends AcmeBaseJPanel {
         goToNewCustomerPage();
       }
     });
-    add(btnNewCustomer);
+    
+    //this is layout information and configuration
+    //hard to understand personally
+    //copy and past it into a design view to work with it
+    groupLayout.setHorizontalGroup(
+      groupLayout.createParallelGroup(Alignment.LEADING)
+        .addGroup(groupLayout.createSequentialGroup()
+          .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+            .addGroup(groupLayout.createSequentialGroup()
+              .addGap(20)
+              .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+                  .addComponent(btnNewCustomer, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblCustomers, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)))
+            .addGroup(groupLayout.createSequentialGroup()
+              .addGap(20)
+              .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, this.getSize().width-10)))
+          .addContainerGap(0, Short.MAX_VALUE))
+    );
+    groupLayout.setVerticalGroup(
+        groupLayout.createParallelGroup(Alignment.LEADING)
+          .addGroup(groupLayout.createSequentialGroup()
+            .addGap(20)
+            .addComponent(lblCustomers, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+            .addGap(20)
+            .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+            .addComponent(btnNewCustomer, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+            .addGap(175))
+      );
+    setLayout(groupLayout);
+    
   }
   
   public static void main(String [] args) {
@@ -154,15 +179,24 @@ public class CustomerListUI extends AcmeBaseJPanel {
  
  public Object[][] getObjectsForTable(Customer[] listOfCustomers)
  {
+   
    Object[][] toReturn = new Object[listOfCustomers.length][5];
    for(int x = 0; x < listOfCustomers.length; x++)
    {
-     toReturn[x][0] = listOfCustomers[x].getCustomerNumber();
-     toReturn[x][1] = listOfCustomers[x].getName();
-     toReturn[x][2] = listOfCustomers[x].getIntersection().getIntersectionName();
-     toReturn[x][3] = listOfCustomers[x].isActive();
-     toReturn[x][4] = '\u270E' + " "+ listOfCustomers[x].getName();
+     try {
+       toReturn[x][0] = listOfCustomers[x].getCustomerNumber();
+       toReturn[x][1] = listOfCustomers[x].getName();
+       toReturn[x][2] = listOfCustomers[x].getIntersection().getIntersectionName();
+       toReturn[x][3] = listOfCustomers[x].isActive();
+       toReturn[x][4] = '\u270E' + " "+ listOfCustomers[x].getName();
+     }
+     catch(NullPointerException e)
+     {
+       System.out.println("NullPointerException caught");
+       System.out.println("Missing Customer data");
+     }
    }
+   
    
    return toReturn;
  }
