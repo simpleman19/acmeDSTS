@@ -143,7 +143,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 5), 0, 0));
 
         // Combo Box
-        HashMap<UUID, Customer> customers = new HashMap<>(c.getCustomer());
+        HashMap<UUID, Customer> customers = new HashMap<>(c.getCustomers());
         pickupCMB = new JComboBox(customers.values().toArray());
         // If set in ticket then use that customer
         if (ticket.getPickupCustomer() != null) pickupCMB.setSelectedItem(ticket.getPickupCustomer());
@@ -207,7 +207,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 5), 0, 0));
 
         // Combo Box
-        HashMap<UUID, Customer> customers = new HashMap<>(c.getCustomer());
+        HashMap<UUID, Customer> customers = new HashMap<>(c.getCustomers());
         customers.remove(((Customer) pickupCMB.getSelectedItem()).getId());
         deliveryCMB = new JComboBox(customers.values().toArray());
         // If set in ticket then use that customer

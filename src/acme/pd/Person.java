@@ -19,6 +19,10 @@ public class Person {
 	@Column(name = "IS_ACTIVE")
     private boolean isActive;
 
+	public Person() {
+	    this.setActive(true);
+    }
+
     public UUID getId() {
         // TODO fix with database
         /*if (this.id == null) {

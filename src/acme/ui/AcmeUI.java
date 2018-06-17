@@ -157,12 +157,6 @@ public class AcmeUI extends JFrame {
         this.setPanel(exampleJPanel);
     }
 
-    // List of clerks in the system that can be added to or updated
-    public void userList() {
-        ClerksListPanel cp = new ClerksListPanel();
-        this.setPanel(cp);
-    }
-
       // Everyone will tie in their panel like this.  Replace my example with your code
     public void courierList() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();

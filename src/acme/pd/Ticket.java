@@ -148,7 +148,7 @@ public class Ticket implements PersistableEntity {
         return company;
     }
 
-    private void setCompany(Company company) {
+    public void setCompany(Company company) {
         this.company = company;
     }
 

@@ -73,13 +73,15 @@ public class Company implements PersistableEntity {
         for (int i = 0; i < 10; i++) {
             Courier c1 = new Courier();
             c1.setName("That Guy " + i);
-            couriers.put(c1.getId(), c1);
+            c1.setCourierNumber(i);
+            c1.create();
+
             Customer c2 = new Customer();
             c2.setName("That Customer " + (1000 + i));
             MapIntersection [][] mapI = map.getMap();
             // Put company on map
             c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
-            customers.put(c2.getId(), c2);
+            c2.create();
 
             User u1 = new User();
             u1.setName("First " + "Last" + i);
@@ -91,7 +93,7 @@ public class Company implements PersistableEntity {
             }
             u1.setAdmin(false);
             u1.setPassword("pass"+i);
-            users.put(UUID.randomUUID(), u1);
+            u1.create();
         }
     }
 

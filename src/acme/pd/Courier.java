@@ -15,6 +15,9 @@ public class Courier extends Person implements PersistableEntity {
 	@Column(name = "NUMBER")
     private int courierNumber;
 
+	public Courier() {
+	    super();
+    }
     public int getCourierNumber() {
         return courierNumber;
     }
