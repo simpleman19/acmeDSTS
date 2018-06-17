@@ -3,7 +3,9 @@ package acme.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -81,6 +83,43 @@ public class HibernateAdapterTest {
         company.delete();
         company = PersistableEntity.get(Company.class, companyId);
         assertNull(company);
+	}
+	
+	@Test
+	public void testQuerySingleResult() {
+		Company company = new Company();
+        company.setName(UUID.randomUUID().toString());
+        company.create();
+        HashMap<String, String> parameter = new HashMap<String, String>();
+        parameter.put("name", company.getName());
+        PersistableEntity.querySingle(Company.class, "select c from COMPANY c where NAME = :name", parameter);
+	}
+	
+	@Test(expected = javax.persistence.NoResultException.class)
+	public void testQuerySingleNoResult() {
+        HashMap<String, String> parameter = new HashMap<String, String>();
+        parameter.put("name", UUID.randomUUID().toString());
+        PersistableEntity.querySingle(Company.class, "select c from COMPANY c where NAME = :name", parameter);
+	}
+	
+	@Test
+	public void testQueryListResults() {
+		Company company = new Company();
+        company.setName(UUID.randomUUID().toString());
+        company.create();
+        Company company2 = new Company();
+        company2.setName(company.getName());
+        company2.create();
+        HashMap<String, String> parameter = new HashMap<String, String>();
+        parameter.put("name", company.getName());
+        java.util.List<Company> companiesWithSameName = PersistableEntity.queryList(Company.class, "select c from COMPANY c where NAME = :name", parameter);
+        assertEquals(2, companiesWithSameName.size());
+        String a = company.getId().toString();
+        String b = company2.getId().toString();
+        String c = companiesWithSameName.get(0).getId().toString();
+        String d = companiesWithSameName.get(1).getId().toString();
+        assertTrue(a.equals(c) || a.equals(d));
+        assertTrue(b.equals(c) || b.equalsIgnoreCase(d));
 	}
 	
 	@Test

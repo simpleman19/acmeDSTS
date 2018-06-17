@@ -1,17 +1,16 @@
 package acme.pd;
 
+import java.util.HashMap;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.NoResultException;
 
 import acme.data.PersistableEntity;
 
 // Creates the class and extends methods
 // from the Person class for User to use.
-@Entity
-@Table(name = "APP_USER")
+@Entity(name = "APP_USER")
 public class User extends Person implements PersistableEntity {
 	
 	// Create Class attributes to store
