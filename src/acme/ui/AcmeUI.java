@@ -18,6 +18,9 @@ public class AcmeUI extends JFrame {
 
         HibernateAdapter.startUp();
         this.company = new Company();
+        this.company.generateStuff();
+        this.company = this.company.update();
+        
         this.buildMenu();
 
         setVisible(true);

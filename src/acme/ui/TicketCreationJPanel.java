@@ -393,6 +393,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Getting an unsaved transient instance error
         ticket.create();
         c.addTicket(ticket);
+        c.update();
         this.getAcmeUI().courierList();
     }
 
@@ -469,7 +470,6 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
     public static void main(String [] args) {
         AcmeUI acme = new AcmeUI();
-        acme.getCompany().generateStuff();
         acme.getCompany().setCurrentUser((User) acme.getCompany().getUsers().values().toArray()[0]);
         acme.setPanel(new TicketCreationJPanel());
     }

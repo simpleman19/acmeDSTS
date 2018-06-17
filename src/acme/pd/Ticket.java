@@ -75,20 +75,7 @@ public class Ticket implements PersistableEntity {
         this.generatePackageId();
         this.setClerk(this.getCompany().getCurrentUser());
 
-        this.setCompany(company);
-        HashMap<UUID, Customer> customers = new HashMap<>(company.getCustomers());
-        // Set the pickup customer to a customer (Useful for UI)
-        Customer tmpCust = (Customer) customers.values().toArray()[0];
-        this.setPickupCustomer(tmpCust);
-        // Remove customer from map to be sure that pickup and destination are different
-        customers.remove(tmpCust.getId());
-        // Set destination customer to a customer (Useful for UI)
-        this.setDeliveryCustomer((Customer) customers.values().toArray()[0]);
-        this.setDeliveryTime(LocalDateTime.now().plusHours(6));
-
         this.note = "";
-        updatePath();
-
     }
 
     public ArrayList<String> getDeliveryInstructions() {
@@ -170,7 +157,6 @@ public class Ticket implements PersistableEntity {
 
     public void setPickupCustomer(Customer pickupCustomer) {
         this.pickupCustomer = pickupCustomer;
-        this.updatePath();
     }
 
     public LocalDateTime getCreationDateTime() {
