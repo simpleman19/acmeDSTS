@@ -10,7 +10,6 @@ public class AcmeBaseJPanel extends JPanel {
         super();
     }
 
-
     public void buildPanel() {
         // Initialize your panel here
         throw new UnsupportedOperationException("Not Implemented");
