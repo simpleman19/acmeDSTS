@@ -1,12 +1,21 @@
 package acme.ui;
 
-import acme.pd.*;
-
-import javax.swing.*;
-import java.awt.*;
-
+import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import javax.swing.Box;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.SwingConstants;
+
+import acme.pd.Company;
+import acme.pd.Courier;
+import acme.pd.Customer;
+import acme.pd.Ticket;
+import acme.pd.User;
 
 public class AcmeUI extends JFrame {
 
@@ -146,15 +155,15 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void userList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksListPanel clp = new ClerksListPanel();
+        this.setPanel(clp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
-    public void userAddUpdate(User customer) {
+    public void userAddUpdate(User user) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksUpdatePanel cp = new ClerksUpdatePanel(user);
+        this.setPanel(cp);
     }
 
       // Everyone will tie in their panel like this.  Replace my example with your code
