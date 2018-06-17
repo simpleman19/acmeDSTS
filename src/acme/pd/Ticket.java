@@ -253,16 +253,17 @@ public class Ticket implements PersistableEntity {
     }
 
     public void setDeliveryTime(LocalDateTime deliveryTime) {
-//        if (new Random().nextInt() % 3 == 0)
-//            //this.bonus = company.getBonus();
-//        else
-//            this.bonus = new BigDecimal(0);
+        // TODO Bonus
         this.deliveryTime = deliveryTime;
         this.updatePath();
     }
 
     public LocalDateTime getEstimatedDeliveryTime() {
         return estimatedDeliveryTime;
+    }
+
+    private void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 
     public BigDecimal getBonus() {
