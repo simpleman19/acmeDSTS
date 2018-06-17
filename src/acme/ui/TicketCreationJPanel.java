@@ -1,6 +1,8 @@
 package acme.ui;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -8,6 +10,8 @@ import java.util.HashMap;
 import java.util.UUID;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
@@ -191,7 +195,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         ((GridBagLayout) dropOffPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0};
         ((GridBagLayout) dropOffPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
-        label5.setText("Pick Up");
+        label5.setText("Drop Off");
         label5.setFont(label5.getFont().deriveFont(label5.getFont().getSize() + 2f));
         dropOffPanel.add(label5, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -344,12 +348,33 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Scroll Pane
         {
             //---- notesTextArea ----
-            notesTextArea.setText("This is an area for notes");
+            if (ticket.getNote().equals("")) {
+                notesTextArea.setText("This is an area for notes");
+            } else {
+                notesTextArea.setText(ticket.getNote());
+            }
+
             notesTextArea.setBackground(Color.white);
             notesTextArea.setFont(notesTextArea.getFont().deriveFont(notesTextArea.getFont().getSize() - 2f));
             notesTextArea.setMinimumSize(new Dimension(171, 120));
             notesTextArea.setPreferredSize(new Dimension(180, 120));
             notesTextArea.setLineWrap(true);
+            notesTextArea.addKeyListener(new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent keyEvent) {
+                    ticket.setNote(notesTextArea.getText());
+                }
+
+                @Override
+                public void keyPressed(KeyEvent keyEvent) {
+
+                }
+
+                @Override
+                public void keyReleased(KeyEvent keyEvent) {
+
+                }
+            });
             scrollPane1.setViewportView(notesTextArea);
         }
         notesPanel.add(scrollPane1, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,

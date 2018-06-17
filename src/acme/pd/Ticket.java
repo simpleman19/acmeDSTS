@@ -81,6 +81,8 @@ public class Ticket implements PersistableEntity {
         // Set destination customer to a customer (Useful for UI)
         this.setDeliveryCustomer((Customer) customers.values().toArray()[0]);
         this.setDeliveryTime(LocalDateTime.now().plusHours(6));
+
+        this.note = "";
         updatePath();
 
     }
