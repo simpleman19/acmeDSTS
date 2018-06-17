@@ -274,11 +274,11 @@ public class Ticket implements PersistableEntity {
 
     public MapIntersection getDeliveryCustomerLocation()
     {
-      return this.deliveryCustomer.getIntersection();
+      return this.deliveryCustomer.getIntersection(this.company.getMap());
     }
 
     public MapIntersection getPickupCustomerLocation()
     {
-      return this.pickupCustomer.getIntersection();
+      return this.pickupCustomer.getIntersection(this.company.getMap());
     }
 }

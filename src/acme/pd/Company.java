@@ -70,7 +70,6 @@ public class Company implements PersistableEntity {
     }
 
     public void generateStuff() {
-        Random rand = new Random();
         // TODO remove test customers and couriers
         for (int i = 0; i < 10; i++) {
             Courier c1 = new Courier();
@@ -81,9 +80,6 @@ public class Company implements PersistableEntity {
 
             Customer c2 = new Customer();
             c2.setName("That Customer " + (1000 + i));
-            MapIntersection [][] mapI = map.getMap();
-            // Put company on map
-            c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
             c2.create();
             this.addCustomer(c2);
 

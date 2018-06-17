@@ -1,5 +1,6 @@
 package acme.pd;
 
+import java.util.Random;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -30,8 +31,6 @@ public class Customer implements PersistableEntity {
     private String streetName;
 	@Column(name = "AVENUE_NAME")
     private String avenueName;
-	@Transient
-	private MapIntersection intersection;
 
     public UUID getId() {
         // TODO fix with database
@@ -81,12 +80,11 @@ public class Customer implements PersistableEntity {
         this.avenueName = avenueName;
     }
 
-    public MapIntersection getIntersection() {
-        return intersection;
-    }
-
-    public void setIntersection(MapIntersection intersection) {
-        this.intersection = intersection;
+    public MapIntersection getIntersection(Map map) {
+    	//TODO: calculate actual intersection
+    	Random rand = new Random();
+    	MapIntersection[][] mapI = map.getMap();
+        return mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)];
     }
 
     public String toString() {
