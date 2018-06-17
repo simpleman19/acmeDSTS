@@ -166,7 +166,8 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
         LocalDateTime pickupTime = this.ticket.getEstimatedPickupTime();
         // This is using a date formatter in company to stay consistant
-        pickupTimeLabel.setText(c.acmeDF.format(pickupTime));
+        if (pickupTime != null)
+        	pickupTimeLabel.setText(c.acmeDF.format(pickupTime));
         pickupPanel.add(pickupTimeLabel, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -267,8 +268,10 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 5), 0, 0));
 
         BigDecimal quote = ticket.getQuotedPrice();
-        String quoteStr = NumberFormat.getCurrencyInstance().format(quote);
-        quoteLabel.setText(quoteStr);
+        if (quote != null) {
+        	String quoteStr = NumberFormat.getCurrencyInstance().format(quote);
+            quoteLabel.setText(quoteStr);
+        }
         quoteLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         quotePanel.add(quoteLabel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -308,7 +311,8 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 5), 0, 0));
 
         LocalDateTime departureTime = this.ticket.getEstimatedDepartureTime();
-        label14.setText(c.acmeDF.format(departureTime));
+        if (departureTime != null)
+        	label14.setText(c.acmeDF.format(departureTime));
         courierPanel.add(label14, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
