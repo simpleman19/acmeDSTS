@@ -149,6 +149,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 0), 0, 0));
 
         newCustomer.setText("New Customer");
+        newCustomer.addActionListener((e) -> newCustomerAction());
         pickupPanel.add(newCustomer, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -214,6 +215,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 0), 0, 0));
 
         newCustomer2.setText("New Customer");
+        newCustomer2.addActionListener((e) -> newCustomerAction());
         dropOffPanel.add(newCustomer2, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -371,6 +373,10 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         this.getAcmeUI().courierList();
     }
 
+    private void newCustomerAction() {
+        this.getAcmeUI().customerAddUpdate(null);
+    }
+
     private void updateTicket() {
         // Update bill to
         this.ticket.setBillToSender(this.billPickUp.isSelected());
@@ -388,6 +394,9 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
         // Drop off date time
         this.ticket.setDeliveryTime(dropOffPicker.getDateTimeStrict());
+
+        // Save Note Text
+        this.ticket.setNote(notesTextArea.getText());
 
         this.buildPanel();
     }
