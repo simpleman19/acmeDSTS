@@ -55,7 +55,7 @@ public class Company implements PersistableEntity {
     private double courierMilesPerHour = 5.8;
     @Transient
     private String mapFile = "map/map.csv";
-
+    @Transient
     public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
 
     public Company() {
@@ -67,7 +67,9 @@ public class Company implements PersistableEntity {
         tickets = new HashMap<UUID, Ticket>();
         customers = new HashMap<UUID, Customer>();
         users = new HashMap<UUID, User>();
+    }
 
+    public void generateStuff() {
         Random rand = new Random();
         // TODO remove test customers and couriers
         for (int i = 0; i < 10; i++) {
@@ -75,6 +77,7 @@ public class Company implements PersistableEntity {
             c1.setName("That Guy " + i);
             c1.setCourierNumber(i);
             c1.create();
+            this.addCourier(c1);
 
             Customer c2 = new Customer();
             c2.setName("That Customer " + (1000 + i));
@@ -82,6 +85,7 @@ public class Company implements PersistableEntity {
             // Put company on map
             c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
             c2.create();
+            this.addCustomer(c2);
 
             User u1 = new User();
             u1.setName("First " + "Last" + i);
@@ -91,9 +95,10 @@ public class Company implements PersistableEntity {
             } else {
                 u1.setActive(false);
             }
-            u1.setAdmin(false);
+            u1.setAdmin(true);
             u1.setPassword("pass"+i);
             u1.create();
+            this.addUser(u1);
         }
     }
 

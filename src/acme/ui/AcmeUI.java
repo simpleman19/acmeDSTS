@@ -1,5 +1,6 @@
 package acme.ui;
 
+import acme.data.HibernateAdapter;
 import acme.pd.*;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ public class AcmeUI extends JFrame {
     public AcmeUI() {
         super("Acme Delivery Software");
 
+        HibernateAdapter.startUp();
         this.company = new Company();
         this.buildMenu();
 
@@ -198,6 +200,7 @@ public class AcmeUI extends JFrame {
     }
     class ShutdownListener implements WindowListener {
         public void windowClosing(WindowEvent event) {
+            HibernateAdapter.shutDown();
             setVisible(false); //you can't see me!
             dispose(); //Destroy the JFrame object
         }

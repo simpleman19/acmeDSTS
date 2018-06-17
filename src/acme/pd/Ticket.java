@@ -67,11 +67,10 @@ public class Ticket implements PersistableEntity {
     private String note;
 
     public Ticket() {
-        this.setCreationDateTime(LocalDateTime.now());
     }
 
     public Ticket(Company company) {
-        super();
+        this.setCreationDateTime(LocalDateTime.now());
         this.setCompany(company);
         this.generatePackageId();
         this.setClerk(this.getCompany().getCurrentUser());

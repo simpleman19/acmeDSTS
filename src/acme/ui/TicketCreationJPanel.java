@@ -13,6 +13,7 @@ import javax.swing.border.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import acme.data.HibernateAdapter;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
 
@@ -389,8 +390,9 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
     private void saveButton() {
         this.updateTicket();
-        // TODO null pointer somewhere??
-        //this.ticket.create();
+        // Getting an unsaved transient instance error
+        ticket.create();
+        c.addTicket(ticket);
         this.getAcmeUI().courierList();
     }
 
@@ -415,6 +417,8 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Only set courier if courier has been set
         if (courierCMB.getSelectedItem() != tbdCourier) {
             this.ticket.setCourier((Courier) courierCMB.getSelectedItem());
+        } else {
+            this.ticket.setCourier(null);
         }
 
         // Drop off date time
@@ -465,7 +469,8 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
     public static void main(String [] args) {
         AcmeUI acme = new AcmeUI();
-        acme.getCompany().setCurrentUser(new User());
+        acme.getCompany().generateStuff();
+        acme.getCompany().setCurrentUser((User) acme.getCompany().getUsers().values().toArray()[0]);
         acme.setPanel(new TicketCreationJPanel());
     }
 }
