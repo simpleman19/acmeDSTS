@@ -188,7 +188,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
                 break;
             case CUSTOMER:
                 // get the list of customers
-                for (Map.Entry<UUID, Customer> customer : company.getCustomer().entrySet()) {
+                for (Map.Entry<UUID, Customer> customer : company.getCustomers().entrySet()) {
                     items.add(customer.getValue().getName());
                 }
                 if (items.size() > 1) {
