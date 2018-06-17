@@ -4,46 +4,39 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import acme.data.PersistableEntity;
 
-//////////GUI/////////
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-///////////////////////
 @Entity
 @Table(name = "COMPANY")
 public class Company implements PersistableEntity {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "ID")
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "ID")
     private UUID id;
-    @Column(name = "NAME")
+	@Column(name = "NAME")
     private String name = "ACME";
-    @Transient
+	@Transient
     private Map map;
-    @Transient
-    private HashMap<UUID, Courier> couriers;
-    @Transient
-    private HashMap<UUID, Ticket> tickets;
-    @Transient
-    private HashMap<UUID, Customer> customer;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Courier> couriers;	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Ticket> tickets;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Customer> customers;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, User> users;
     @Transient
     private User currentUser = null;
     @Column(name = "BONUS")
@@ -61,158 +54,138 @@ public class Company implements PersistableEntity {
     @Transient
     private String mapFile = "map/map.csv";
 
-    public Company()
-    {
+    public Company() {
         // TODO initialize company
         File file = new File(mapFile);
         this.map = new Map(file);
 
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
-        customer = new HashMap<UUID, Customer>();
+        customers = new HashMap<UUID, Customer>();
+        currentUser = new User();
+        users = new HashMap<UUID, User>();
     }
-    
 
-    public UUID getId()
-    {
+    public UUID getId() {
         // TODO fix with database
-        /*if (this.id == null)
-        {
-            this.id = UUID.randomUUID();
-        }*/
+        /*
+         * if (this.id == null) { this.id = UUID.randomUUID(); }
+         */
         return id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Map getMap()
-    {
+    public Map getMap() {
         return map;
     }
 
-    public void setMap(Map map)
-    {
+    public void setMap(Map map) {
         this.map = map;
     }
 
-    public HashMap<UUID, Courier> getCouriers()
-    {
+    public java.util.Map<UUID, Courier> getCouriers() {
         return couriers;
     }
+    
+    public void addCourier(Courier courier) {
+		this.couriers.put(courier.getId(), courier);		
+	}
 
-    public void setCouriers(HashMap<UUID, Courier> couriers)
-    {
-        this.couriers = couriers;
-    }
-
-    public HashMap<UUID, Ticket> getTickets()
-    {
+    public java.util.Map<UUID, Ticket> getTickets() {
         return tickets;
     }
 
-    public void setTickets(HashMap<UUID, Ticket> tickets)
-    {
-        this.tickets = tickets;
+    public void addTicket(Ticket ticket) {
+		tickets.put(ticket.getId(), ticket);		
+	}
+
+    public java.util.Map<UUID, Customer> getCustomers() {
+        return customers;
     }
 
-    public HashMap<UUID, Customer> getCustomer()
-    {
-        return customer;
+    public void addCustomer(Customer customer) {
+		customers.put(customer.getId(), customer);
+	}
+
+    public java.util.Map<UUID, User> getUsers() {
+        return users;
     }
 
-    public void setCustomer(HashMap<UUID, Customer> customer)
-    {
-        this.customer = customer;
+    public void addUser(User user) {
+        this.users.put(user.getId(), user);
     }
 
-    public User getCurrentUser()
-    {
+    public User getCurrentUser() {
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser)
-    {
+    public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
 
-    public BigDecimal getBonus()
-    {
+    public BigDecimal getBonus() {
         return bonus;
     }
 
-    public void setBonus(BigDecimal bonus)
-    {
+    public void setBonus(BigDecimal bonus) {
         this.bonus = bonus;
     }
 
-    public BigDecimal getFlatBillingRate()
-    {
+    public BigDecimal getFlatBillingRate() {
         return flatBillingRate;
     }
 
-    public void setFlatBillingRate(BigDecimal flatBillingRate)
-    {
+    public void setFlatBillingRate(BigDecimal flatBillingRate) {
         this.flatBillingRate = flatBillingRate;
     }
 
-    public BigDecimal getBlockBillingRate()
-    {
+    public BigDecimal getBlockBillingRate() {
         return blockBillingRate;
     }
 
-    public void setBlockBillingRate(BigDecimal blockBillingRate)
-    {
+    public void setBlockBillingRate(BigDecimal blockBillingRate) {
         this.blockBillingRate = blockBillingRate;
     }
 
-    public int getLatenessMarginMinutes()
-    {
+    public int getLatenessMarginMinutes() {
         return latenessMarginMinutes;
     }
 
-    public void setLatenessMarginMinutes(int latenessMarginMinutes)
-    {
+    public void setLatenessMarginMinutes(int latenessMarginMinutes) {
         this.latenessMarginMinutes = latenessMarginMinutes;
     }
 
-    public double getBlocksPerMile()
-    {
+    public double getBlocksPerMile() {
         return blocksPerMile;
     }
 
-    public void setBlocksPerMile(double blocksPerMile)
-    {
+    public void setBlocksPerMile(double blocksPerMile) {
         this.blocksPerMile = blocksPerMile;
     }
 
-    public double getCourierMilesPerHour()
-    {
+    public double getCourierMilesPerHour() {
         return courierMilesPerHour;
     }
 
-    public void setCourierMilesPerHour(double courierMilesPerHour)
-    {
+    public void setCourierMilesPerHour(double courierMilesPerHour) {
         this.courierMilesPerHour = courierMilesPerHour;
     }
     
     public static Company getDefaultAcme() {
-        Company acme = new Company();
-
-        acme.setName("Acme");
-        acme.setCourierMilesPerHour(15);
-        acme.setBlocksPerMile(5.5);
-        acme.setLatenessMarginMinutes(2);
-
-        return acme;
+    	Company acme = new Company();
+    	
+    	acme.setName("Acme");
+    	acme.setCourierMilesPerHour(15);
+    	acme.setBlocksPerMile(5.5);
+    	acme.setLatenessMarginMinutes(2);
+    	
+    	return acme; 
     }
-   
-    
 }
