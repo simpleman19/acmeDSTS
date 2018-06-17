@@ -47,7 +47,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     lblCourier.setBounds(30, 87, 83, 16);
     add(lblCourier);
     
-    JLabel lblActPackageId = new JLabel(this.ticketToComplete.getId() + "");
+    JLabel lblActPackageId = new JLabel(this.ticketToComplete.getPackageID());
     lblActPackageId.setBounds(125, 59, 150, 16);
     add(lblActPackageId);
     
@@ -117,8 +117,8 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     if(this.dateTimePickerDeparture.getDateTimeStrict() != null && this.dateTimePickerPickup.getDateTimeStrict() != null
         && this.dateTimePickerDelivery.getDateTimeStrict() != null)
     {
-      if(this.dateTimePickerPickup.getDateTimeStrict().isBefore(this.dateTimePickerDeparture.getDateTimeStrict()) &&
-          this.dateTimePickerDelivery.getDateTimeStrict().isBefore(this.dateTimePickerPickup.getDateTimeStrict()))
+      if(this.dateTimePickerDeparture.getDateTimeStrict().isBefore(this.dateTimePickerPickup.getDateTimeStrict()) &&
+          this.dateTimePickerPickup.getDateTimeStrict().isBefore(this.dateTimePickerDelivery.getDateTimeStrict()))
       {
         this.ticketToComplete.setDepartureTime(this.dateTimePickerDeparture.getDateTimeStrict());
         this.ticketToComplete.setPickupTime(this.dateTimePickerPickup.getDateTimeStrict());
