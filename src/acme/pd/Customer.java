@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -14,29 +15,29 @@ import acme.data.PersistableEntity;
 @Entity
 @Table(name = "CUSTOMER")
 public class Customer implements PersistableEntity {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "ID")
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "ID")
     private UUID id;
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "NUMBER")
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "NUMBER")
     private int customerNumber;
-    @Column(name = "NAME")
+	@Column(name = "NAME")
     private String name;
-    @Column(name = "IS_ACTIVE")
+	@Column(name = "IS_ACTIVE")
     private boolean isActive;
-    @Column(name = "STREET_NAME")
+	@Column(name = "STREET_NAME")
     private String streetName;
-    @Column(name = "AVENUE_NAME")
+	@Column(name = "AVENUE_NAME")
     private String avenueName;
-    @Transient
-    private MapIntersection intersection;
+	@Transient
+	private MapIntersection intersection;
 
     public UUID getId() {
         // TODO fix with database
-        if (this.id == null) {
+        /*if (this.id == null) {
             this.id = UUID.randomUUID();
-        }
+        }*/
         return id;
     }
 

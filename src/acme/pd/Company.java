@@ -7,36 +7,38 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import acme.data.PersistableEntity;
 
-///////////////////////
 @Entity
 @Table(name = "COMPANY")
 public class Company implements PersistableEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "ID")
     private UUID id;
-    @Column(name = "NAME")
+	@Column(name = "NAME")
     private String name = "ACME";
-    @Transient
+	@Transient
     private Map map;
-    @Transient
-    private HashMap<UUID, Courier> couriers;
-    @Transient
-    private HashMap<UUID, Ticket> tickets;
-    @Transient
-    private HashMap<UUID, Customer> customer;
-    @Transient
-    private HashMap<UUID, User> users;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Courier> couriers;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Ticket> tickets;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, Customer> customers;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private java.util.Map<UUID, User> users;
     @Transient
     private User currentUser = null;
     @Column(name = "BONUS")
@@ -63,7 +65,7 @@ public class Company implements PersistableEntity {
 
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
-        customer = new HashMap<UUID, Customer>();
+        customers = new HashMap<UUID, Customer>();
         users = new HashMap<UUID, User>();
 
         Random rand = new Random();
@@ -77,7 +79,7 @@ public class Company implements PersistableEntity {
             MapIntersection [][] mapI = map.getMap();
             // Put company on map
             c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
-            customer.put(c2.getId(), c2);
+            customers.put(c2.getId(), c2);
 
             User u1 = new User();
             u1.setName("First " + "Last" + i);
@@ -113,36 +115,36 @@ public class Company implements PersistableEntity {
         this.map = map;
     }
 
-    public HashMap<UUID, Courier> getCouriers() {
+    public java.util.Map<UUID, Courier> getCouriers() {
         return couriers;
     }
 
-    public void setCouriers(HashMap<UUID, Courier> couriers) {
-        this.couriers = couriers;
-    }
+    public void addCourier(Courier courier) {
+		this.couriers.put(courier.getId(), courier);
+	}
 
-    public HashMap<UUID, Ticket> getTickets() {
+    public java.util.Map<UUID, Ticket> getTickets() {
         return tickets;
     }
 
-    public void setTickets(HashMap<UUID, Ticket> tickets) {
-        this.tickets = tickets;
+    public void addTicket(Ticket ticket) {
+		tickets.put(ticket.getId(), ticket);
+	}
+
+    public java.util.Map<UUID, Customer> getCustomers() {
+        return customers;
     }
 
-    public HashMap<UUID, Customer> getCustomer() {
-        return customer;
-    }
+    public void addCustomer(Customer customer) {
+		customers.put(customer.getId(), customer);
+	}
 
-    public void setCustomer(HashMap<UUID, Customer> customer) {
-        this.customer = customer;
-    }
-
-    public HashMap<UUID, User> getUsers() {
+    public java.util.Map<UUID, User> getUsers() {
         return users;
     }
 
-    public void setUsers(HashMap<UUID, User> users) {
-        this.users = users;
+    public void addUser(User user) {
+        this.users.put(user.getId(), user);
     }
 
     public User getCurrentUser() {
@@ -202,14 +204,13 @@ public class Company implements PersistableEntity {
     }
 
     public static Company getDefaultAcme() {
-        Company acme = new Company();
+    	Company acme = new Company();
 
-        acme.setName("Acme");
-        acme.setCourierMilesPerHour(15);
-        acme.setBlocksPerMile(5.5);
-        acme.setLatenessMarginMinutes(2);
+    	acme.setName("Acme");
+    	acme.setCourierMilesPerHour(15);
+    	acme.setBlocksPerMile(5.5);
+    	acme.setLatenessMarginMinutes(2);
 
-        return acme;
+    	return acme;
     }
-
 }

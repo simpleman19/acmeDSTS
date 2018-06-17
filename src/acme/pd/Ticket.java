@@ -3,8 +3,6 @@ package acme.pd;
 import acme.data.PersistableEntity;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
@@ -15,30 +13,33 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
 @Table(name = "TICKET")
 public class Ticket implements PersistableEntity {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "ID")
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "ID")
     private UUID id;
-    @Transient
+	@ManyToOne
     private Company company;
-    @Transient
+	@ManyToOne
     private Customer deliveryCustomer;
-    @Transient
+	@ManyToOne
     private Customer pickupCustomer;
-    @Column(name = "CREATED_TIME")
+	@Column(name = "CREATED_TIME")
     private LocalDateTime creationDateTime;
-    @Transient
+    @ManyToOne
     private User clerk;
-    @Transient
+    @ManyToOne
     private Courier courier;
     @Column(name = "IS_BILLED_TO_SENDER")
     private boolean billToSender;
@@ -72,7 +73,7 @@ public class Ticket implements PersistableEntity {
         this.setClerk(this.getCompany().getCurrentUser());
 
         this.setCompany(company);
-        HashMap<UUID, Customer> customers = new HashMap<>(company.getCustomer());
+        HashMap<UUID, Customer> customers = new HashMap<>(company.getCustomers());
         // Set the pickup customer to a customer (Useful for UI)
         Customer tmpCust = (Customer) customers.values().toArray()[0];
         this.setPickupCustomer(tmpCust);
@@ -92,10 +93,6 @@ public class Ticket implements PersistableEntity {
     }
 
     public UUID getId() {
-        // TODO fix with database
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
         return id;
     }
 
@@ -129,7 +126,7 @@ public class Ticket implements PersistableEntity {
       double milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
       double timeToTravel = milesToTravel / mphCouriers;
       LocalDateTime resultOfCouriersAndMiles = deliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
-      resultOfCouriersAndMiles.minusMinutes(5);
+      resultOfCouriersAndMiles.plusMinutes(5);
 
       if(resultOfCouriersAndMiles.isAfter(LocalDateTime.now()))
       {
