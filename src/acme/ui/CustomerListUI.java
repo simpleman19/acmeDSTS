@@ -7,6 +7,11 @@ import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -20,12 +25,15 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+
+
 import acme.pd.User;
 import acme.pd.Customer;
 import acme.pd.MapIntersection;
 import acme.pd.Road;
 
 public class CustomerListUI extends AcmeBaseJPanel {
+  Customer [] customersArray;
   
   public CustomerListUI() {
     super();
@@ -35,6 +43,8 @@ public class CustomerListUI extends AcmeBaseJPanel {
   
     setLayout(null);
     
+    Color lightBlue = new Color(93, 184, 202);
+    
     //title label
     JLabel lblCustomers = new JLabel("Customers");
     lblCustomers.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
@@ -42,28 +52,27 @@ public class CustomerListUI extends AcmeBaseJPanel {
     add(lblCustomers);
     
     //my test data
-    Customer[] testData = getTestData();
+    HashMap<UUID, Customer> testData = getCompany().getCustomer();
+    Collection<Customer> values = testData.values();
+    ArrayList<Customer> listOfValues = new ArrayList<Customer>(values);
+    Set<UUID> keySet = testData.keySet();
+    ArrayList<UUID> listOfKeys = new ArrayList<UUID>(keySet);
+    customersArray = listOfValues.toArray(new Customer[listOfValues.size()]);
+    Object[][] objects = getObjectsForTable(customersArray);
+    String[] cols = new String [] {
+        "Number", "Name", "Location", "Active", "Edit"
+    };
+    
     
 
     //scroll and table. I made this in netbeans, so it looks a little different
-    JScrollPane jScrollPane1 = new JScrollPane();
+    JScrollPane jScrollPane1;
     JTable jTable1 = new JTable();
 
     //set up table
     jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
     jTable1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); 
-    jTable1.setModel(new javax.swing.table.DefaultTableModel(
-        new Object [][] {
-            {testData[0].getCustomerNumber(), testData[0].getName(), testData[0].getIntersection().getIntersectionName(), testData[0].isActive(),'\u270E' + " "+ testData[0].getName()},
-            {testData[1].getCustomerNumber(), testData[1].getName(), testData[1].getIntersection().getIntersectionName(), testData[1].isActive(),'\u270E' + " "+ testData[1].getName()},
-            {testData[2].getCustomerNumber(), testData[2].getName(), testData[2].getIntersection().getIntersectionName(), testData[2].isActive(),'\u270E' + " "+ testData[2].getName()},
-            {testData[3].getCustomerNumber(), testData[3].getName(), testData[3].getIntersection().getIntersectionName(), testData[3].isActive(),'\u270E' + " "+ testData[3].getName()},
-            {testData[4].getCustomerNumber(), testData[4].getName(), testData[4].getIntersection().getIntersectionName(), testData[4].isActive(),'\u270E' + " "+ testData[4].getName()}
-        },
-        new String [] {
-            "Number", "Name", "Location", "Active", "Edit"
-        }
-    ) {
+    jTable1.setModel(new javax.swing.table.DefaultTableModel(objects, cols) {
         Class[] types = new Class [] {
             java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, javax.swing.JButton.class
         };
@@ -92,17 +101,20 @@ public class CustomerListUI extends AcmeBaseJPanel {
     jTable1.getTableHeader().setFont(new Font("Lucida Grande", 0, 18)); 
     jTable1.setRowHeight(24);
     jTable1.setRowMargin(2);
+    
     jTable1.setSelectionBackground(new Color(93, 184, 202));
     jTable1.setSelectionForeground(new java.awt.Color(0, 0, 0));
     jTable1.setShowGrid(true);
-    jScrollPane1.setViewportView(jTable1);
-    jScrollPane1.setBounds(25, 75, 600, 120);
+    jTable1.setPreferredScrollableViewportSize(jTable1.getPreferredSize());
+    jTable1.setFillsViewportHeight( true );
+    jScrollPane1 = new JScrollPane( jTable1 );
+    jScrollPane1.setBounds(25, 75, 600, 200);
     add(jScrollPane1);
     
     //new customer button
     JButton btnNewCustomer = new JButton("New Customer");
-    btnNewCustomer.setBounds(25, 210, 120, 40);
-    btnNewCustomer.setBackground(new Color(93, 184, 202));
+    btnNewCustomer.setBounds(25, 280, 120, 40);
+    btnNewCustomer.setBackground(lightBlue);
     btnNewCustomer.setOpaque(true);
     btnNewCustomer.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -122,16 +134,38 @@ public class CustomerListUI extends AcmeBaseJPanel {
  public void goToEditPage(String customerName)
  { 
    customerName = customerName.substring(2);
-   System.out.println(customerName);
-   //go to customer page
+   Customer customerToPass = null;
+   for(int x = 0; x< this.customersArray.length; x++)
+   {
+     if(this.customersArray[x].getName().equals(customerName))
+     {
+       customerToPass = this.customersArray[x];
+     }
+   }
+   this.getAcmeUI().customerAddUpdate(customerToPass);
  }
  
  public void goToNewCustomerPage()
  {
    //go to new customer page
+   this.getAcmeUI().customerAddUpdate(null);
  }
 //------------------------------------------------
  
+ public Object[][] getObjectsForTable(Customer[] listOfCustomers)
+ {
+   Object[][] toReturn = new Object[listOfCustomers.length][5];
+   for(int x = 0; x < listOfCustomers.length; x++)
+   {
+     toReturn[x][0] = listOfCustomers[x].getCustomerNumber();
+     toReturn[x][1] = listOfCustomers[x].getName();
+     toReturn[x][2] = listOfCustomers[x].getIntersection().getIntersectionName();
+     toReturn[x][3] = listOfCustomers[x].isActive();
+     toReturn[x][4] = '\u270E' + " "+ listOfCustomers[x].getName();
+   }
+   
+   return toReturn;
+ }
  
 //----------------------------------------------------------- 
 //Tutorial From https://www.youtube.com/watch?v=3LiSHPqbuic
