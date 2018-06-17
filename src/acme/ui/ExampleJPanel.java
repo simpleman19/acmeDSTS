@@ -35,9 +35,18 @@ public class ExampleJPanel extends AcmeBaseJPanel {
             JButton login = new JButton("Login");
             login.addActionListener(actionEvent -> {
                 this.getCompany().setCurrentUser(new User());
+                this.getCompany().getCurrentUser().setAdmin(false);
                 this.getAcmeUI().ticketList();
             });
             this.add(login);
+
+            JButton loginA = new JButton("Login Admin");
+            loginA.addActionListener(actionEvent -> {
+                this.getCompany().setCurrentUser(new User());
+                this.getCompany().getCurrentUser().setAdmin(true);
+                this.getAcmeUI().ticketList();
+            });
+            this.add(loginA);
         }
         this.revalidate();
         this.repaint();
