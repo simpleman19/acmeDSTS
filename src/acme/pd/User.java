@@ -60,24 +60,21 @@ public class User extends Person implements PersistableEntity {
         isAdmin = admin;
     }
     
-    public boolean authenticate(String u, String p) {
-    	
+    public static boolean isAuthenticated(String u, String p) {
     	 // Checking to see if username and password match 
-    	
-    	 if ( 
-    		 (this.getUsername().equalsIgnoreCase(u)) && 
-    	     (this.getPassword().equals(p))
-    	     ) {
-    		 
-    		 System.out.println("Login Authenticated. Access Granted.");
-    		 return true;
-    		 
-    	 	}
-    	 else {
-    		 System.out.println("Login Failed Authentication. Access Denied.");
-    		 return false;
-    	 }
-    	 	 
+    	HashMap<String,String> parameters = new HashMap<String, String>();
+    	parameters.put("username", u);
+    	parameters.put("password", p);
+    	try {
+    		PersistableEntity.querySingle(User.class,
+       			 "select * from APP_USER where USERNAME = :username and PASWORD = :password",
+       			 parameters);
+    		System.out.println("Login Authenticated. Access Granted.");
+   		 	return true;
+    	} catch(NoResultException e) {
+    		System.out.println("Login Failed Authentication. Access Denied.");
+    		return false;
+    	}
     }
     
     
