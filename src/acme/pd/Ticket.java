@@ -96,10 +96,12 @@ public class Ticket implements PersistableEntity {
       LocalDateTime resultOfCouriersAndMiles = deliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
       resultOfCouriersAndMiles.plusMinutes(5);
       
-      if(resultOfCouriersAndMiles.isBefore(LocalDateTime.now()))
-      {
-        this.estimatedDepartureTime = resultOfCouriersAndMiles;
-      }
+     
+      try {
+        if(resultOfCouriersAndMiles.isAfter(LocalDateTime.now()))
+        {
+          this.estimatedDepartureTime = resultOfCouriersAndMiles;
+        }
       
       milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
       timeToTravel = milesToTravel / mphCouriers;
@@ -108,7 +110,11 @@ public class Ticket implements PersistableEntity {
       milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenPickupandDropoff();
       timeToTravel = milesToTravel / mphCouriers;
       this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
-      
+      } 
+      catch(Exception error)
+      {
+        System.out.println("There has been a problem. Your delivery is not possible.");
+      }
      
     }
 
