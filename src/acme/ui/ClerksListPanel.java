@@ -167,7 +167,8 @@ public class ClerksListPanel extends AcmeBaseJPanel {
                 int modelRow = Integer.valueOf(e.getActionCommand());
                 // find the user and go to the update screen
                 for (Map.Entry<UUID, User> users : company.getUsers().entrySet()) {
-                    if (users.getValue().getId().equals(listTbl.getModel().getValueAt(modelRow, ID_COL))) {
+                    System.out.println(listTbl.getModel().getValueAt(modelRow, ID_COL));
+                    if (users.getKey().equals(listTbl.getModel().getValueAt(modelRow, ID_COL))) {
                         getAcmeUI().userAddUpdate(users.getValue());
                     }
                 }
@@ -181,7 +182,7 @@ public class ClerksListPanel extends AcmeBaseJPanel {
             row.add(users.getValue().getUsername());
             row.add(users.getValue().isActive());
             row.add(pen);
-            row.add(users.getValue().getId());
+            row.add(users.getKey());
             model.addRow(row);
         }
 

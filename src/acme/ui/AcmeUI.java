@@ -157,15 +157,15 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void userList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksListPanel clp = new ClerksListPanel();
+        this.setPanel(clp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
-    public void userAddUpdate(User customer) {
+    public void userAddUpdate(User user) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksUpdatePanel cp = new ClerksUpdatePanel(user);
+        this.setPanel(cp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -187,15 +187,6 @@ public class AcmeUI extends JFrame {
         this.setPanel(ip);
     }
     
-    // Everyone will tie in their panel like this.  Replace my example with your code
-    public void importIntoCompany() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
-    }
-
-    // Everyone will tie in their panel like this.  Replace my example with your code
-    
-
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void companyEdit() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
