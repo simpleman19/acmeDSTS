@@ -217,6 +217,7 @@ public class Company implements PersistableEntity {
     	acme.setBlocksPerMile(5.5);
     	acme.setLatenessMarginMinutes(2);
         acme.create();
+
     	return acme;
     }
 }
