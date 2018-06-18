@@ -181,8 +181,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void importIntoCompany() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ImportsPanel ip = new ImportsPanel();
+        this.setPanel(ip);
     }    
 
     // Everyone will tie in their panel like this.  Replace my example with your code
