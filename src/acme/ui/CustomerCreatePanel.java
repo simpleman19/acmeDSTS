@@ -56,7 +56,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
         add(numberLabel);
         
         
-        numberField = new JLabel(Integer.toString(customer.getCustomerNumber()));
+        numberField = new JLabel(Integer.toString(Customer.getNextCustomerNumber()));
         numberField.setBounds(113, 126, 46, 14);
         add(numberField);
         
