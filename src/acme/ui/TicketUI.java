@@ -114,9 +114,9 @@ private JButton btnAdd = new JButton("New Ticket");
         ImageIcon cancel = new ImageIcon(
                 new ImageIcon("resources/cancel.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         ImageIcon print = new ImageIcon(
-                new ImageIcon("resources/print.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+                new ImageIcon("resources/printer.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         ImageIcon comp = new ImageIcon(
-                new ImageIcon("resources/comp.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+                new ImageIcon("resources/tick-mark.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         
         //
         table.setAutoCreateRowSorter(true);
