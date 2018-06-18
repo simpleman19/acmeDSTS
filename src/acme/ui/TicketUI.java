@@ -78,35 +78,9 @@ public class TicketUI extends AcmeBaseJPanel {
 
         JScrollPane listScrll = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    	JButton addBtn = new JButton("New Ticket");      
         
-     // Creating the button to create "New Ticket".
-    	JButton addBtn = new JButton("New Ticket");
-        
-        
-//        btnAdd.setBounds(10, 320, 100, 30);
-//        boxComp.setBounds(255, 85, 250, 25);
-//  
-//        // create JScrollPane
-//        JScrollPane pane = new JScrollPane(table);
-//        pane.setBounds(10, 120, 880, 200);
-//        
-//        setLayout(null);
-//        
-//        add(pane);
-//        
-//        add(btnAdd);
-//        add(boxComp);        
-        
-        // create an array of objects to set the row data
-        
-        
-//        initDefaults();
-        
-        
-//        setSize(900,400);
-//        //setLocationRelativeTo(null);
-//        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setVisible(true);
+
        
         public TicketUI() {  
         	
@@ -156,6 +130,15 @@ public class TicketUI extends AcmeBaseJPanel {
         gbc_addBtn.gridx = 0;
         gbc_addBtn.gridy = 2;
         add(addBtn, gbc_addBtn);
+        
+        boxComp.setBounds(0,0,10,10);
+        boxComp.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            //code for check box here
+            //probs a method call
+          }
+        });
+        add(boxComp);
 		
 	}
 	
@@ -166,12 +149,7 @@ public class TicketUI extends AcmeBaseJPanel {
 	
 	
 	// This is a method that can only be called from inside the class from which it is defined. 
-	private void initDefaults() {
-
-//        final int NAME_COL = 0;
-//        final int ACT_COL = 2;
-//        final int EDIT_COL = 3;
-//        
+	private void initDefaults() {   
         
 		// creating variables for the column index.
         final int 	CANCEL_COL 	= 4;
@@ -189,7 +167,6 @@ public class TicketUI extends AcmeBaseJPanel {
         ImageIcon comp = new ImageIcon(
                 new ImageIcon("resources/tick-mark.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         
-        //
         table.setAutoCreateRowSorter(true);
         table.getTableHeader().setReorderingAllowed(false);
         table.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -207,16 +184,16 @@ public class TicketUI extends AcmeBaseJPanel {
         	private static final long serialVersionUID = 1L;
 
         		// No editable cell in our case
-//            public boolean isCellEditable(int rowIndex, int mColIndex) {
-//                return (mColIndex == PRINT_COL);
-//            }
+            public boolean isCellEditable(int rowIndex, int mColIndex) {
+                return (mColIndex == PRINT_COL);
+            }
         };
         
         table.setModel(model);
         table.getColumnModel().getColumn(CANCEL_COL).setMaxWidth(65);
         table.getColumnModel().getColumn(COMP_COL).setMaxWidth(65);
         table.getColumnModel().getColumn(PRINT_COL).setMaxWidth(65);
-        table.getColumnModel().getColumn(ID_COL).setMaxWidth(0);
+        //table.getColumnModel().getColumn(ID_COL).setMaxWidth(0);
         table.setRowHeight(35);
         
         TableColumn column = table.getColumnModel().getColumn(ID_COL);
@@ -224,6 +201,42 @@ public class TicketUI extends AcmeBaseJPanel {
         column.setMaxWidth(0);
         column.setWidth(0);
         column.setPreferredWidth(0);
+
+//button methods---------------------------------------------------
+        /*
+         * Use this method for your print button
+         */
+        Action printAction = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent e) {
+                //Code here
+            }
+        };
+        
+        /*
+         * Use this method for your comp button
+         */
+        Action compAction = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent e) {
+                //Code here
+            }
+        };
+        
+        /*
+         * Use this method for your cancel button
+         */
+        Action cancelAction = new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent e) {
+                //Code here
+            }
+        };
+        
+//-------------------------------------------------------------
         
      // Change A JTable Background Color, Font Size, Font Color, Row Height
 	//        table.setBackground(Color.LIGHT_GRAY);
@@ -232,14 +245,14 @@ public class TicketUI extends AcmeBaseJPanel {
 	//        table.setFont(font);
 	//        table.setRowHeight(30);
 
-        /* Sort by active users, then by name */
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
-        
-        table.setRowSorter(sorter);
-        sorter.setSortable(CANCEL_COL, false);
-        sorter.setSortable(COMP_COL, false);
-        sorter.setSortable(PRINT_COL, false);
-        sorter.sort();
+//        /* Sort by active users, then by name */
+//        TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+//        
+//        table.setRowSorter(sorter);
+//        sorter.setSortable(CANCEL_COL, false);
+//        sorter.setSortable(COMP_COL, false);
+//        sorter.setSortable(PRINT_COL, false);
+//        sorter.sort();
         
      // button add row
 //        addBtn.addActionListener(new ActionListener(){
@@ -261,30 +274,12 @@ public class TicketUI extends AcmeBaseJPanel {
 //            }
 //        });
 
-        // hide the column containing the UUIDs
         
         
         
      
 
 
-        /*
-         * This button will search for the user in the list and find the User associated
-         * with the ID so it can pass it to the add/update screen for use
-         */
-//        Action editAction = new AbstractAction() {
-//            private static final long serialVersionUID = 1L;
-//
-//            public void actionPerformed(ActionEvent e) {
-//                int modelRow = Integer.valueOf(e.getActionCommand());
-//                // find the user and go to the update screen
-//                for (Map.Entry<UUID, User> users : company.getUsers().entrySet()) {
-//                    if (users.getKey().equals(listTbl.getModel().getValueAt(modelRow, ID_COL))) {
-//                        getAcmeUI().userAddUpdate(users.getValue());
-//                    }
-//                }
-//            }
-//        };
 
         /* Iterate through the users in the company and populate the table */
 //        for (Map.Entry<UUID, User> users : company.getUsers().entrySet()) {
@@ -297,13 +292,29 @@ public class TicketUI extends AcmeBaseJPanel {
 //            model.addRow(row);
 //        }
 //
-//        ButtonColumn button = new ButtonColumn(listTbl, editAction, EDIT_COL);
-//        button.setMnemonic(KeyEvent.VK_D);
+                
+        //This is what is making your buttons visible
+        //I had to add in the ButtonColumn class to make them work
+        //I just noticed that Jacob had done that.
+        //They take the parameters: 1. table(your table you want them in)
+        //2.action(the method you want called when they are clicked)
+        //3.and the colounm to place them in
+        ButtonColumn buttonPrint = new ButtonColumn(table, printAction, PRINT_COL);
+        buttonPrint.setMnemonic(KeyEvent.VK_D);
+        ButtonColumn buttonComp = new ButtonColumn(table, compAction, COMP_COL);
+        buttonComp.setMnemonic(KeyEvent.VK_D);
+        ButtonColumn buttonCancel = new ButtonColumn(table, cancelAction, CANCEL_COL);
+        buttonCancel.setMnemonic(KeyEvent.VK_D);
     
 	
 	}
 
-		
+	//So you can test it from here
+    public static void main(String [] args) {
+      AcmeUI acme = new AcmeUI();
+      acme.setPanel(new TicketUI());
+      acme.getCompany().setCurrentUser(new User());
+  }
 		
 	
 
