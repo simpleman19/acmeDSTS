@@ -7,13 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import acme.data.PersistableEntity;
-@Entity
-@Table(name = "CUSTOMER")
+@Entity(name = "CUSTOMER")
 public class Customer implements PersistableEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

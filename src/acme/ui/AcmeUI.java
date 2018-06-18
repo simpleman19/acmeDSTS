@@ -1,13 +1,21 @@
 package acme.ui;
 
-import acme.data.HibernateAdapter;
-import acme.pd.*;
-
-import javax.swing.*;
-import java.awt.*;
-
+import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import javax.swing.Box;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.SwingConstants;
+
+import acme.pd.Company;
+import acme.pd.Courier;
+import acme.pd.Customer;
+import acme.pd.Ticket;
+import acme.pd.User;
 
 public class AcmeUI extends JFrame {
 
@@ -16,12 +24,11 @@ public class AcmeUI extends JFrame {
     public AcmeUI() {
         super("Acme Delivery Software");
 
-        HibernateAdapter.startUp();
-        this.company = Company.getDefaultAcme();
+        this.company = new Company();
         this.buildMenu();
 
         setVisible(true);
-        setSize(800, 550);
+        setSize(550, 550);
         setLocationRelativeTo(null);
         addWindowListener(new ShutdownListener());
 
@@ -32,7 +39,7 @@ public class AcmeUI extends JFrame {
         this.setJMenuBar(new JMenuBar());
         if (company.getCurrentUser() != null) {
             boolean admin = company.getCurrentUser().isAdmin();
-            JMenuBar menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
             // Ticket Button
             JMenuItem ticketList = new JMenuItem("Tickets");
@@ -90,8 +97,8 @@ public class AcmeUI extends JFrame {
             logout.addActionListener((event) -> logoutUser());
             menuBar.add(logout);
 
-            this.setJMenuBar(menuBar);
-        }
+        this.setJMenuBar(menuBar);
+    }
     }
 
     public void setPanel(AcmeBaseJPanel panel) {
@@ -135,8 +142,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void customerList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CustomerListUI customerListUI = new CustomerListUI();
+        this.setPanel(customerListUI);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -148,15 +155,15 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void userList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksListPanel clp = new ClerksListPanel();
+        this.setPanel(clp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
-    public void userAddUpdate(User customer) {
+    public void userAddUpdate(User user) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ClerksUpdatePanel cp = new ClerksUpdatePanel(user);
+        this.setPanel(cp);
     }
 
       // Everyone will tie in their panel like this.  Replace my example with your code
@@ -174,16 +181,16 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void importIntoCompany() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
-    }
+        ImportsPanel ip = new ImportsPanel();
+        this.setPanel(ip);
+    }    
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void companyEdit() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
     }
-  
+
     public void mapView() {
         MapUI mapUI = new MapUI();
         this.setPanel(mapUI);
@@ -198,18 +205,15 @@ public class AcmeUI extends JFrame {
     public Company getCompany() {
         return company;
     }
-    class ShutdownListener implements WindowListener {
-        public void windowClosing(WindowEvent event) {
-            HibernateAdapter.shutDown();
+class ShutdownListener implements WindowListener {
+    public void windowClosing(WindowEvent event) {
             setVisible(false); //you can't see me!
             dispose(); //Destroy the JFrame object
-        }
-        public void windowOpened(WindowEvent event) {}
-        public void windowClosed(WindowEvent event) {}
-        public void windowIconified(WindowEvent event) {}
-        public void windowDeiconified(WindowEvent event) {}
-        public void windowActivated(WindowEvent event) {}
-        public void windowDeactivated(WindowEvent event) {}
     }
-}
-
+    public void windowOpened(WindowEvent event) {}
+    public void windowClosed(WindowEvent event) {}
+    public void windowIconified(WindowEvent event) {}
+    public void windowDeiconified(WindowEvent event) {}
+    public void windowActivated(WindowEvent event) {}
+    public void windowDeactivated(WindowEvent event) {}
+}}

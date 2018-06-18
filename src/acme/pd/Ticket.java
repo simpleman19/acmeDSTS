@@ -1,7 +1,6 @@
 package acme.pd;
 
 import acme.data.PersistableEntity;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -9,21 +8,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
-@Entity
-@Table(name = "TICKET")
+@Entity(name = "TICKET")
 public class Ticket implements PersistableEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

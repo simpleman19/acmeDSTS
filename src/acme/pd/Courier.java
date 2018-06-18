@@ -3,13 +3,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 import acme.data.PersistableEntity;
 
-@Entity
-@Table(name = "COURIER")
+@Entity(name = "COURIER")
 public class Courier extends Person implements PersistableEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "NUMBER")
