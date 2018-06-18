@@ -154,8 +154,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void customerList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CustomerListUI customerListUI = new CustomerListUI();
+        this.setPanel(customerListUI);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -233,6 +233,5 @@ public class AcmeUI extends JFrame {
         public void windowDeiconified(WindowEvent event) {}
         public void windowActivated(WindowEvent event) {}
         public void windowDeactivated(WindowEvent event) {}
-    }
-}
+}}
 
