@@ -3,7 +3,9 @@ package acme.ui;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Collections;
 
+import javax.persistence.NoResultException;
 import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -11,6 +13,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
+import acme.data.HibernateAdapter;
+import acme.data.PersistableEntity;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
@@ -23,8 +27,16 @@ public class AcmeUI extends JFrame {
 
     public AcmeUI() {
         super("Acme Delivery Software");
-
-        this.company = new Company();
+        HibernateAdapter.startUp();
+        
+        try {
+        	this.company = PersistableEntity.querySingle(Company.class, "select c from COMPANY c", Collections.EMPTY_MAP);
+        } catch(NoResultException e) {
+        	this.company = Company.getDefaultAcme();
+        	this.company.create();
+        }
+        
+        
         this.buildMenu();
 
         setVisible(true);
@@ -214,7 +226,9 @@ public class AcmeUI extends JFrame {
             dispose(); //Destroy the JFrame object
         }
         public void windowOpened(WindowEvent event) {}
-        public void windowClosed(WindowEvent event) {}
+        public void windowClosed(WindowEvent event) {
+        	HibernateAdapter.shutDown();
+        }
         public void windowIconified(WindowEvent event) {}
         public void windowDeiconified(WindowEvent event) {}
         public void windowActivated(WindowEvent event) {}
