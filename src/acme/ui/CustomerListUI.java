@@ -7,29 +7,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-
-
-import acme.pd.User;
 import acme.pd.Customer;
 import acme.pd.MapIntersection;
 import acme.pd.Road;
+import acme.pd.User;
 
 public class CustomerListUI extends AcmeBaseJPanel {
   Customer [] customersArray;
@@ -51,7 +49,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
     add(lblCustomers);
     
     //my test data
-    HashMap<UUID, Customer> testData = getCompany().getCustomer();
+    Map<UUID, Customer> testData = getCompany().getCustomers();
     Collection<Customer> values = testData.values();
     ArrayList<Customer> listOfValues = new ArrayList<Customer>(values);
     Set<UUID> keySet = testData.keySet();
@@ -131,7 +129,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
                 .addComponent(lblCustomers, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)))
             .addGroup(groupLayout.createSequentialGroup()
               .addGap(20)
-              .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, this.getSize().width-10)))
+              .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, (int)getParent().getSize().getWidth())))
           .addContainerGap(0, Short.MAX_VALUE))
     );
     groupLayout.setVerticalGroup(
