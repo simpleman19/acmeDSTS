@@ -2,7 +2,7 @@ package acme.pd;
 
 import java.util.Random;
 
-public class Road {
+public class Road implements Comparable {
     private Direction direction;
     private String name;
     private boolean bidirectional;
@@ -36,5 +36,13 @@ public class Road {
 
     public void setBidirectional(boolean bidirectional) {
         this.bidirectional = bidirectional;
+    }
+    
+    public int compareTo(Object o) {
+    	return this.getName().compareTo(((Road) o).getName());
+    }
+    
+    public String toString() {
+    	return this.getName();
     }
 }

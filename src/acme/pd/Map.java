@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -243,6 +245,26 @@ public class Map {
 
     public MapIntersection[][] getMap() {
         return map;
+    }
+    
+    public Set<Road> getStreets() {
+    	Set<Road> streets = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			streets.add(map[i][j].getEWroad());
+    		}
+    	}
+    	return streets;
+    }
+    
+    public Set<Road> getAvenues() {
+    	Set<Road> avenues = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			avenues.add(map[i][j].getNSroad());
+    		}
+    	}
+    	return avenues;
     }
 
     public MapIntersection getHomeBase() {
