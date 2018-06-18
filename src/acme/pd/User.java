@@ -1,16 +1,26 @@
 package acme.pd;
 
+import java.util.HashMap;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NoResultException;
+
+import acme.data.PersistableEntity;
+
 // Creates the class and extends methods
 // from the Person class for User to use.
-
-public class User extends Person {
+@Entity(name = "APP_USER")
+public class User extends Person implements PersistableEntity {
 	
 	// Create Class attributes to store
 	// username, password and isAdmin
 	// datatypes. 
-	
+	@Column(name = "USERNAME")
     private String username;
+	@Column(name = "PASSWORD")
     private String password;
+	@Column(name = "IS_ADMIN")
     private boolean isAdmin;
 
     // Constructor for the User object.
@@ -50,24 +60,21 @@ public class User extends Person {
         isAdmin = admin;
     }
     
-    public boolean authenticate(String u, String p) {
-    	
+    public static boolean isAuthenticated(String u, String p) {
     	 // Checking to see if username and password match 
-    	
-    	 if ( 
-    		 (this.getUsername().equalsIgnoreCase(u)) && 
-    	     (this.getPassword().equals(p))
-    	     ) {
-    		 
-    		 System.out.println("Login Authenticated. Access Granted.");
-    		 return true;
-    		 
-    	 	}
-    	 else {
-    		 System.out.println("Login Failed Authentication. Access Denied.");
-    		 return false;
-    	 }
-    	 	 
+    	HashMap<String,String> parameters = new HashMap<String, String>();
+    	parameters.put("username", u);
+    	parameters.put("password", p);
+    	try {
+    		PersistableEntity.querySingle(User.class,
+       			 "select u from APP_USER u where USERNAME = :username and PASSWORD = :password",
+       			 parameters);
+    		System.out.println("Login Authenticated. Access Granted.");
+   		 	return true;
+    	} catch(NoResultException e) {
+    		System.out.println("Login Failed Authentication. Access Denied.");
+    		return false;
+    	}
     }
     
     

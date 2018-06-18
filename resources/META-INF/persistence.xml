@@ -5,9 +5,10 @@
     <persistence-unit name="my-pu">
    		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>acme.pd.Company</class>
-		<class>acme.pd.Ticket</class>
 		<class>acme.pd.Courier</class>
 		<class>acme.pd.Customer</class>
+		<class>acme.pd.Ticket</class>
+		<class>acme.pd.User</class>
 		<properties>
     		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
     		<property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />

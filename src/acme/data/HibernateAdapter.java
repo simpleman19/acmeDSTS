@@ -1,5 +1,7 @@
 package acme.data;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.persistence.EntityManager;
@@ -7,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
+import javax.persistence.TypedQuery;
 
 public class HibernateAdapter {	
     @PersistenceUnit
@@ -63,5 +66,26 @@ public class HibernateAdapter {
 
     public static <T> T get(Class<T> classOfEntity, Object id) {
         return doWithEntityManager((em) -> (T) em.find(classOfEntity, id));
+    }
+
+    // for example of how to use sql parameters, see here: http://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#spatial-types-query-example
+    private static <T> Object doWithQuery(Class<T> classOfEntity, String sql, Map<String, String> sqlParameters, Function<TypedQuery<T>, Object> lambda) {
+    	return doWithEntityManager((em) -> {
+    		TypedQuery<T> q = em.createQuery(sql, classOfEntity);
+    		if (sqlParameters != null) {
+	    		for (Map.Entry<String, String> entry : (sqlParameters.entrySet())) {
+	    			q.setParameter(entry.getKey(), entry.getValue());
+	    		}
+    		}
+    		return lambda.apply(q);
+    	});
+    }
+    
+    public static <T> T querySingle(Class<T> entityClass, String sql, Map<String, String> sqlParameters) {
+    	return (T) doWithQuery(entityClass, sql, sqlParameters, q -> q.getSingleResult());
+    }
+    
+    public static <T> List<T> queryList(Class<T> entityClass, String sql, Map<String, String> sqlParameters) {
+    	return (List<T>) doWithQuery(entityClass, sql, sqlParameters, q -> q.getResultList());
     }
 }
