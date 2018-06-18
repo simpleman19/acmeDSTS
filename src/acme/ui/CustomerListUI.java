@@ -34,6 +34,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
   
   public CustomerListUI() {
     super();
+    buildPanel();
   }
   
   public void buildPanel() {
@@ -44,7 +45,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
     
     //title label
     JLabel lblCustomers = new JLabel("Customers");
-    lblCustomers.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+    lblCustomers.setFont(new Font(lblCustomers.getFont().toString(), Font.PLAIN, 16));
     lblCustomers.setBounds(20, 20, 200, 27);
     add(lblCustomers);
     
@@ -68,7 +69,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
 
     //set up table
     jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-    jTable1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); 
+    //jTable1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); 
     jTable1.setModel(new javax.swing.table.DefaultTableModel(objects, cols) {
         Class[] types = new Class [] {
             java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, javax.swing.JButton.class
@@ -94,8 +95,8 @@ public class CustomerListUI extends AcmeBaseJPanel {
   
     //more table properties
     jTable1.setColumnSelectionAllowed(false);
-    jTable1.getTableHeader().setFont(new Font("Lucida Grande", 0, 18)); 
-    jTable1.setRowHeight(24);
+    //jTable1.getTableHeader().setFont(new Font("Lucida Grande", 0, 18)); 
+    jTable1.setRowHeight(35);
     jTable1.setRowMargin(2);
     jTable1.setSelectionBackground(new Color(93, 184, 202));
     jTable1.setSelectionForeground(new java.awt.Color(0, 0, 0));
