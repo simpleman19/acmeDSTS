@@ -17,7 +17,7 @@ public class AcmeUI extends JFrame {
         super("Acme Delivery Software");
 
         HibernateAdapter.startUp();
-        this.company = new Company();
+        this.company = Company.getDefaultAcme();
         this.buildMenu();
 
         setVisible(true);
@@ -123,8 +123,8 @@ public class AcmeUI extends JFrame {
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void ticketCreate() {
         // This will be called with null to create a ticket
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        TicketCreationJPanel jp = new TicketCreationJPanel();
+        this.setPanel(jp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code

@@ -100,6 +100,7 @@ public class Company implements PersistableEntity {
             u1.create();
             this.addUser(u1);
         }
+        this.update();
     }
 
     public UUID getId() {
@@ -217,7 +218,7 @@ public class Company implements PersistableEntity {
     	acme.setCourierMilesPerHour(15);
     	acme.setBlocksPerMile(5.5);
     	acme.setLatenessMarginMinutes(2);
-
+        acme.create();
     	return acme;
     }
 }
