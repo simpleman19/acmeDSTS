@@ -60,8 +60,8 @@ public class ExampleJPanel extends AcmeBaseJPanel {
 
     public static void main(String [] args) {
         AcmeUI acme = new AcmeUI();
-        acme.setPanel(new ExampleJPanel());
         acme.getCompany().setCurrentUser(new User());
+        acme.setPanel(new ExampleJPanel());
     }
 
 }

@@ -2,7 +2,9 @@ package acme.pd;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -28,7 +30,7 @@ public class Company implements PersistableEntity {
 	@Transient
     private Map map;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private java.util.Map<UUID, Courier> couriers;	
+    private java.util.Map<UUID, Courier> couriers;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private java.util.Map<UUID, Ticket> tickets;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -51,6 +53,8 @@ public class Company implements PersistableEntity {
     private double courierMilesPerHour = 5.8;
     @Transient
     private String mapFile = "map/map.csv";
+    @Transient
+    public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
 
     public Company() {
         // TODO initialize company
@@ -60,15 +64,44 @@ public class Company implements PersistableEntity {
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
         customers = new HashMap<UUID, Customer>();
-        currentUser = new User();
         users = new HashMap<UUID, User>();
     }
 
+    public void generateStuff() {
+        Random rand = new Random();
+        // TODO remove test customers and couriers
+        for (int i = 0; i < 10; i++) {
+            Courier c1 = new Courier();
+            c1.setName("That Guy " + i);
+            c1.setCourierNumber(i);
+            c1.create();
+            this.addCourier(c1);
+
+            Customer c2 = new Customer();
+            c2.setName("That Customer " + (1000 + i));
+            MapIntersection [][] mapI = map.getMap();
+            // Put company on map
+            c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
+            c2.create();
+            this.addCustomer(c2);
+
+            User u1 = new User();
+            u1.setName("First " + "Last" + i);
+            u1.setUsername("uname " + i);
+            if (i % 2 == 0) {
+                u1.setActive(true);
+            } else {
+                u1.setActive(false);
+            }
+            u1.setAdmin(true);
+            u1.setPassword("pass"+i);
+            u1.create();
+            this.addUser(u1);
+        }
+        this.update();
+    }
+
     public UUID getId() {
-        // TODO fix with database
-        /*
-         * if (this.id == null) { this.id = UUID.randomUUID(); }
-         */
         return id;
     }
 
@@ -91,9 +124,9 @@ public class Company implements PersistableEntity {
     public java.util.Map<UUID, Courier> getCouriers() {
         return couriers;
     }
-    
+
     public void addCourier(Courier courier) {
-		this.couriers.put(courier.getId(), courier);		
+		this.couriers.put(courier.getId(), courier);
 	}
 
     public java.util.Map<UUID, Ticket> getTickets() {
@@ -101,7 +134,7 @@ public class Company implements PersistableEntity {
     }
 
     public void addTicket(Ticket ticket) {
-		tickets.put(ticket.getId(), ticket);		
+		tickets.put(ticket.getId(), ticket);
 	}
 
     public java.util.Map<UUID, Customer> getCustomers() {
@@ -175,15 +208,15 @@ public class Company implements PersistableEntity {
     public void setCourierMilesPerHour(double courierMilesPerHour) {
         this.courierMilesPerHour = courierMilesPerHour;
     }
-    
+
     public static Company getDefaultAcme() {
     	Company acme = new Company();
-    	
+
     	acme.setName("Acme");
     	acme.setCourierMilesPerHour(15);
     	acme.setBlocksPerMile(5.5);
     	acme.setLatenessMarginMinutes(2);
-    	
-    	return acme; 
+        acme.create();
+    	return acme;
     }
 }

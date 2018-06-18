@@ -17,6 +17,7 @@ public class Main {
         // courier.create();
         HibernateAdapter.shutDown();
 
+
         MapIntersection tempMap[][] = company.getMap().getMap();
 
         for (int x = 0; x < tempMap.length; x++) {

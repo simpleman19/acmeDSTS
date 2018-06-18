@@ -27,6 +27,7 @@ public class User extends Person implements PersistableEntity {
     
     public User () 
     {
+        super();
     	// IMPLEMENT
     }
     
