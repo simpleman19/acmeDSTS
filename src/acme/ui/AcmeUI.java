@@ -39,7 +39,7 @@ public class AcmeUI extends JFrame {
         this.setJMenuBar(new JMenuBar());
         if (company.getCurrentUser() != null) {
             boolean admin = company.getCurrentUser().isAdmin();
-            JMenuBar menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
             // Ticket Button
             JMenuItem ticketList = new JMenuItem("Tickets");
@@ -97,8 +97,8 @@ public class AcmeUI extends JFrame {
             logout.addActionListener((event) -> logoutUser());
             menuBar.add(logout);
 
-            this.setJMenuBar(menuBar);
-        }
+        this.setJMenuBar(menuBar);
+    }
     }
 
     public void setPanel(AcmeBaseJPanel panel) {
@@ -142,8 +142,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void customerList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CustomerListUI customerListUI = new CustomerListUI();
+        this.setPanel(customerListUI);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -179,21 +179,18 @@ public class AcmeUI extends JFrame {
         this.setPanel(exampleJPanel);
     }
 
-    // imports selection and processing panel
-    public void importIntoCompany() {
-        ImportsPanel ip = new ImportsPanel();
-        this.setPanel(ip);
-    }
-
     // Everyone will tie in their panel like this.  Replace my example with your code
-    
+    public void importIntoCompany() {
+        ExampleJPanel exampleJPanel = new ExampleJPanel();
+        this.setPanel(exampleJPanel);
+    }    
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void companyEdit() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
     }
-  
+
     public void mapView() {
         MapUI mapUI = new MapUI();
         this.setPanel(mapUI);
@@ -208,17 +205,16 @@ public class AcmeUI extends JFrame {
     public Company getCompany() {
         return company;
     }
-    class ShutdownListener implements WindowListener {
-        public void windowClosing(WindowEvent event) {
+class ShutdownListener implements WindowListener {
+    public void windowClosing(WindowEvent event) {
             setVisible(false); //you can't see me!
             dispose(); //Destroy the JFrame object
-        }
-        public void windowOpened(WindowEvent event) {}
-        public void windowClosed(WindowEvent event) {}
-        public void windowIconified(WindowEvent event) {}
-        public void windowDeiconified(WindowEvent event) {}
-        public void windowActivated(WindowEvent event) {}
-        public void windowDeactivated(WindowEvent event) {}
     }
-}
+    public void windowOpened(WindowEvent event) {}
+    public void windowClosed(WindowEvent event) {}
+    public void windowIconified(WindowEvent event) {}
+    public void windowDeiconified(WindowEvent event) {}
+    public void windowActivated(WindowEvent event) {}
+    public void windowDeactivated(WindowEvent event) {}
+}}
 

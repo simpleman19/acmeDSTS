@@ -13,13 +13,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import acme.data.PersistableEntity;
 
-@Entity
-@Table(name = "COMPANY")
+@Entity(name = "COMPANY")
 public class Company implements PersistableEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
