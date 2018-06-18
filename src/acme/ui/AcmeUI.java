@@ -53,8 +53,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void ticketList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        TicketUI ticketUI = new TicketUI();
+        this.setPanel(ticketUI);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
