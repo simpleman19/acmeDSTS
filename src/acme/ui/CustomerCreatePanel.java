@@ -47,7 +47,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
         add(nameLabel);
         
         nameField = new JTextField();
-        nameField.setBounds(113, 85, 86, 20);
+        nameField.setBounds(113, 85, 125, 20);
         add(nameField);
         nameField.setColumns(10);
         
@@ -75,12 +75,12 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
         
         Set<Road> avenues = company.getMap().getAvenues();
         avenueComboField = new JComboBox<Road>(avenues.toArray(new Road[0]));
-        avenueComboField.setBounds(113, 196, 86, 20);
+        avenueComboField.setBounds(113, 196, 125, 20);
         add(avenueComboField);
         
         Set<Road> streets = company.getMap().getStreets();
         streetComboField = new JComboBox<Road>(streets.toArray(new Road[0]));
-        streetComboField.setBounds(113, 237, 86, 20);
+        streetComboField.setBounds(113, 237, 125, 20);
         add(streetComboField);
         
         JButton saveButton = new JButton("Save");
