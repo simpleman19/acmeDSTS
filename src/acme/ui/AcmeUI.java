@@ -33,10 +33,9 @@ public class AcmeUI extends JFrame {
         	this.company = PersistableEntity.querySingle(Company.class, "select c from COMPANY c", Collections.EMPTY_MAP);
         } catch(NoResultException e) {
         	this.company = Company.getDefaultAcme();
-        	this.company.create();
         }
-        
-        
+
+        this.company = Company.getDefaultAcme();
         this.buildMenu();
 
         setVisible(true);
@@ -142,8 +141,8 @@ public class AcmeUI extends JFrame {
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void ticketCreate() {
         // This will be called with null to create a ticket
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        TicketCreationJPanel jp = new TicketCreationJPanel();
+        this.setPanel(jp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -178,10 +177,10 @@ public class AcmeUI extends JFrame {
         this.setPanel(cp);
     }
 
-      // Everyone will tie in their panel like this.  Replace my example with your code
+      // Display the list of customers
     public void courierList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CourierListPanel clp = new CourierListPanel();
+        this.setPanel(clp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -193,12 +192,9 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void importIntoCompany() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        ImportsPanel ip = new ImportsPanel();
+        this.setPanel(ip);
     }
-
-    // Everyone will tie in their panel like this.  Replace my example with your code
-    
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void companyEdit() {
@@ -222,7 +218,8 @@ public class AcmeUI extends JFrame {
     }
     class ShutdownListener implements WindowListener {
         public void windowClosing(WindowEvent event) {
-            setVisible(false); //you can't see me!
+        HibernateAdapter.shutDown();
+        setVisible(false);
             dispose(); //Destroy the JFrame object
         }
         public void windowOpened(WindowEvent event) {}

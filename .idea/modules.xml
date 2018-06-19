@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Documents-acmeDSTS_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Documents-acmeDSTS_main.iml" group="acmeDSTS" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Documents-acmeDSTS_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Documents-acmeDSTS_test.iml" group="acmeDSTS" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/acmeDSTS.iml" filepath="$PROJECT_DIR$/.idea/modules/acmeDSTS.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/acmeDSTS_main.iml" filepath="$PROJECT_DIR$/.idea/modules/acmeDSTS_main.iml" group="acmeDSTS" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/acmeDSTS_test.iml" filepath="$PROJECT_DIR$/.idea/modules/acmeDSTS_test.iml" group="acmeDSTS" />

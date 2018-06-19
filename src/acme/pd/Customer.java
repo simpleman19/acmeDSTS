@@ -96,4 +96,8 @@ public class Customer implements PersistableEntity {
 			return 1;
 		}
     }
+
+    public String toString() {
+        return this.name;
+    }
 }

@@ -15,6 +15,9 @@ public class Courier extends Person implements PersistableEntity {
 	@Column(name = "NUMBER")
     private int courierNumber;
 
+	public Courier() {
+	    super();
+    }
     public int getCourierNumber() {
         return courierNumber;
     }
@@ -31,5 +34,9 @@ public class Courier extends Person implements PersistableEntity {
 		} catch (NoResultException e) {
 			return 1;
 		}
+    }
+
+    public String toString() {
+        return this.getName();
     }
 }
