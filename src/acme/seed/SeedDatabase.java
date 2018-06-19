@@ -8,7 +8,11 @@ import javax.persistence.EntityManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class SeedDatabase {
     public static void main(String[] args) {
@@ -20,10 +24,51 @@ public class SeedDatabase {
             Scanner sc = new Scanner(System.in);
             String input = "";
             do {
-                System.out.print("There is already a company in the database do you wish to alter the current company? (Y/N): ");
+                System.out.print("There is already a company in the database do you wish to clear the current company? (Y/N): ");
                 input = sc.nextLine().toUpperCase();
                 if (input.equalsIgnoreCase("Y")) {
                     System.out.println("Overwriting Company");
+                    // Delete tickets
+                    Iterator it = new HashMap<>(company.getTickets()).entrySet().iterator();
+                    while (it.hasNext()) {
+                        Ticket ticket = (Ticket) ((Entry) it.next()).getValue();
+                        ticket.delete();
+                    }
+                    company.getTickets().clear();
+                    company.update();
+
+                    // Delete Customers
+                    it = new HashMap<>(company.getCustomers()).entrySet().iterator();
+                    while (it.hasNext()) {
+                        Customer customer = (Customer)((Entry) it.next()).getValue();
+                        company.getCustomers().remove(customer.getId());
+                        company.update();
+                        customer.delete();
+                    }
+
+                    // Delete Couriers
+                    it = new HashMap<>(company.getCouriers()).entrySet().iterator();
+                    while (it.hasNext()) {
+                        Courier courier = (Courier) ((Entry) it.next()).getValue();
+                        company.getCouriers().remove(courier.getId());
+                        company.update();
+                        courier.delete();
+                    }
+                    company.getCouriers().clear();
+                    company.update();
+
+                    // Delete Users
+                    it = new HashMap<>(company.getUsers()).entrySet().iterator();
+                    while (it.hasNext()) {
+                        User user = (User) ((Entry) it.next()).getValue();
+                        company.getUsers().remove(user.getId());
+                        company.update();
+                        user.delete();
+                    }
+                    company.getUsers().clear();
+                    company.update();
+
+                    System.out.println("Cleared out company, seeding...");
                 } else if (input.equalsIgnoreCase("N")){
                     System.out.println("Skipping seed");
                     seed = false;

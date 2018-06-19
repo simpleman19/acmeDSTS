@@ -6,7 +6,7 @@ import acme.pd.*;
 
 public class Main {
     public static void main(String[] args) {
-        /*HibernateAdapter.startUp();
+        HibernateAdapter.startUp();
         Company company = new Company();
         company.setName("The coolest delivery company");
         Courier courier = new Courier();
@@ -66,7 +66,7 @@ public class Main {
         System.out.println(tempDropOff.getEWroad().getDirection());
         System.out.println(tempDropOff.getNSroad().getDirection());
 
-        company.getMap().getPath(tempPickUp, tempDropOff);*/
+        company.getMap().getPath(tempPickUp, tempDropOff);
 
         new AcmeUI();
     }

@@ -222,7 +222,9 @@ public class Company implements PersistableEntity {
     }
 
     public static Company loadCompanyFromDB() {
-        // TODO change this in Main Cleanup
-        return null;
+        // TODO actually load from db
+        Company acme = Company.getDefaultAcme();
+        acme.generateStuff();
+        return acme;
     }
 }
