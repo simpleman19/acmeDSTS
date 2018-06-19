@@ -154,7 +154,7 @@ public class HibernateAdapterTest {
 	
 	@Test
 	public void testTicket() {
-		Ticket ticket = new Ticket();
+		Ticket ticket = new Ticket(null);
 		ticket.setNote("go to lobby");
 		ticket.create();
 		ticket = PersistableEntity.get(Ticket.class, ticket.getId());
@@ -191,7 +191,7 @@ public class HibernateAdapterTest {
         customer.setName("Bickers & Bickers");
         customer.create();
 
-        Ticket ticket = new Ticket();
+        Ticket ticket = new Ticket(company);
         ticket.setDeliveryCustomer(customer);
         ticket.create();
         ticket.setCompany(company);

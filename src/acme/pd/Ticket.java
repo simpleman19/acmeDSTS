@@ -4,7 +4,11 @@ import acme.data.PersistableEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -23,10 +27,6 @@ public class Ticket implements PersistableEntity {
     private UUID id;
 	@ManyToOne
     private Company company;
-	@Transient
-    private MapIntersection deliveryCustomerLocation;
-	@Transient
-    private MapIntersection pickupCustomerLocation;
 	@ManyToOne
     private Customer deliveryCustomer;
 	@ManyToOne
@@ -62,56 +62,85 @@ public class Ticket implements PersistableEntity {
     @Column(name = "NOTE")
     private String note;
 
+    public Ticket() {
+    }
+
+    public Ticket(Company company) {
+        this.setCreationDateTime(LocalDateTime.now());
+        this.setCompany(company);
+        this.generatePackageId();
+        this.setClerk(this.getCompany().getCurrentUser());
+
+        this.setCompany(company);
+        HashMap<UUID, Customer> customers = new HashMap<>(company.getCustomers());
+        // Set the pickup customer to a customer (Useful for UI)
+        Customer tmpCust = (Customer) customers.values().toArray()[0];
+        this.setPickupCustomer(tmpCust);
+        // Remove customer from map to be sure that pickup and destination are different
+        customers.remove(tmpCust.getId());
+        // Set destination customer to a customer (Useful for UI)
+        this.setDeliveryCustomer((Customer) customers.values().toArray()[0]);
+        this.setDeliveryTime(LocalDateTime.now().plusHours(6));
+
+        this.note = "";
+        updatePath();
+
+    }
+
     public ArrayList<String> getDeliveryInstructions() {
         return path.getDeliveryInstructions();
     }
 
     public UUID getId() {
-        // TODO fix with database
-        /*if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }*/
         return id;
     }
 
-    public BigDecimal calcQuote() {
-      double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
-      double quote = path.getBlocksBetweenHomeandDropoff() * company.getBlockBillingRate().doubleValue();
-      quote = quote + company.getFlatBillingRate().doubleValue();
-      
-      this.calcEstimatedTimes();
-        return new BigDecimal(quote);
+    private void updatePath() {
+        // Only update if pickup and delivery are set
+        if (this.getPickupCustomer() != null
+                && this.getDeliveryCustomer() != null
+                && this.getDeliveryTime() != null) {
+            this.path = company.getMap().getPath(
+                    this.getPickupCustomerLocation(),
+                    this.getDeliveryCustomerLocation()
+            );
+            calcEstimatedTimes();
+            calculateQuote();
+        } else {
+            this.path = null;
+        }
+    }
+
+    private void calculateQuote() {
+        double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
+        double quote = path.getBlocksBetweenHomeandDropoff() * company.getBlockBillingRate().doubleValue();
+        this.quotedPrice = new BigDecimal(quote + company.getFlatBillingRate().doubleValue());
     }
 
     private void calcEstimatedTimes() {
       // TODO estimate times - needs refining
-      
+        // Altered this slightly
+
       double mphCouriers = company.getCourierMilesPerHour();
       double milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
       double timeToTravel = milesToTravel / mphCouriers;
       LocalDateTime resultOfCouriersAndMiles = deliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
       resultOfCouriersAndMiles.plusMinutes(5);
-      
-     
-      try {
-        if(resultOfCouriersAndMiles.isAfter(LocalDateTime.now()))
-        {
+
+      if(resultOfCouriersAndMiles.isAfter(LocalDateTime.now()))
+      {
           this.estimatedDepartureTime = resultOfCouriersAndMiles;
-        }
-      
+      } else {
+          this.estimatedDepartureTime = LocalDateTime.now();
+      }
+
       milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
       timeToTravel = milesToTravel / mphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
-      
+
       milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenPickupandDropoff();
       timeToTravel = milesToTravel / mphCouriers;
       this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
-      } 
-      catch(Exception error)
-      {
-        System.out.println("There has been a problem. Your delivery is not possible.");
-      }
-     
     }
 
     public Company getCompany() {
@@ -120,7 +149,6 @@ public class Ticket implements PersistableEntity {
 
     public void setCompany(Company company) {
         this.company = company;
-        company.addTicket(this);
     }
 
     public Customer getDeliveryCustomer() {
@@ -129,6 +157,7 @@ public class Ticket implements PersistableEntity {
 
     public void setDeliveryCustomer(Customer deliveryCustomer) {
         this.deliveryCustomer = deliveryCustomer;
+        this.updatePath();
     }
 
     public Customer getPickupCustomer() {
@@ -137,13 +166,14 @@ public class Ticket implements PersistableEntity {
 
     public void setPickupCustomer(Customer pickupCustomer) {
         this.pickupCustomer = pickupCustomer;
+        this.updatePath();
     }
 
     public LocalDateTime getCreationDateTime() {
         return creationDateTime;
     }
 
-    public void setCreationDateTime(LocalDateTime creationDateTime) {
+    private void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
@@ -151,7 +181,7 @@ public class Ticket implements PersistableEntity {
         return clerk;
     }
 
-    public void setClerk(User clerk) {
+    private void setClerk(User clerk) {
         this.clerk = clerk;
     }
 
@@ -173,6 +203,17 @@ public class Ticket implements PersistableEntity {
 
     public String getPackageID() {
         return packageID;
+    }
+
+    private void generatePackageId() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMdd-hhmmss");
+        this.packageID = df.format(this.getCreationDateTime());
+        // TODO check database for duplicate (Not likely but better safe than sorry)
+        boolean overlap = (new Random().nextInt() % 10 == 0);
+        if (overlap) {
+            this.setCreationDateTime(this.getCreationDateTime().plusSeconds(1));
+            this.generatePackageId();
+        }
     }
 
     public BigDecimal getQuotedPrice() {
@@ -208,18 +249,16 @@ public class Ticket implements PersistableEntity {
     }
 
     public void setDeliveryTime(LocalDateTime deliveryTime) {
-//        if (new Random().nextInt() % 3 == 0)
-//            //this.bonus = company.getBonus();
-//        else
-//            this.bonus = new BigDecimal(0);
+        // TODO Bonus
         this.deliveryTime = deliveryTime;
+        this.updatePath();
     }
 
     public LocalDateTime getEstimatedDeliveryTime() {
         return estimatedDeliveryTime;
     }
 
-    public void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
+    private void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 
@@ -242,24 +281,14 @@ public class Ticket implements PersistableEntity {
     public void setNote(String note) {
         this.note = note;
     }
-    
+
     public MapIntersection getDeliveryCustomerLocation()
     {
-      return this.deliveryCustomerLocation;
+      return this.deliveryCustomer.getIntersection();
     }
-    
-    public void setDeliveryCustomerLocation(MapIntersection deliveryCustomerLocation)
-    {
-      this.deliveryCustomerLocation = deliveryCustomerLocation;
-    }
-    
+
     public MapIntersection getPickupCustomerLocation()
     {
-      return this.pickupCustomerLocation;
-    }
-    
-    public void setPickupCustomerLocation(MapIntersection pickupCustomerLocation)
-    {
-      this.pickupCustomerLocation = pickupCustomerLocation;
+      return this.pickupCustomer.getIntersection();
     }
 }

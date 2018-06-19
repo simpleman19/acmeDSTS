@@ -150,7 +150,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   
   public static void main(String [] args) {
     AcmeUI acme = new AcmeUI();
-    Ticket testTicket = new Ticket();
+    Ticket testTicket = new Ticket(acme.getCompany());
     Courier testCourier = new Courier();
     testCourier.setName("Dee Dee");
     testCourier.setCourierNumber(5);

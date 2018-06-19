@@ -190,6 +190,9 @@ local.properties
 # Annotation Processing
 .apt_generated
 
+# JFormDesigner
+*.jfd
+
 #ignore DS_store
 .DS_store
 
@@ -209,4 +212,3 @@ gradle-app.setting
 
 ## PostgreSQL
 db/
-

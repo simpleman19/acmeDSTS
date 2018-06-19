@@ -11,6 +11,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
+import acme.data.HibernateAdapter;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
@@ -24,7 +25,9 @@ public class AcmeUI extends JFrame {
     public AcmeUI() {
         super("Acme Delivery Software");
 
-        this.company = new Company();
+        HibernateAdapter.startUp();
+
+        this.company = Company.getDefaultAcme();
         this.buildMenu();
 
         setVisible(true);
@@ -130,8 +133,8 @@ public class AcmeUI extends JFrame {
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void ticketCreate() {
         // This will be called with null to create a ticket
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        TicketCreationJPanel jp = new TicketCreationJPanel();
+        this.setPanel(jp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -207,8 +210,9 @@ public class AcmeUI extends JFrame {
     }
 class ShutdownListener implements WindowListener {
     public void windowClosing(WindowEvent event) {
-            setVisible(false); //you can't see me!
-            dispose(); //Destroy the JFrame object
+        HibernateAdapter.shutDown();
+        setVisible(false);
+        dispose(); //Destroy the JFrame object
     }
     public void windowOpened(WindowEvent event) {}
     public void windowClosed(WindowEvent event) {}
