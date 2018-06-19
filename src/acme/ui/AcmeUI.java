@@ -35,7 +35,6 @@ public class AcmeUI extends JFrame {
         	this.company = Company.getDefaultAcme();
         }
 
-        this.company = Company.getDefaultAcme();
         this.buildMenu();
 
         setVisible(true);
@@ -160,8 +159,8 @@ public class AcmeUI extends JFrame {
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void customerAddUpdate(Customer customer) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CustomerCreatePanel panel = new CustomerCreatePanel();
+        this.setPanel(panel);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -186,8 +185,8 @@ public class AcmeUI extends JFrame {
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void courierAddUpdate(Courier courier) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+    	CourierCreatePanel panel = new CourierCreatePanel();
+        this.setPanel(panel);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -223,9 +222,7 @@ public class AcmeUI extends JFrame {
             dispose(); //Destroy the JFrame object
         }
         public void windowOpened(WindowEvent event) {}
-        public void windowClosed(WindowEvent event) {
-        	HibernateAdapter.shutDown();
-        }
+        public void windowClosed(WindowEvent event) {}
         public void windowIconified(WindowEvent event) {}
         public void windowDeiconified(WindowEvent event) {}
         public void windowActivated(WindowEvent event) {}
