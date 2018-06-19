@@ -34,7 +34,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
   
   public CustomerListUI() {
     super();
-    buildPanel();
+    
   }
   
   public void buildPanel() {
