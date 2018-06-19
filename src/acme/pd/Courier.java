@@ -12,11 +12,18 @@ public class Courier extends Person implements PersistableEntity {
 	@Column(name = "NUMBER")
     private int courierNumber;
 
+	public Courier() {
+	    super();
+    }
     public int getCourierNumber() {
         return courierNumber;
     }
 
     public void setCourierNumber(int courierNumber) {
         this.courierNumber = courierNumber;
+    }
+
+    public String toString() {
+        return this.getName();
     }
 }

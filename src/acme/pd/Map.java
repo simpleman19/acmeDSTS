@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class Map {
     private MapIntersection[][] map;
@@ -47,7 +46,7 @@ public class Map {
         exportMap(file);
         // TODO export map
     }
-    
+
     public void importMap(File file) {
         // this gives you a 2-dimensional array of strings
         List<List<String>> lines = new ArrayList<>();
@@ -362,12 +361,12 @@ public class Map {
         pathDir.setBlocksBetweenHomeandDropoff(totalBlocks);
         pathDir.setPath(pathToBe);
 
-        System.out.println("----Directions-----");
+        /*System.out.println("----Directions-----");
 
         for(MapIntersection temp : pathDir.getPath())
         {
           System.out.println(temp.getIntersectionName());
-        }
+        }*/
         return pathDir;
       }
 
@@ -592,7 +591,7 @@ public class Map {
     public static void main(String [] args) {
         Company company = new Company();
 
-        Ticket ticket = new Ticket();
+        Ticket ticket = new Ticket(company);
 
         MapIntersection tempMap[][] = company.getMap().getMap();
 
@@ -657,11 +656,10 @@ public class Map {
         Path testPath = company.getMap().getPath(tempPickUp,tempDropOff );
 
         ticket.setPath(testPath);
-        ticket.setCompany(company);
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
-        System.out.println("Quote: " + ticket.calcQuote().shortValue());
+        System.out.println("Quote: " + ticket.getQuotedPrice().shortValue());
         System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
         System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
         System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());
@@ -717,11 +715,10 @@ public class Map {
         testPath = company.getMap().getPath(tempPickUp,tempDropOff );
 
         ticket.setPath(testPath);
-        ticket.setCompany(company);
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
-        System.out.println("Quote: " + ticket.calcQuote().shortValue());
+        System.out.println("Quote: " + ticket.getQuotedPrice().shortValue());
         System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
         System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
         System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());
@@ -776,11 +773,10 @@ public class Map {
         testPath = company.getMap().getPath(tempPickUp,tempDropOff );
 
         ticket.setPath(testPath);
-        ticket.setCompany(company);
         System.out.println("Total Blocks: " + testPath.getBlocksBetweenHomeandDropoff());
         System.out.println("Home Office to Pickup Blocks: " + testPath.getBlocksBetweenHomeandPickup());
         System.out.println("Pickup to Delivery Blocks : " + testPath.getBlocksBetweenPickupandDropoff());
-        System.out.println("Quote: " + ticket.calcQuote().shortValue());
+        System.out.println("Quote: " + ticket.getQuotedPrice().shortValue());
         System.out.println("Estimated Departure Time: " + ticket.getEstimatedDepartureTime());
         System.out.println("Estimated Pickup Time: " + ticket.getEstimatedPickupTime());
         System.out.println("Estimated Delivery Time: " + ticket.getEstimatedDeliveryTime());

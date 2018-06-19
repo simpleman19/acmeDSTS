@@ -85,4 +85,8 @@ public class Customer implements PersistableEntity {
     public void setIntersection(MapIntersection intersection) {
         this.intersection = intersection;
     }
+
+    public String toString() {
+        return this.name;
+    }
 }
