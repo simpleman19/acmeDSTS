@@ -220,4 +220,9 @@ public class Company implements PersistableEntity {
 
     	return acme;
     }
+
+    public static Company loadCompanyFromDB() {
+        // TODO change this in Main Cleanup
+        return null;
+    }
 }
