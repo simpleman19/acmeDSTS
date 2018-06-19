@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
@@ -13,25 +14,28 @@ import java.util.Vector;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import acme.pd.Company;
+import acme.pd.Courier;
+import acme.pd.Ticket;
 import acme.pd.User;
 
 public class TicketUI extends AcmeBaseJPanel {
@@ -43,9 +47,12 @@ public class TicketUI extends AcmeBaseJPanel {
 	// Main Label for the panel.
 	JLabel mainLbl = new JLabel("Ticket List");
 	
-	// Creating the combo box for the panel.
+	// Creating the check box for the panel.
 	JCheckBox boxComp = new JCheckBox ("Show Completed");
 	
+	//Creating combo box
+    String [] theSeven = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7"};
+    JComboBox combo1 = new JComboBox(theSeven);
 	
 	
 	JTable table = new JTable() {
@@ -57,7 +64,7 @@ public class TicketUI extends AcmeBaseJPanel {
 			                case 0:
 			                    return Integer.class;
 			                case 1: //combo//
-			                    return String.class; 
+			                    return JComboBox.class; 
 			                case 2:
 			                    return String.class;
 			                case 3:
@@ -152,10 +159,12 @@ public class TicketUI extends AcmeBaseJPanel {
 	private void initDefaults() {   
         
 		// creating variables for the column index.
+		final int   DEPART_COL  = 2;
         final int 	CANCEL_COL 	= 4;
         final int 	COMP_COL 	= 5;
         final int 	PRINT_COL 	= 6;
         final int 	ID_COL 		= 7;
+        final int   COMBO_COL   = 1;
         
         // image icon
         ImageIcon cancel = new ImageIcon(
@@ -193,8 +202,25 @@ public class TicketUI extends AcmeBaseJPanel {
         table.getColumnModel().getColumn(CANCEL_COL).setMaxWidth(65);
         table.getColumnModel().getColumn(COMP_COL).setMaxWidth(65);
         table.getColumnModel().getColumn(PRINT_COL).setMaxWidth(65);
-        //table.getColumnModel().getColumn(ID_COL).setMaxWidth(0);
+        //combobox
+        TableColumn comboCol = table.getColumnModel().getColumn(COMBO_COL);
+        comboCol.setCellEditor(new DefaultCellEditor(combo1));
+        DefaultTableCellRenderer renderer = 
+        		new DefaultTableCellRenderer ();
+        	renderer.setToolTipText("Click for combo box");
+        	comboCol.setCellRenderer(renderer);
         table.setRowHeight(35);
+
+        /* Sort by active users, then by name */
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        sortKeys.add(new RowSorter.SortKey(DEPART_COL, SortOrder.DESCENDING));
+        sorter.setSortKeys(sortKeys);
+        table.setRowSorter(sorter);
+        sorter.setSortable(CANCEL_COL, false);
+        sorter.setSortable(COMP_COL, false);
+        sorter.setSortable(PRINT_COL, false);
+        sorter.sort();
         
         TableColumn column = table.getColumnModel().getColumn(ID_COL);
         column.setMinWidth(0);
@@ -210,7 +236,9 @@ public class TicketUI extends AcmeBaseJPanel {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
-                //Code here
+            	System.out.print("Print");
+                //print 
+            	
             }
         };
         
@@ -222,6 +250,12 @@ public class TicketUI extends AcmeBaseJPanel {
 
             public void actionPerformed(ActionEvent e) {
                 //Code here
+            	int modelRow = Integer.valueOf(e.getActionCommand());
+            	   for (Map.Entry<UUID, Ticket> ticket : company.getTickets().entrySet()) {
+                       if (ticket.getValue().getId().equals(table.getModel().getValueAt(modelRow, ID_COL))) {
+                           getAcmeUI().ticketComplete(ticket.getValue());
+                       }
+                   }
             }
         };
         
@@ -236,69 +270,38 @@ public class TicketUI extends AcmeBaseJPanel {
             }
         };
         
-//-------------------------------------------------------------
-        
-     // Change A JTable Background Color, Font Size, Font Color, Row Height
-	//        table.setBackground(Color.LIGHT_GRAY);
-	//        table.setForeground(Color.black);
-	//        Font font = new Font("",1,22);
-	//        table.setFont(font);
-	//        table.setRowHeight(30);
-
-//        /* Sort by active users, then by name */
-//        TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
-//        
-//        table.setRowSorter(sorter);
-//        sorter.setSortable(CANCEL_COL, false);
-//        sorter.setSortable(COMP_COL, false);
-//        sorter.setSortable(PRINT_COL, false);
-//        sorter.sort();
-        
-     // button add row
-//        addBtn.addActionListener(new ActionListener(){
-//        	
-//        	
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-
-            	Vector<Object> row = new Vector<Object>();
-                row.add("col1");
-                row.add("col2");
-                row.add("col3");
-                row.add("col4");
-                row.add(cancel);
-                row.add(comp);
-                row.add(print);
-                model.addRow(row);
-            
-//            }
-//        });
-
-        
-        
-        
-     
-
-
-
-        /* Iterate through the users in the company and populate the table */
-//        for (Map.Entry<UUID, User> users : company.getUsers().entrySet()) {
-//            Vector<Object> row = new Vector<Object>();
-//            row.add(users.getValue().getName());
-//            row.add(users.getValue().getUsername());
-//            row.add(users.getValue().isActive());
-//            row.add(cancel);
-//            row.add(users.getKey());
-//            model.addRow(row);
-//        }
-//
-                
-        //This is what is making your buttons visible
-        //I had to add in the ButtonColumn class to make them work
-        //I just noticed that Jacob had done that.
-        //They take the parameters: 1. table(your table you want them in)
-        //2.action(the method you want called when they are clicked)
-        //3.and the colounm to place them in
+ 
+       addBtn.addActionListener(new ActionListener() {
+    	     public void actionPerformed(ActionEvent e) {
+    	    	goToTicketCreate();
+    	     }
+    	   });
+       
+       Courier tempCourier = new Courier();
+       tempCourier.setCourierNumber(5);
+       tempCourier.setName("ABC");
+       Ticket tempTicket = new Ticket();
+       tempTicket.setCourier(tempCourier);
+       tempTicket.setDepartureTime(LocalDateTime.now());
+       tempTicket.setDeliveryTime(LocalDateTime.now());
+       company.getTickets().put(null, tempTicket);
+       
+       /* Iterate through the tickets in the company and populate the table */
+       for (Map.Entry<UUID, Ticket> tickets : company.getTickets().entrySet()) {
+           Vector<Object> row = new Vector<Object>();
+           row.add(tickets.getValue().getPackageID());
+           row.add(comboCol);
+           row.add(tickets.getValue().getDepartureTime());
+           //Used delivery time
+           row.add(tickets.getValue().getDeliveryTime());
+           row.add(cancel);
+           row.add(comp);
+           row.add(print);
+           row.add(tickets.getValue().getId());
+           model.addRow(row);
+       }
+       
+       
         ButtonColumn buttonPrint = new ButtonColumn(table, printAction, PRINT_COL);
         buttonPrint.setMnemonic(KeyEvent.VK_D);
         ButtonColumn buttonComp = new ButtonColumn(table, compAction, COMP_COL);
@@ -308,8 +311,13 @@ public class TicketUI extends AcmeBaseJPanel {
     
 	
 	}
+	
+	
+	public void goToTicketCreate()
+	{
+		 this.getAcmeUI().ticketCreate();
+	}
 
-	//So you can test it from here
     public static void main(String [] args) {
       AcmeUI acme = new AcmeUI();
       acme.setPanel(new TicketUI());
