@@ -169,10 +169,10 @@ public class AcmeUI extends JFrame {
         this.setPanel(cp);
     }
 
-      // Everyone will tie in their panel like this.  Replace my example with your code
+      // Display the list of customers
     public void courierList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CourierListPanel clp = new CourierListPanel();
+        this.setPanel(clp);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -221,3 +221,4 @@ class ShutdownListener implements WindowListener {
     public void windowActivated(WindowEvent event) {}
     public void windowDeactivated(WindowEvent event) {}
 }}
+
