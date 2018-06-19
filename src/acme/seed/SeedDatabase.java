@@ -31,7 +31,7 @@ public class SeedDatabase {
                     // Delete tickets
                     Iterator it = new HashMap<>(company.getTickets()).entrySet().iterator();
                     while (it.hasNext()) {
-                        Ticket ticket = (Ticket) ((Entry) it.next()).getValue();
+                        Ticket ticket = (Ticket) ((HashMap.Entry) it.next()).getValue();
                         ticket.delete();
                     }
                     company.getTickets().clear();
@@ -40,7 +40,7 @@ public class SeedDatabase {
                     // Delete Customers
                     it = new HashMap<>(company.getCustomers()).entrySet().iterator();
                     while (it.hasNext()) {
-                        Customer customer = (Customer)((Entry) it.next()).getValue();
+                        Customer customer = (Customer)((HashMap.Entry) it.next()).getValue();
                         company.getCustomers().remove(customer.getId());
                         company.update();
                         customer.delete();
@@ -49,7 +49,7 @@ public class SeedDatabase {
                     // Delete Couriers
                     it = new HashMap<>(company.getCouriers()).entrySet().iterator();
                     while (it.hasNext()) {
-                        Courier courier = (Courier) ((Entry) it.next()).getValue();
+                        Courier courier = (Courier) ((HashMap.Entry) it.next()).getValue();
                         company.getCouriers().remove(courier.getId());
                         company.update();
                         courier.delete();
@@ -60,7 +60,7 @@ public class SeedDatabase {
                     // Delete Users
                     it = new HashMap<>(company.getUsers()).entrySet().iterator();
                     while (it.hasNext()) {
-                        User user = (User) ((Entry) it.next()).getValue();
+                        User user = (User) ((HashMap.Entry) it.next()).getValue();
                         company.getUsers().remove(user.getId());
                         company.update();
                         user.delete();
