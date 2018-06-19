@@ -118,8 +118,7 @@ public class Ticket implements PersistableEntity {
     }
 
     private void calcEstimatedTimes() {
-      // TODO estimate times - needs refining
-        // Altered this slightly
+      //Lets get down to bussiness.... to defeat the huns!
 
       double mphCouriers = company.getCourierMilesPerHour();
       double milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
