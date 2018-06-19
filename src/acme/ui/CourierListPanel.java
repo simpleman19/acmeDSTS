@@ -15,11 +15,15 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
@@ -52,6 +56,8 @@ public class CourierListPanel extends AcmeBaseJPanel {
                 return JButton.class;
             case 4:
                 return UUID.class;
+            case 5:
+                return JComboBox.class;
             default:
                 return Boolean.class;
             }
@@ -125,12 +131,12 @@ public class CourierListPanel extends AcmeBaseJPanel {
         listTbl.setAutoCreateRowSorter(true);
         listTbl.getTableHeader().setReorderingAllowed(false);
         listTbl.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        String[] columnNames = { "Number", "Name", "Active", "Edit", null };
+        String[] columnNames = { "Number", "Name", "Active", "Edit", null, "combo" };
         DefaultTableModel model = new DefaultTableModel(null, columnNames) {
             private static final long serialVersionUID = 1L;
 
             public boolean isCellEditable(int rowIndex, int mColIndex) {
-                return (mColIndex == EDIT_COL);
+                return (mColIndex == EDIT_COL || mColIndex == 5);
             }
         };
         listTbl.setModel(model);
@@ -156,8 +162,8 @@ public class CourierListPanel extends AcmeBaseJPanel {
         column.setPreferredWidth(0);
 
         /*
-         * This button will search for the courier in the list and find the courier associated
-         * with the ID so it can pass it to the add/update screen for use
+         * This button will search for the courier in the list and find the courier
+         * associated with the ID so it can pass it to the add/update screen for use
          */
         Action editAction = new AbstractAction() {
             private static final long serialVersionUID = 1L;
@@ -173,6 +179,20 @@ public class CourierListPanel extends AcmeBaseJPanel {
             }
         };
 
+        
+        JComboBox comboBox = new JComboBox();
+        comboBox.addItem("None");
+        comboBox.addItem("Snowboarding");
+        comboBox.addItem("Rowing");
+        comboBox.addItem("Chasing toddlers");
+        comboBox.addItem("Speed reading");
+        comboBox.addItem("Teaching high school");
+        
+        comboBox.setSelectedIndex(1);
+        listTbl.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(comboBox) {
+            
+            
+        });
         /* Iterate through the couriers in the company and populate the table */
         for (Map.Entry<UUID, Courier> cour : company.getCouriers().entrySet()) {
             Vector<Object> row = new Vector<Object>();
@@ -181,6 +201,7 @@ public class CourierListPanel extends AcmeBaseJPanel {
             row.add(cour.getValue().isActive());
             row.add(pen);
             row.add(cour.getKey());
+            row.add(comboBox);
             model.addRow(row);
         }
 
