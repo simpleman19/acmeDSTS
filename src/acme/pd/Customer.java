@@ -88,13 +88,14 @@ public class Customer implements PersistableEntity {
     }
 
     public static int getNextCustomerNumber() {
-		try {
+		/*try {
 			//FIXME
 			Customer highest = PersistableEntity.querySingle(Customer.class, "select c from CUSTOMER c ORDER BY NUMBER DESC", Collections.EMPTY_MAP);
 			return highest.getCustomerNumber() + 1;
 		} catch (NoResultException e) {
 			return 1;
-		}
+		}*/
+    	return 1;
     }
 
     public String toString() {

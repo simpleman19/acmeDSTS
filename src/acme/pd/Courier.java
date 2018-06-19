@@ -27,13 +27,14 @@ public class Courier extends Person implements PersistableEntity {
     }
 
     public static int getNextCourierNumber() {
-		try {
+		/*try {
 			//FIXME
 			Courier highest = PersistableEntity.querySingle(Courier.class, "select c from COURIER c ORDER BY NUMBER DESC", Collections.EMPTY_MAP);
 			return highest.getCourierNumber() + 1;
 		} catch (NoResultException e) {
 			return 1;
-		}
+		}*/
+    	return 1;
     }
 
     public String toString() {
