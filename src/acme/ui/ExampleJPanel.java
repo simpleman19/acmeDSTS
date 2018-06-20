@@ -36,7 +36,7 @@ public class ExampleJPanel extends AcmeBaseJPanel {
             login.addActionListener(actionEvent -> {
                 this.getCompany().setCurrentUser(new User());
                 this.getCompany().getCurrentUser().setAdmin(false);
-                this.getAcmeUI().ticketList();
+                this.getAcmeUI().ticketList(false);
             });
             this.add(login);
 
@@ -44,7 +44,7 @@ public class ExampleJPanel extends AcmeBaseJPanel {
             loginA.addActionListener(actionEvent -> {
                 this.getCompany().setCurrentUser(new User());
                 this.getCompany().getCurrentUser().setAdmin(true);
-                this.getAcmeUI().ticketList();
+                this.getAcmeUI().ticketList(false);
             });
             this.add(loginA);
         }

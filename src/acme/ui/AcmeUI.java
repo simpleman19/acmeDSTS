@@ -46,7 +46,7 @@ public class AcmeUI extends JFrame {
 
             // Ticket Button
             JMenuItem ticketList = new JMenuItem("Tickets");
-            ticketList.addActionListener((event) -> ticketList());
+            ticketList.addActionListener((event) -> ticketList(false));
             menuBar.add(ticketList);
 
             // Map Button
@@ -125,9 +125,9 @@ public class AcmeUI extends JFrame {
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
-    public void ticketList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+    public void ticketList(Boolean showComplete) {
+        TicketListUI ticketListUI = new TicketListUI(showComplete);
+        this.setPanel(ticketListUI);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
