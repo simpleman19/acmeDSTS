@@ -265,7 +265,7 @@ public class Map {
             if (map[0][i].getNSroad().getName().equalsIgnoreCase(nsRoad)) {
                 for (int j = 0; j < map[0].length; j++) {
                     if (map[j][i].getEWroad().getName().equalsIgnoreCase(ewRoad)) {
-                        return map[i][j];
+                        return map[j][i];
                     }
                 }
             }
