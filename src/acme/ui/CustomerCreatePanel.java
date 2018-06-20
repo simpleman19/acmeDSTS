@@ -1,21 +1,17 @@
 package acme.ui;
 
-import java.util.Collections;
+import java.awt.Font;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.persistence.NoResultException;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
-import acme.data.PersistableEntity;
 import acme.pd.Company;
 import acme.pd.Customer;
 import acme.pd.Road;
-import acme.pd.User;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
 
 public class CustomerCreatePanel extends AcmeBaseJPanel {
 	Company company;
@@ -41,7 +37,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
         setLayout(null);
         
         JLabel titleLabel = new JLabel("Customer");
-        titleLabel.setBounds(42, 30, 75, 22);
+        titleLabel.setBounds(42, 30, 100, 22);
         titleLabel.setFont(new Font(titleLabel.getFont().toString(), Font.PLAIN, 18));
         add(titleLabel);
         
@@ -129,18 +125,6 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
 	
 	public static void main(String [] args) {
         AcmeUI acme = new AcmeUI();
-        
-        User currentUser;
-        try {
-        	currentUser = PersistableEntity.querySingle(User.class, "select u from APP_USER u", Collections.EMPTY_MAP);
-        } catch(NoResultException e) {
-        	currentUser = new User();
-        	currentUser.create();
-        }
-        acme.getCompany().addUser(currentUser);
-        acme.getCompany().setCurrentUser(currentUser);
-        
-        acme.getCompany().setCurrentUser((User) acme.getCompany().getUsers().values().toArray()[0]);
         acme.setPanel(new CustomerCreatePanel(c -> System.out.println("Saved customer with id: " + c.getId())));
     }
 }
