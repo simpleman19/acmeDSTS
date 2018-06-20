@@ -13,7 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class UserUI extends JFrame {
+import acme.pd.User;
+
+public class UserUI extends AcmeBaseJPanel {
 
     private static final long serialVersionUID = 1L;
     private JPanel panel;
@@ -26,7 +28,7 @@ public class UserUI extends JFrame {
 
     public UserUI() {
 
-        super("Acme Ticketing System");
+        super();
 
         buildForm(); 
 
@@ -98,16 +100,10 @@ public class UserUI extends JFrame {
 
     private class LoginButtonListner implements ActionListener {
    	
-//    		private boolean checkIfUserExists(String username) {
-//    			// TODO check database
-//    	    return true;
-//    		}
-    		
-    		private boolean loginUser(String username) {
-    			// TODO check database
-    			this.getAcmeUI().loginUser();
-    			
+		
     		}
+    	    
+    	    
     		
 
 
@@ -132,6 +128,21 @@ public class UserUI extends JFrame {
             }
 
         }
+		
+		private boolean loginUser(String username, String password) {
+		    // TODO ask database
+		    if (password.equals("password")) {
+		        // TODO get user from database currenlty creating one instead
+		        User user = new User();
+		        user.setUsername(username);
+		        user.setAdmin(true);  // or false if you want
+		        
+		        // This will log that user in
+		        getAcmeUI().getCompany().setCurrentUser(user);
+		    }
+
     }
 
-}
+
+ 
+
