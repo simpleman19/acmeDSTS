@@ -2,6 +2,7 @@ package acme.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -29,10 +30,6 @@ public class UserUI extends AcmeBaseJPanel {
     public UserUI() {
 
         super();
-
-        buildForm(); 
-
-        buildButtonPanel();
 
     }
 
@@ -89,17 +86,17 @@ public class UserUI extends AcmeBaseJPanel {
         LoginButton.addActionListener(save);
 
     }
+    
+    
+    public void buildPanel() {
+    	buildForm();
+    	buildButtonPanel();
+    }
 
     
     
-    
-    
-    
-    
+     
     private class LoginButtonListner implements ActionListener {
-   	
-		
-    		}
     	    
 		@Override
         public void actionPerformed(ActionEvent e) {
@@ -121,6 +118,7 @@ public class UserUI extends AcmeBaseJPanel {
             }
 
         }
+    }
 		
 		private boolean loginUser(String username, String password) {
 		    // TODO ask database
@@ -132,10 +130,19 @@ public class UserUI extends AcmeBaseJPanel {
 		        
 		        // This will log that user in
 		        getAcmeUI().getCompany().setCurrentUser(user);
+		        
+		        return(true);
 		    }
 
-		}}
+		    return(false);
+		}
+	
 
 
- 
+		public static void main(String [] args) {
+			AcmeUI acme = new AcmeUI();
+			acme.getCompany().setCurrentUser(new User());
+			acme.setPanel(new UserUI());
+		}
 
+	}
