@@ -238,6 +238,7 @@ public class AcmeUI extends JFrame {
 class ShutdownListener implements WindowListener {
     public void windowClosing(WindowEvent event) {
         HibernateAdapter.shutDown();
+        company.exportMap();
         setVisible(false);
         dispose(); //Destroy the JFrame object
     }

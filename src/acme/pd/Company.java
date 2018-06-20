@@ -53,14 +53,15 @@ public class Company implements PersistableEntity {
     @Column(name = "COURIER_MILES_PER_HOUR")
     private double courierMilesPerHour = 5.8;
     @Transient
-    private String mapFile = "map/map.csv";
+    private String mapFilename = "map/map.csv";
     @Transient
     public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
-
+    @Transient
+    File mapFile = new File(mapFilename);
+    
     public Company() {
         // TODO initialize company
-        File file = new File(mapFile);
-        this.map = new Map(file);
+        this.map = new Map(mapFile);
 
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
@@ -102,6 +103,10 @@ public class Company implements PersistableEntity {
         this.update();
     }
 
+    public void exportMap() {
+        getMap().exportMap(mapFile);
+    }
+    
     public UUID getId() {
         return id;
     }
