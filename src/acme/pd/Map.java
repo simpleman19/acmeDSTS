@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class Map {
     public Map(File file) {
         importMap(file);
     }
-
+    
     public void importMap(File file) {
         // this gives you a 2-dimensional array of strings
         List<List<String>> lines = new ArrayList<>();
@@ -239,7 +242,58 @@ public class Map {
     public MapIntersection[][] getMap() {
         return map;
     }
+    
+    public Set<Road> getRoads() {
+    	Set<Road> roads = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			roads.add(map[i][j].getEWroad());
+    			roads.add(map[i][j].getNSroad());
+    		}
+    	}
+    	return roads;
+    }
+    
+    public Road getRoadByName(String roadName) {
+		return getRoads().stream().filter(road -> road.getName().equalsIgnoreCase(roadName)).findFirst().get();
+	}
+    
+    public Set<Road> getStreets() {
+    	Set<Road> roads = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			roads.add(map[i][j].getEWroad());
+    		}
+    	}
+    	return roads;
+    }
+    
+    public Set<Road> getAvenues() {
+    	Set<Road> roads = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			roads.add(map[i][j].getNSroad());
+    		}
+    	}
+    	return roads;
+    }
 
+	public MapIntersection getIntersection(Road one, Road another) {
+		if (one == null || another == null)
+			System.out.println("Could not find road");
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				Road lookEW = map[i][j].getEWroad();
+				Road lookNS = map[i][j].getNSroad();
+				
+				if ((map[i][j].getEWroad().equals(one) && map[i][j].getNSroad().equals(another)) ||
+						(map[i][j].getEWroad().equals(another) && map[i][j].getNSroad().equals(one)))
+					return map[i][j];
+			}
+		}
+		return null;
+	}
+    
     public MapIntersection getHomeBase() {
         return homeBase;
     }

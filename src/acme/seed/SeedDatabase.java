@@ -145,7 +145,6 @@ public class SeedDatabase {
             customer.setName("Company One");
             customer.setAvenueName("A");
             customer.setStreetName("1");
-            customer.setIntersection(company.getMap().getIntersection(customer));
             customer.setCustomerNumber(5000);
             customer.create();
             company.addCustomer(customer);
@@ -155,7 +154,6 @@ public class SeedDatabase {
             customer2.setName("Company Two");
             customer2.setAvenueName("F");
             customer2.setStreetName("5");
-            customer2.setIntersection(company.getMap().getIntersection(customer2));
             customer2.setCustomerNumber(5001);
             customer2.create();
             company.addCustomer(customer2);

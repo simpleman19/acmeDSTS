@@ -3,10 +3,14 @@ package acme.ui;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Collections;
+import java.util.function.Consumer;
 
+import javax.persistence.NoResultException;
 import javax.swing.*;
 
 import acme.data.HibernateAdapter;
+import acme.data.PersistableEntity;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
@@ -18,12 +22,12 @@ import org.postgresql.util.PSQLException;
 public class AcmeUI extends JFrame {
 
     private Company company;
+	protected AcmeBaseJPanel storedPanel;
 
     public AcmeUI() {
         super("Acme Delivery Software");
-
         HibernateAdapter.startUp();
-
+        
         addWindowListener(new ShutdownListener());
 
         this.company = Company.loadCompanyFromDB();
@@ -133,6 +137,14 @@ public class AcmeUI extends JFrame {
         this.revalidate();
         this.repaint();
     }
+    
+    public void setStoredPanel(AcmeBaseJPanel panel) {
+    	this.storedPanel = panel;
+    }
+    
+    public AcmeBaseJPanel getStoredPanel() {
+    	return this.storedPanel;
+    }
 
     public void logoutUser() {
         company.setCurrentUser(null);
@@ -171,10 +183,10 @@ public class AcmeUI extends JFrame {
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
-    public void customerAddUpdate(Customer customer) {
+    public void customerAddUpdate(Customer customer, Consumer<Customer> onSaveFunc) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        CustomerCreatePanel panel = new CustomerCreatePanel(onSaveFunc);
+        this.setPanel(panel);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -199,22 +211,22 @@ public class AcmeUI extends JFrame {
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void courierAddUpdate(Courier courier) {
         // This will be called with null to create
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+    	CourierCreatePanel panel = new CourierCreatePanel();
+        this.setPanel(panel);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void importIntoCompany() {
         ImportsPanel ip = new ImportsPanel();
         this.setPanel(ip);
-    }    
+    }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void companyEdit() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
     }
-
+  
     public void mapView() {
         MapUI mapUI = new MapUI();
         this.setPanel(mapUI);
@@ -229,18 +241,18 @@ public class AcmeUI extends JFrame {
     public Company getCompany() {
         return company;
     }
-class ShutdownListener implements WindowListener {
-    public void windowClosing(WindowEvent event) {
+    class ShutdownListener implements WindowListener {
+        public void windowClosing(WindowEvent event) {
         HibernateAdapter.shutDown();
         setVisible(false);
         company.exportMap();
-        dispose(); //Destroy the JFrame object
-    }
-    public void windowOpened(WindowEvent event) {}
-    public void windowClosed(WindowEvent event) {}
-    public void windowIconified(WindowEvent event) {}
-    public void windowDeiconified(WindowEvent event) {}
-    public void windowActivated(WindowEvent event) {}
-    public void windowDeactivated(WindowEvent event) {}
+            dispose(); //Destroy the JFrame object
+        }
+        public void windowOpened(WindowEvent event) {}
+        public void windowClosed(WindowEvent event) {}
+        public void windowIconified(WindowEvent event) {}
+        public void windowDeiconified(WindowEvent event) {}
+        public void windowActivated(WindowEvent event) {}
+        public void windowDeactivated(WindowEvent event) {}
 }}
 

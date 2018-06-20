@@ -58,7 +58,7 @@ public class Company implements PersistableEntity {
     public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
     @Transient
     File mapFile = new File(mapFilename);
-    
+
     public Company() {
         // TODO initialize company
         this.map = new Map(mapFile);
@@ -81,9 +81,8 @@ public class Company implements PersistableEntity {
 
             Customer c2 = new Customer();
             c2.setName("That Customer " + (1000 + i));
-            MapIntersection [][] mapI = map.getMap();
-            // Put company on map
-            c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
+            c2.setAvenueName("1");
+            c2.setStreetName("G");
             c2.create();
             this.addCustomer(c2);
 
@@ -217,14 +216,14 @@ public class Company implements PersistableEntity {
 
     @Deprecated
     public static Company getDefaultAcme() {
-        Company acme = new Company();
+    	Company acme = new Company();
 
-        acme.setName("Acme");
-        acme.setCourierMilesPerHour(15);
-        acme.setBlocksPerMile(5.5);
-        acme.setLatenessMarginMinutes(2);
+    	acme.setName("Acme");
+    	acme.setCourierMilesPerHour(15);
+    	acme.setBlocksPerMile(5.5);
+    	acme.setLatenessMarginMinutes(2);
 
-        return acme;
+    	return acme;
     }
 
     public static Company loadCompanyFromDB() {
