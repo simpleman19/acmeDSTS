@@ -154,7 +154,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 0), 0, 0));
 
         newCustomer.setText("New Customer");
-        newCustomer.addActionListener((e) -> newCustomerAction());
+        newCustomer.addActionListener((e) -> newCustomerAction("pickup"));
         pickupPanel.add(newCustomer, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -220,7 +220,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 0), 0, 0));
 
         newCustomer2.setText("New Customer");
-        newCustomer2.addActionListener((e) -> newCustomerAction());
+        newCustomer2.addActionListener((e) -> newCustomerAction("delivery"));
         dropOffPanel.add(newCustomer2, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -400,8 +400,23 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         this.getAcmeUI().courierList();
     }
 
-    private void newCustomerAction() {
-        this.getAcmeUI().customerAddUpdate(null);
+    private void newCustomerAction(String fieldToUpdate) {
+    	this.getAcmeUI().setStoredPanel(this);
+    	AcmeUI acmeUI = this.getAcmeUI();
+        this.getAcmeUI().customerAddUpdate(null, c -> {
+        	acmeUI.setPanel(acmeUI.getStoredPanel());
+        	switch(fieldToUpdate) {
+        	case "pickup":
+        		ticket.setPickupCustomer(c);
+        		break;
+        	case "delivery":
+        		ticket.setDeliveryCustomer(c);
+        		break;
+        	default:
+        		throw new IllegalArgumentException("Invalid field to update: " + fieldToUpdate);
+        	}
+        	acmeUI.getStoredPanel().buildPanel();
+        });
     }
 
     private void updateTicket() {

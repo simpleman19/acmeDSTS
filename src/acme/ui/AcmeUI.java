@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import javax.persistence.NoResultException;
 import javax.swing.Box;
@@ -24,6 +25,7 @@ import acme.pd.User;
 public class AcmeUI extends JFrame {
 
     private Company company;
+	protected AcmeBaseJPanel storedPanel;
 
     public AcmeUI() {
         super("Acme Delivery Software");
@@ -119,6 +121,14 @@ public class AcmeUI extends JFrame {
         this.revalidate();
         this.repaint();
     }
+    
+    public void setStoredPanel(AcmeBaseJPanel panel) {
+    	this.storedPanel = panel;
+    }
+    
+    public AcmeBaseJPanel getStoredPanel() {
+    	return this.storedPanel;
+    }
 
     public void logoutUser() {
         company.setCurrentUser(null);
@@ -157,9 +167,9 @@ public class AcmeUI extends JFrame {
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
-    public void customerAddUpdate(Customer customer) {
+    public void customerAddUpdate(Customer customer, Consumer<Customer> onSaveFunc) {
         // This will be called with null to create
-        CustomerCreatePanel panel = new CustomerCreatePanel();
+        CustomerCreatePanel panel = new CustomerCreatePanel(onSaveFunc);
         this.setPanel(panel);
     }
 

@@ -2,6 +2,7 @@ package acme.ui;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.persistence.NoResultException;
 
@@ -23,12 +24,14 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
 	private JLabel numberField;
 	private JComboBox<Road> avenueComboField;
 	private JComboBox<Road> streetComboField;
-
-	public CustomerCreatePanel() {
-        super();
+	private Consumer<Customer> onSaveFunc;
+	
+	public CustomerCreatePanel(Consumer<Customer> onSave) {
+		super();
         customer = new Customer();
         customer.create();
-    }
+        this.onSaveFunc = onSave;
+	}
 	
 	@Override
     public void buildPanel() {
@@ -98,7 +101,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
 	}
 	
 	private void navigateToPreviousPage() {
-		this.getAcmeUI().customerList();
+		onSaveFunc.accept(customer);
 	}
 	
 	private void cancelCreate() {
@@ -121,7 +124,6 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
 		customer = customer.update();
 		company.addCustomer(customer);
 		company.update();
-		System.out.println("Saved customer with id: " + customer.getId());
 		navigateToPreviousPage();
 	}	
 	
@@ -139,6 +141,6 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
         acme.getCompany().setCurrentUser(currentUser);
         
         acme.getCompany().setCurrentUser((User) acme.getCompany().getUsers().values().toArray()[0]);
-        acme.setPanel(new CustomerCreatePanel());
+        acme.setPanel(new CustomerCreatePanel(c -> System.out.println("Saved customer with id: " + c.getId())));
     }
 }

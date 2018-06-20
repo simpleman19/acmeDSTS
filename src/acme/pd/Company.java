@@ -79,6 +79,8 @@ public class Company implements PersistableEntity {
 
             Customer c2 = new Customer();
             c2.setName("That Customer " + (1000 + i));
+            c2.setAvenueName("1");
+            c2.setStreetName("G");
             c2.create();
             this.addCustomer(c2);
 

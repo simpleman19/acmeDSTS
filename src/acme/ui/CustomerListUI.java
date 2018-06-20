@@ -162,12 +162,13 @@ public class CustomerListUI extends AcmeBaseJPanel {
                 customerToPass = this.customersArray[x];
             }
         }
-        this.getAcmeUI().customerAddUpdate(customerToPass);
+        this.getAcmeUI().customerAddUpdate(customerToPass, c -> this.getAcmeUI().customerList());
     }
 
     public void goToNewCustomerPage() {
         // go to new customer page
-        this.getAcmeUI().customerAddUpdate(null);
+    	AcmeUI acmeUI = this.getAcmeUI();
+    	acmeUI.customerAddUpdate(null, c -> acmeUI.customerList());
     }
     // ------------------------------------------------
 
