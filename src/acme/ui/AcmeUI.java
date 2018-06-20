@@ -233,6 +233,7 @@ class ShutdownListener implements WindowListener {
     public void windowClosing(WindowEvent event) {
         HibernateAdapter.shutDown();
         setVisible(false);
+        company.exportMap();
         dispose(); //Destroy the JFrame object
     }
     public void windowOpened(WindowEvent event) {}

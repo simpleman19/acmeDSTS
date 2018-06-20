@@ -40,11 +40,7 @@ public class Map {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
     public Map(File file) {
-
         importMap(file);
-        // TODO call export function on shutdown
-        exportMap(file);
-        // TODO export map
     }
 
     public void importMap(File file) {
@@ -299,7 +295,7 @@ public class Map {
         } // end for rows
     }
 
-    private void exportMap(File file) {
+    void exportMap(File file) {
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(file));
             StringBuilder sb = new StringBuilder();
