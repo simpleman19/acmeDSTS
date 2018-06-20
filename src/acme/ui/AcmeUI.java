@@ -22,13 +22,7 @@ public class AcmeUI extends JFrame {
     public AcmeUI() {
         super("Acme Delivery Software");
 
-        try {
-            HibernateAdapter.startUp();
-        } catch (Exception e) {
-            if (e.getMessage().contains("constraint")) {
-                System.out.println("Hibernate Constraint already exists, not a big deal");
-            }
-        }
+        HibernateAdapter.startUp();
 
         addWindowListener(new ShutdownListener());
 
@@ -69,7 +63,7 @@ public class AcmeUI extends JFrame {
         this.setJMenuBar(new JMenuBar());
         if (company.getCurrentUser() != null) {
             boolean admin = company.getCurrentUser().isAdmin();
-        JMenuBar menuBar = new JMenuBar();
+            JMenuBar menuBar = new JMenuBar();
 
             // Ticket Button
             JMenuItem ticketList = new JMenuItem("Tickets");
@@ -127,8 +121,8 @@ public class AcmeUI extends JFrame {
             logout.addActionListener((event) -> logoutUser());
             menuBar.add(logout);
 
-        this.setJMenuBar(menuBar);
-    }
+            this.setJMenuBar(menuBar);
+        }
     }
 
     public void setPanel(AcmeBaseJPanel panel) {
