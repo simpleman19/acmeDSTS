@@ -25,7 +25,7 @@ public class ExampleJPanel extends AcmeBaseJPanel {
         this.setLayout(new FlowLayout());
 
         this.add(new JLabel("Company Name: "));
-        companyName = new JLabel(this.getCompany().getName());
+        companyName = new JLabel(this.getCompany().getName()); 
         this.add(companyName);
         JButton changeName = new JButton("Change Name");
         changeName.addActionListener(actionEvent -> newName());

@@ -84,7 +84,7 @@ public class Ticket implements PersistableEntity {
 
         this.note = "";
         updatePath();
-
+ 
     }
 
     public ArrayList<String> getDeliveryInstructions() {

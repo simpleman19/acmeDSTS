@@ -131,7 +131,7 @@ public class Company implements PersistableEntity {
 
     public java.util.Map<UUID, Ticket> getTickets() {
         return tickets;
-    }
+    } 
 
     public void addTicket(Ticket ticket) {
 		tickets.put(ticket.getId(), ticket);

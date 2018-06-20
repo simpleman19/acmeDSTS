@@ -18,7 +18,7 @@ import acme.pd.Customer;
 import acme.pd.Ticket;
 import acme.pd.User;
 
-public class AcmeUI extends JFrame {
+public class AcmeUI extends JFrame { 
 
     private Company company;
 
