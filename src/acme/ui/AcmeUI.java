@@ -4,12 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import acme.data.HibernateAdapter;
 import acme.pd.Company;
@@ -17,6 +12,8 @@ import acme.pd.Courier;
 import acme.pd.Customer;
 import acme.pd.Ticket;
 import acme.pd.User;
+import acme.seed.SeedDatabase;
+import org.postgresql.util.PSQLException;
 
 public class AcmeUI extends JFrame {
 
@@ -25,15 +22,45 @@ public class AcmeUI extends JFrame {
     public AcmeUI() {
         super("Acme Delivery Software");
 
-        HibernateAdapter.startUp();
+        try {
+            HibernateAdapter.startUp();
+        } catch (Exception e) {
+            if (e.getMessage().contains("constraint")) {
+                System.out.println("Hibernate Constraint already exists, not a big deal");
+            }
+        }
 
-        this.company = Company.getDefaultAcme();
+        addWindowListener(new ShutdownListener());
+
+        this.company = Company.loadCompanyFromDB();
+        if (this.company == null) {
+            System.out.println("Could Not Load Company from Database");
+            Object[] options = {"Yes, create a company",
+                    "No, Shut down the app"};
+            int n = JOptionPane.showOptionDialog(this,
+                    "Would you like me to setup the database?",
+                    "Database Error",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,     //do not use a custom Icon
+                    options,  //the titles of buttons
+                    options[0]); //default button title
+            if (n == JOptionPane.YES_OPTION) {
+                SeedDatabase.seedDB();
+                this.company = Company.loadCompanyFromDB();
+            } else {
+                System.out.println("Shutting down application due to no company");
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+                return;
+            }
+        }
+
         this.buildMenu();
 
         setVisible(true);
         setSize(550, 550);
         setLocationRelativeTo(null);
-        addWindowListener(new ShutdownListener());
+
 
         loginScreen();
     }
