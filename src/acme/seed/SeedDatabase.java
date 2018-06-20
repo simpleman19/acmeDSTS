@@ -156,7 +156,7 @@ public class SeedDatabase {
             customer2.setAvenueName("F");
             customer2.setStreetName("5");
             customer2.setIntersection(company.getMap().getIntersection(customer2));
-            customer.setCustomerNumber(5001);
+            customer2.setCustomerNumber(5001);
             customer2.create();
             company.addCustomer(customer2);
             company.update();
