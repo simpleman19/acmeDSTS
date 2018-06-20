@@ -34,19 +34,11 @@ public class UserUI extends AcmeBaseJPanel {
 
         buildButtonPanel();
 
-        setVisible(true);
-        setSize(500, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        buildForm();
-
-        buildButtonPanel();
     }
 
     public void buildForm() {
         panel = new JPanel();
-        getContentPane().add(panel);
+        this.add(panel);
 
         panelForm = new JPanel(new GridBagLayout());
         panel.add(panelForm);
@@ -98,16 +90,17 @@ public class UserUI extends AcmeBaseJPanel {
 
     }
 
+    
+    
+    
+    
+    
+    
     private class LoginButtonListner implements ActionListener {
    	
 		
     		}
     	    
-    	    
-    		
-
-
-
 		@Override
         public void actionPerformed(ActionEvent e) {
             // IMPLEMENT
@@ -141,7 +134,7 @@ public class UserUI extends AcmeBaseJPanel {
 		        getAcmeUI().getCompany().setCurrentUser(user);
 		    }
 
-    }
+		}}
 
 
  
