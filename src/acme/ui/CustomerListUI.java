@@ -96,7 +96,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
              * 
              */
             private static final long serialVersionUID = 1L;
-            Class<?>[] types = new Class[] { java.lang.String.class, java.lang.String.class, java.lang.String.class,
+            Class<?>[] types = new Class[] { java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
                     java.lang.Boolean.class, javax.swing.JButton.class };
             boolean[] canEdit = new boolean[] {
                     // need last one true so can click button
