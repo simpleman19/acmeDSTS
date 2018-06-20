@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -52,14 +53,15 @@ public class Company implements PersistableEntity {
     @Column(name = "COURIER_MILES_PER_HOUR")
     private double courierMilesPerHour = 5.8;
     @Transient
-    private String mapFile = "map/map.csv";
+    private String mapFilename = "map/map.csv";
     @Transient
     public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
+    @Transient
+    File mapFile = new File(mapFilename);
 
     public Company() {
         // TODO initialize company
-        File file = new File(mapFile);
-        this.map = new Map(file);
+        this.map = new Map(mapFile);
 
         couriers = new HashMap<UUID, Courier>();
         tickets = new HashMap<UUID, Ticket>();
@@ -100,6 +102,10 @@ public class Company implements PersistableEntity {
         this.update();
     }
 
+    public void exportMap() {
+        getMap().exportMap(mapFile);
+    }
+    
     public UUID getId() {
         return id;
     }
@@ -208,6 +214,7 @@ public class Company implements PersistableEntity {
         this.courierMilesPerHour = courierMilesPerHour;
     }
 
+    @Deprecated
     public static Company getDefaultAcme() {
     	Company acme = new Company();
 
@@ -215,8 +222,20 @@ public class Company implements PersistableEntity {
     	acme.setCourierMilesPerHour(15);
     	acme.setBlocksPerMile(5.5);
     	acme.setLatenessMarginMinutes(2);
-        acme.create();
 
     	return acme;
+    }
+
+    public static Company loadCompanyFromDB() {
+        Company acme = null;
+        List<Company> companies = PersistableEntity.queryList(Company.class, "Select c from COMPANY c", new HashMap<String, String>());
+        if (companies.size() == 1) {
+            acme = companies.get(0);
+        } else if (companies.size() == 0){
+            System.out.println("No Company in the Database");
+        } else {
+            System.out.println("Multiple Companies Exist in Database, please reinit database");
+        }
+        return acme;
     }
 }

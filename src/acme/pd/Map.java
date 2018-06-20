@@ -43,11 +43,7 @@ public class Map {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
     public Map(File file) {
-
         importMap(file);
-        // TODO call export function on shutdown
-        exportMap(file);
-        // TODO export map
     }
     
     public void importMap(File file) {
@@ -302,6 +298,31 @@ public class Map {
         return homeBase;
     }
 
+    public MapIntersection getIntersection(Customer customer) {
+        return this.getIntersection(customer.getAvenueName(), customer.getStreetName());
+    }
+
+    public MapIntersection getIntersection(String road, String road2) {
+        MapIntersection intersection = findIntersection(road, road2);
+        if (intersection == null) {
+            intersection = findIntersection(road2, road);
+        }
+        return intersection;
+    }
+
+    private MapIntersection findIntersection(String nsRoad, String ewRoad) {
+        for (int i = 0; i < map.length; i++) {
+            if (map[0][i].getNSroad().getName().equalsIgnoreCase(nsRoad)) {
+                for (int j = 0; j < map[0].length; j++) {
+                    if (map[j][i].getEWroad().getName().equalsIgnoreCase(ewRoad)) {
+                        return map[j][i];
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private void setHomeBase(int NS, int EW) {
         this.homeBase = map[NS][EW];
     }
@@ -328,7 +349,7 @@ public class Map {
         } // end for rows
     }
 
-    private void exportMap(File file) {
+    void exportMap(File file) {
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(file));
             StringBuilder sb = new StringBuilder();

@@ -7,12 +7,7 @@ import java.util.Collections;
 import java.util.function.Consumer;
 
 import javax.persistence.NoResultException;
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import acme.data.HibernateAdapter;
 import acme.data.PersistableEntity;
@@ -21,6 +16,8 @@ import acme.pd.Courier;
 import acme.pd.Customer;
 import acme.pd.Ticket;
 import acme.pd.User;
+import acme.seed.SeedDatabase;
+import org.postgresql.util.PSQLException;
 
 public class AcmeUI extends JFrame {
 
@@ -31,10 +28,29 @@ public class AcmeUI extends JFrame {
         super("Acme Delivery Software");
         HibernateAdapter.startUp();
         
-        try {
-        	this.company = PersistableEntity.querySingle(Company.class, "select c from COMPANY c", Collections.EMPTY_MAP);
-        } catch(NoResultException e) {
-        	this.company = Company.getDefaultAcme();
+        addWindowListener(new ShutdownListener());
+
+        this.company = Company.loadCompanyFromDB();
+        if (this.company == null) {
+            System.out.println("Could Not Load Company from Database");
+            Object[] options = {"Yes, create a company",
+                    "No, Shut down the app"};
+            int n = JOptionPane.showOptionDialog(this,
+                    "Would you like me to setup the database?",
+                    "Database Error",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,     //do not use a custom Icon
+                    options,  //the titles of buttons
+                    options[0]); //default button title
+            if (n == JOptionPane.YES_OPTION) {
+                SeedDatabase.seedDB();
+                this.company = Company.loadCompanyFromDB();
+            } else {
+                System.out.println("Shutting down application due to no company");
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+                return;
+            }
         }
 
         this.buildMenu();
@@ -42,7 +58,7 @@ public class AcmeUI extends JFrame {
         setVisible(true);
         setSize(550, 550);
         setLocationRelativeTo(null);
-        addWindowListener(new ShutdownListener());
+
 
         loginScreen();
     }
@@ -229,6 +245,7 @@ public class AcmeUI extends JFrame {
         public void windowClosing(WindowEvent event) {
         HibernateAdapter.shutDown();
         setVisible(false);
+        company.exportMap();
             dispose(); //Destroy the JFrame object
         }
         public void windowOpened(WindowEvent event) {}
