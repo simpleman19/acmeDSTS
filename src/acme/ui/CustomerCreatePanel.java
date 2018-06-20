@@ -39,7 +39,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
         
         JLabel titleLabel = new JLabel("Customer");
         titleLabel.setBounds(42, 30, 75, 22);
-        titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        titleLabel.setFont(new Font(titleLabel.getFont().toString(), Font.PLAIN, 18));
         add(titleLabel);
         
         JLabel nameLabel = new JLabel("Name");
@@ -61,7 +61,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
         add(numberField);
         
         JLabel lblIntersection = new JLabel("Intersection");
-        lblIntersection.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblIntersection.setFont(new Font(lblIntersection.getFont().toString(), Font.PLAIN, 14));
         lblIntersection.setBounds(57, 166, 75, 22);
         add(lblIntersection);
         
