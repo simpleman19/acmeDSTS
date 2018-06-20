@@ -51,10 +51,10 @@ public class SeedDatabase {
                     Iterator it = new HashMap<>(company.getTickets()).entrySet().iterator();
                     while (it.hasNext()) {
                         Ticket ticket = (Ticket) ((HashMap.Entry) it.next()).getValue();
+                        company.getTickets().remove(ticket.getId());
+                        company.update();
                         ticket.delete();
                     }
-                    company.getTickets().clear();
-                    company.update();
 
                     // Delete Customers
                     it = new HashMap<>(company.getCustomers()).entrySet().iterator();
@@ -73,8 +73,6 @@ public class SeedDatabase {
                         company.update();
                         courier.delete();
                     }
-                    company.getCouriers().clear();
-                    company.update();
 
                     // Delete Users
                     it = new HashMap<>(company.getUsers()).entrySet().iterator();
@@ -84,8 +82,6 @@ public class SeedDatabase {
                         company.update();
                         user.delete();
                     }
-                    company.getUsers().clear();
-                    company.update();
 
                     System.out.println("Cleared out company, seeding...");
                 } else if (input.equalsIgnoreCase("N")){
@@ -160,7 +156,7 @@ public class SeedDatabase {
             customer2.setAvenueName("F");
             customer2.setStreetName("5");
             customer2.setIntersection(company.getMap().getIntersection(customer2));
-            customer.setCustomerNumber(5001);
+            customer2.setCustomerNumber(5001);
             customer2.create();
             company.addCustomer(customer2);
             company.update();
