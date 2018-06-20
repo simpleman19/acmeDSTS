@@ -42,6 +42,10 @@ public class Road implements Comparable {
     	return this.getName().compareTo(((Road) o).getName());
     }
     
+    public boolean equals(Object o) {
+    	return this.compareTo(o) == 0;
+    }
+    
     public String toString() {
     	return this.getName();
     }

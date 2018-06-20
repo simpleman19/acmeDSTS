@@ -28,8 +28,6 @@ public class Customer implements PersistableEntity {
     private String streetName;
 	@Column(name = "AVENUE_NAME")
     private String avenueName;
-	@Transient
-	private MapIntersection intersection;
 	
     public UUID getId() {
         // TODO fix with database
@@ -79,12 +77,10 @@ public class Customer implements PersistableEntity {
         this.avenueName = avenueName;
     }
 
-    public MapIntersection getIntersection() {
-        return intersection;
-    }
-
-    public void setIntersection(MapIntersection intersection) {
-        this.intersection = intersection;
+    public MapIntersection getIntersection(Map map) {
+    	Road a = map.getRoadByName(this.streetName);
+    	Road b =  map.getRoadByName(this.avenueName);
+        return map.getIntersection(a,b);
     }
 
     public static int getNextCustomerNumber() {

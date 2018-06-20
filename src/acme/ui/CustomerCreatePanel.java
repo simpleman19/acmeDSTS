@@ -98,7 +98,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
 	}
 	
 	private void navigateToPreviousPage() {
-		this.getAcmeUI().courierList();
+		this.getAcmeUI().customerList();
 	}
 	
 	private void cancelCreate() {

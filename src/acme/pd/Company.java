@@ -79,9 +79,6 @@ public class Company implements PersistableEntity {
 
             Customer c2 = new Customer();
             c2.setName("That Customer " + (1000 + i));
-            MapIntersection [][] mapI = map.getMap();
-            // Put company on map
-            c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
             c2.create();
             this.addCustomer(c2);
 
