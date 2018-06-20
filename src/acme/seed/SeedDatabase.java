@@ -3,6 +3,8 @@ package acme.seed;
 import acme.data.HibernateAdapter;
 import acme.pd.*;
 import org.hibernate.Session;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 
 import javax.persistence.EntityManager;
 
@@ -16,8 +18,25 @@ import java.util.UUID;
 
 public class SeedDatabase {
     public static void main(String[] args) {
-        HibernateAdapter.startUp();
+        HibernateAdapter.startUpSeed();
 
+        seedDB();
+
+        HibernateAdapter.shutDown();
+    }
+
+    public static Company getDefaultAcme() {
+        Company acme = new Company();
+
+        acme.setName("Acme");
+        acme.setCourierMilesPerHour(15);
+        acme.setBlocksPerMile(5.5);
+        acme.setLatenessMarginMinutes(2);
+
+        return acme;
+    }
+
+    public static void seedDB() {
         Company company = Company.loadCompanyFromDB();
         boolean seed = true;
         if (company != null) {
@@ -77,7 +96,8 @@ public class SeedDatabase {
         }
 
         if (company == null) {
-            company = Company.getDefaultAcme();
+            company = SeedDatabase.getDefaultAcme();
+            company.create();
         }
 
         if (seed) {
@@ -140,6 +160,7 @@ public class SeedDatabase {
             customer2.setAvenueName("F");
             customer2.setStreetName("5");
             customer2.setIntersection(company.getMap().getIntersection(customer2));
+            customer.setCustomerNumber(5001);
             customer2.create();
             company.addCustomer(customer2);
             company.update();
@@ -184,7 +205,6 @@ public class SeedDatabase {
             company.update();
             System.out.println("Added an open ticket, open with courier, and closed ticket");
         }
-        HibernateAdapter.shutDown();
     }
 
 

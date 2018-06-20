@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -209,22 +210,28 @@ public class Company implements PersistableEntity {
         this.courierMilesPerHour = courierMilesPerHour;
     }
 
+    @Deprecated
     public static Company getDefaultAcme() {
-    	Company acme = new Company();
+        Company acme = new Company();
 
-    	acme.setName("Acme");
-    	acme.setCourierMilesPerHour(15);
-    	acme.setBlocksPerMile(5.5);
-    	acme.setLatenessMarginMinutes(2);
-        acme.create();
+        acme.setName("Acme");
+        acme.setCourierMilesPerHour(15);
+        acme.setBlocksPerMile(5.5);
+        acme.setLatenessMarginMinutes(2);
 
-    	return acme;
+        return acme;
     }
 
     public static Company loadCompanyFromDB() {
-        // TODO actually load from db
-        Company acme = Company.getDefaultAcme();
-        acme.generateStuff();
+        Company acme = null;
+        List<Company> companies = PersistableEntity.queryList(Company.class, "Select c from COMPANY c", new HashMap<String, String>());
+        if (companies.size() == 1) {
+            acme = companies.get(0);
+        } else if (companies.size() == 0){
+            System.out.println("No Company in the Database");
+        } else {
+            System.out.println("Multiple Companies Exist in Database, please reinit database");
+        }
         return acme;
     }
 }
