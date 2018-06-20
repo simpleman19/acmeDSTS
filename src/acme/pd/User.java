@@ -38,7 +38,7 @@ public class User extends Person implements PersistableEntity {
         }
         
     	return username;
-    }
+    } 
     
     // Sets the username.
     public void setUsername(String username) {
@@ -78,8 +78,23 @@ public class User extends Person implements PersistableEntity {
     	}
     }
     
+    private boolean loginUser(String username, String password) {
+	    // TODO ask database
+	    if (password.equals("password")) {
+	        // TODO get user from database currenlty creating one instead
+	        User user = new User();
+	        user.username = username;
+	        user.setAdmin(true);  // or false if you want
+	        
+	        // This will log that user in
+	        getCompany().setCurrentUser(user);
+	    }
+
+	}
     
-    public static void main(String []args) {   
+    
+
+	public static void main(String []args) {   
 
     	//Creating the new user called Wolfgang
     	//and setting login attributes for Wolfgang.

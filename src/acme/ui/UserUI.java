@@ -28,7 +28,7 @@ public class UserUI extends JFrame {
 
         super("Acme Ticketing System");
 
-        buildForm();
+        buildForm(); 
 
         buildButtonPanel();
 
@@ -97,8 +97,22 @@ public class UserUI extends JFrame {
     }
 
     private class LoginButtonListner implements ActionListener {
+   	
+//    		private boolean checkIfUserExists(String username) {
+//    			// TODO check database
+//    	    return true;
+//    		}
+    		
+    		private boolean loginUser(String username) {
+    			// TODO check database
+    			this.getAcmeUI().loginUser();
+    			
+    		}
+    		
 
-        @Override
+
+
+		@Override
         public void actionPerformed(ActionEvent e) {
             // IMPLEMENT
             String pass = new String (txt2.getPassword());
