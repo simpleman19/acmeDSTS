@@ -30,6 +30,8 @@ import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
+import acme.pd.Ticket;
+import acme.pd.User;
 
 public class ReportsPanel extends AcmeBaseJPanel {
 
@@ -161,10 +163,24 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
     }
 
-    /* Generate the report in th preview table */
+    /* Generate the report in the preview table */
     private void generateReport(String type, String name, LocalDate from, LocalDate to) {
-        // TODO generate report
+        if (type.equals(COURIER)) {
+            generateCourPerfReport(name, from, to);
+        }
         previewTbl.repaint();
+    }
+
+    private void generateCourPerfReport(String name, LocalDate from, LocalDate to) {
+        System.out.println(name + " " +  from + " " + to);
+        Courier c = new Courier();
+        for (Map.Entry<UUID, Courier> courier : company.getCouriers().entrySet()) {
+            if (name.equals(courier.getValue().getName())) {
+                c = courier.getValue();
+            }
+        }
+        
+        
     }
 
     /* Print the report to PDF */
@@ -375,6 +391,12 @@ public class ReportsPanel extends AcmeBaseJPanel {
         gbc_printBtn.gridx = 3;
         gbc_printBtn.gridy = 1;
         southPane.add(printBtn, gbc_printBtn);
+    }
+    
+    public static void main(String [] args) {
+        AcmeUI acme = new AcmeUI();
+        acme.getCompany().setCurrentUser(new User());
+        acme.setPanel(new ReportsPanel());
     }
 
 }
