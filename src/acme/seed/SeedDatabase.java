@@ -110,6 +110,7 @@ public class SeedDatabase {
             User user = new User();
             user.setUsername("admin");
             user.setPassword("password");
+            user.setName("An Administrator");
             user.setAdmin(true);
             user.create();
             company.addUser(user);
@@ -118,6 +119,7 @@ public class SeedDatabase {
             user = new User();
             user.setUsername("clerk");
             user.setPassword("password");
+            user.setName("A Clerk");
             user.setAdmin(false);
             user.create();
             company.addUser(user);

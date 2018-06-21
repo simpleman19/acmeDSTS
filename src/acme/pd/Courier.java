@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 
 import acme.data.HibernateAdapter;
 import acme.data.PersistableEntity;

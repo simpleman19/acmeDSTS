@@ -1,14 +1,11 @@
 package acme.pd;
 
-import java.util.Random;
-
 public class Road implements Comparable {
     private Direction direction;
     private String name;
     private boolean bidirectional;
 
     public boolean canTravelDirection(Direction dir) {
-        // TODO can travel direction
         return this.getDirection() == dir
                 || (this.isBidirectional()
                 && (dir.ordinal() % 2 == this.getDirection().ordinal() % 2));
