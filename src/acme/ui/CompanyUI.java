@@ -8,15 +8,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
 import acme.pd.Company;
-public class CompanyUI extends JFrame {
-////////////GUI/////////////////
+import acme.pd.User;
+public class CompanyUI extends AcmeBaseJPanel {
+	
 private static final long serialVersionUID = 1L;
 private JPanel panel;
 private JPanel panelForm;
@@ -37,33 +37,16 @@ private Company comp;
 //////////////////////////
 	public CompanyUI()
     {
-
-        super("Acme Ticketing System");
-
-        buildForm();
-
-        buildButtonPanel();
-
-        setVisible(true);
-        setSize(550, 550);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+        super();
         
-//        // TODO initialize company
-//        File file = new File("null");
-//        this.map = new Map(file);
-//
-//        couriers = new HashMap<UUID, Courier>();
-//        tickets = new HashMap<UUID, Ticket>();
-//        customer = new HashMap<UUID, Customer>();
-//        currentUser = new User();
     }
 	
 	
     public void buildForm () 
     {
         panel = new JPanel();
-        getContentPane().add(panel);
+        this.add(panel);
 
         panelForm = new JPanel(new GridBagLayout());
         panel.add(panelForm);
@@ -166,6 +149,13 @@ private Company comp;
         saveButton.addActionListener(save);
 
     }
+    
+    public void buildPanel() {
+    	buildForm();
+    	buildButtonPanel();
+    }
+
+
 
     private class ExitButtonListner implements ActionListener
     {
@@ -186,13 +176,16 @@ private Company comp;
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            // IMPLEMENT
-            
-
-//            System.out.println(field1.getText());
-//            Integer.parseInt(field2.getText());
-            
-            
+        	
+        	getCompany().update();
+    
         }
     }
-}
+     
+    
+       public static void main(String [] args) {
+    	   AcmeUI acme = new AcmeUI();
+    	   acme.getCompany().setCurrentUser(new User());
+    	   acme.setPanel(new CompanyUI());
+	}
+       }
