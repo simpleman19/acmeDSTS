@@ -7,6 +7,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,6 +40,15 @@ public class UserUI extends AcmeBaseJPanel {
     }
 
     public void buildForm() {
+        
+        try {
+            BufferedImage myPicture = ImageIO.read(new File("resources/AcmeLogo.png"));
+            JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+            add(picLabel, new GridBagConstraints());
+        } catch (IOException e) {
+            System.out.println("Couldn't find company logo");
+        }
+        
         panel = new JPanel();
         this.add(panel);
 
