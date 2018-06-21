@@ -38,7 +38,7 @@ public class User extends Person implements PersistableEntity {
         }
         
     	return username;
-    }
+    } 
     
     // Sets the username.
     public void setUsername(String username) {
@@ -79,7 +79,8 @@ public class User extends Person implements PersistableEntity {
     }
     
     
-    public static void main(String []args) {   
+
+	public static void main(String []args) {   
 
     	//Creating the new user called Wolfgang
     	//and setting login attributes for Wolfgang.
@@ -98,7 +99,7 @@ public class User extends Person implements PersistableEntity {
 
 
 
-
+ 
 
 
 

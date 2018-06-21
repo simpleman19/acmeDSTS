@@ -2,6 +2,7 @@ package acme.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class UserUI extends JFrame {
+import acme.pd.User;
+
+public class UserUI extends AcmeBaseJPanel {
 
     private static final long serialVersionUID = 1L;
     private JPanel panel;
@@ -26,25 +29,13 @@ public class UserUI extends JFrame {
 
     public UserUI() {
 
-        super("Acme Ticketing System");
+        super();
 
-        buildForm();
-
-        buildButtonPanel();
-
-        setVisible(true);
-        setSize(500, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        buildForm();
-
-        buildButtonPanel();
     }
 
     public void buildForm() {
         panel = new JPanel();
-        getContentPane().add(panel);
+        this.add(panel);
 
         panelForm = new JPanel(new GridBagLayout());
         panel.add(panelForm);
@@ -95,10 +86,19 @@ public class UserUI extends JFrame {
         LoginButton.addActionListener(save);
 
     }
+    
+    
+    public void buildPanel() {
+    	buildForm();
+    	buildButtonPanel();
+    }
 
+    
+    
+     
     private class LoginButtonListner implements ActionListener {
-
-        @Override
+    	    
+		@Override
         public void actionPerformed(ActionEvent e) {
             // IMPLEMENT
             String pass = new String (txt2.getPassword());
@@ -119,5 +119,30 @@ public class UserUI extends JFrame {
 
         }
     }
+		
+		private boolean loginUser(String username, String password) {
+		    // TODO ask database
+		    if (password.equals("password")) {
+		        // TODO get user from database currenlty creating one instead
+		        User user = new User();
+		        user.setUsername(username);
+		        user.setAdmin(true);  // or false if you want
+		        
+		        // This will log that user in
+		        getAcmeUI().getCompany().setCurrentUser(user);
+		        
+		        return(true);
+		    }
 
-}
+		    return(false);
+		}
+	
+
+
+		public static void main(String [] args) {
+			AcmeUI acme = new AcmeUI();
+			acme.getCompany().setCurrentUser(new User());
+			acme.setPanel(new UserUI());
+		}
+
+	}
