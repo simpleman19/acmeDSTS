@@ -179,12 +179,8 @@ public class AcmeUI extends JFrame {
     // Add or update a customer
     public void customerAddUpdate(Customer customer, Consumer<Customer> onSaveFunc) {
         // This will be called with null to create
-        try {
-            CustomerCreatePanel panel = new CustomerCreatePanel(customer, onSaveFunc);
-            this.setPanel(panel);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        CustomerCreatePanel panel = new CustomerCreatePanel(customer, onSaveFunc);
+        this.setPanel(panel);
     }
 
     // Everyone will tie in their panel like this. Replace my example with your code
@@ -209,7 +205,7 @@ public class AcmeUI extends JFrame {
     // Everyone will tie in their panel like this. Replace my example with your code
     public void courierAddUpdate(Courier courier) {
         // This will be called with null to create
-        CourierCreatePanel panel = new CourierCreatePanel();
+        CourierCreatePanel panel = new CourierCreatePanel(courier);
         this.setPanel(panel);
     }
 

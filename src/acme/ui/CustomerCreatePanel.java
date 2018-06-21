@@ -35,7 +35,6 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
     public void buildPanel() {
         company = this.getCompany();
         if (customer != null) {
-
             newCustomer = false;
         } else {
             customer = new Customer();
@@ -114,6 +113,7 @@ public class CustomerCreatePanel extends AcmeBaseJPanel {
             streetComboField.setSelectedItem(EWRoad);
             activeCheck.setSelected(customer.isActive());
         }
+        
         this.revalidate();
         this.repaint();
 
