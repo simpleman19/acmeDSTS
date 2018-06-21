@@ -1,13 +1,16 @@
 package acme.ui;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
@@ -26,15 +29,22 @@ import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import acme.pd.Company;
 import acme.pd.Courier;
+import acme.pd.MapIntersection;
+import acme.pd.Path;
+import acme.pd.Road;
 import acme.pd.Ticket;
 import acme.pd.User;
 
@@ -44,8 +54,10 @@ public class TicketListUI extends AcmeBaseJPanel {
         
     private static final long serialVersionUID = 1L;
     private Company company;
-    private User user;
     private boolean displayWithComplete;
+    
+    public static final String RESULT
+    = System.getProperty("user.home")+"/Downloads/temp.pdf";
     
     // Main Label for the panel.
     JLabel mainLbl = new JLabel("Ticket List");
@@ -54,8 +66,6 @@ public class TicketListUI extends AcmeBaseJPanel {
     JCheckBox boxComp = new JCheckBox ("Show Completed");
    
     
-    
-     
     JTable table = new JTable() {
             private static final long serialVersionUID = 1L;
 
@@ -182,7 +192,9 @@ public class TicketListUI extends AcmeBaseJPanel {
         final int   ID_COL      = 7;
         final int   COMBO_COL   = 1;
         
-        // image icon
+        
+        
+        // image icons
         ImageIcon cancel = new ImageIcon(
                 new ImageIcon("resources/cancel.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         
@@ -208,7 +220,7 @@ public class TicketListUI extends AcmeBaseJPanel {
             
             private static final long serialVersionUID = 1L;
 
-                // No editable cell in our case
+                //only have buttons and combo box columns be editable
             public boolean isCellEditable(int rowIndex, int mColIndex) {
                 if(mColIndex == COMBO_COL || mColIndex == PRINT_COL || 
                     mColIndex == COMP_COL || mColIndex == CANCEL_COL)
@@ -223,7 +235,6 @@ public class TicketListUI extends AcmeBaseJPanel {
         table.getColumnModel().getColumn(CANCEL_COL).setMaxWidth(65);
         table.getColumnModel().getColumn(COMP_COL).setMaxWidth(65);
         table.getColumnModel().getColumn(PRINT_COL).setMaxWidth(65);
-        
         
         table.setRowHeight(35);
 
@@ -245,22 +256,41 @@ public class TicketListUI extends AcmeBaseJPanel {
         column.setPreferredWidth(0);
 
 //button methods---------------------------------------------------
-        /*
-         * Use this method for your print button
-         */
+
         Action printAction = new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Print");
-                //print 
+                int modelRow = Integer.valueOf(e.getActionCommand());
+                for (Map.Entry<UUID, Ticket> ticket : company.getTickets().entrySet()) {
+                    System.out.print("Compelete");
+                    if (ticket.getValue().getId().equals(table.getModel().getValueAt(modelRow, ID_COL))) {
+                      //print 
+                      try {
+                        
+                        Document document = new Document();
+                        PdfWriter.getInstance(document, new FileOutputStream(System.getProperty("user.home")+"/Downloads/" + ticket.getValue().getClerk()+".pdf"));
+                        document.open();
+                        String directions="";
+                        for(String temp : ticket.getValue().getDeliveryInstructions())
+                        {
+                          directions = directions + "\n" + temp;
+                        }
+                        document.add(new Paragraph(directions));
+                        document.close();
+                      }
+                      catch(Exception printError)
+                      {
+                        System.out.println("Error printing");
+                      }
+                      }  
+                }
+                
                 
             }
         };
         
-        /*
-         * Use this method for your comp button
-         */
         Action compAction = new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
@@ -269,16 +299,13 @@ public class TicketListUI extends AcmeBaseJPanel {
                 int modelRow = Integer.valueOf(e.getActionCommand());
                    for (Map.Entry<UUID, Ticket> ticket : company.getTickets().entrySet()) {
                        System.out.print("Compelete");
-//                       if (ticket.getValue().getId().equals(table.getModel().getValueAt(modelRow, ID_COL))) {
-//                    	   getAcmeUI().ticketComplete(ticket.getValue());
-//                       }
+                       if (ticket.getValue().getId().equals(table.getModel().getValueAt(modelRow, ID_COL))) {
+                    	   getAcmeUI().ticketComplete(ticket.getValue());
+                       }
                    }
             }
         };
         
-        /*
-         * Use this method for your cancel button
-         */
         Action cancelAction = new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
@@ -287,16 +314,15 @@ public class TicketListUI extends AcmeBaseJPanel {
             	int modelRow = Integer.valueOf(e.getActionCommand());
                 for (Map.Entry<UUID, Ticket> ticket : company.getTickets().entrySet()) {
                     System.out.print("Cancel");
-//                    if (ticket.getValue().getId().equals(table.getModel().getValueAt(modelRow, ID_COL))) {
-//                 	   getAcmeUI().ticketComplete(ticket.getValue());
-//                    }
+                    if (ticket.getValue().getId().equals(table.getModel().getValueAt(modelRow, ID_COL))) {
+                 	   company.getTickets().remove(ticket.getKey());
+                 	   refreshPage();
+                    }
                 }
-                //Code here
             }
         };
         
       
- 
        addBtn.addActionListener(new ActionListener() {
              public void actionPerformed(ActionEvent e) {
                 goToTicketCreate();
@@ -304,36 +330,62 @@ public class TicketListUI extends AcmeBaseJPanel {
            });
        
        //test data-----------------------------
-       Courier tempCourier = new Courier();
-       tempCourier.setCourierNumber(5);
-       tempCourier.setName("ABC");
-       Ticket tempTicket = new Ticket();
-       tempTicket.setCourier(tempCourier);
-       tempTicket.setDepartureTime(LocalDateTime.now());
-       tempTicket.setDeliveryTime(null);
-       company.getTickets().put(null, tempTicket);
-      
+       getTestingData();
       //-------------------------------------------- 
      
-       
-//       comboBox.setSelectedIndex(1);
-//       
-//       
-//       TableColumn comboCol = table.getColumnModel().getColumn(COMBO_COL);
-//       comboCol.setCellEditor(new DefaultCellEditor(comboBox));
-       
+       //populate combo box
        JComboBox comboBox = new JComboBox();
        comboBox.addItem("None");
-       comboBox.addItem("Snowboarding");
-       comboBox.addItem("Rowing");
-       comboBox.addItem("Chasing toddlers");
-       comboBox.addItem("Speed reading");
-       comboBox.addItem("Teaching high school");
+       Map<String, Integer> courierMap = new HashMap<String, Integer>();
+       Map<String, Courier> courierMapForTickets = new HashMap<String, Courier>();
+       int count = 1;
+       for(Map.Entry<UUID, Courier> courier: company.getCouriers().entrySet())
+       {
+         String courierName = courier.getValue().getName();
+         comboBox.addItem(courierName);
+         courierMap.put(courierName, count);
+         courierMapForTickets.put(courierName,courier.getValue());
+         count++;
+       }
        
-       comboBox.setSelectedIndex(1);
+       //display combo box
        table.getColumnModel().getColumn(COMBO_COL).setCellEditor(new DefaultCellEditor(comboBox) {
                 
        });
+       
+       //used to set courier for tickets when value in combo box changes
+       model.addTableModelListener(new TableModelListener() {
+         @Override
+         public void tableChanged(TableModelEvent e) {
+             int type = e.getType();
+             switch (type) {
+                 case TableModelEvent.UPDATE:
+                     if (e.getFirstRow() - e.getLastRow() == 0) {
+                         TableModel model = (TableModel) e.getSource();
+                         int row = e.getFirstRow();
+                         int col = e.getColumn();
+                         System.out.println("Update " + row + "x" + col + " = " + model.getValueAt(row, col));
+                         
+                         for (Map.Entry<UUID, Ticket> ticket : company.getTickets().entrySet()) {
+                           try {
+                             if (ticket.getValue().getId().equals(table.getModel().getValueAt(row, ID_COL))) {
+                              ticket.getValue().setCourier(courierMapForTickets.get(model.getValueAt(row, col)));
+                              System.out.println("Success");
+                             }
+                           }
+                           catch(Exception ex)
+                           {
+                             
+                           }
+                       }
+                     }
+                     break;
+             }
+         }
+     });
+       
+       //To print pretty dates and times
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd hh:mm a");
        
        
        if ( displayWithComplete )
@@ -341,10 +393,17 @@ public class TicketListUI extends AcmeBaseJPanel {
            System.out.println("Displaying with completed");
            /* Iterate through the tickets in the company and populate the table */
            for (Map.Entry<UUID, Ticket> tickets : company.getTickets().entrySet()) {
+               
+               Courier rowCourier = tickets.getValue().getCourier();
+               if(rowCourier != null)
+               {
+                 comboBox.setSelectedIndex(courierMap.get(rowCourier.getName()));
+               }
+               
                Vector<Object> row = new Vector<Object>();
                row.add(tickets.getValue().getPackageID());
-               row.add(comboBox);
-               row.add(tickets.getValue().getDepartureTime());
+               row.add(comboBox.getItemAt(comboBox.getSelectedIndex()));
+               row.add(tickets.getValue().getDepartureTime().format(formatter));
                //Used delivery time
                row.add(tickets.getValue().getDeliveryTime());
                row.add(cancel);
@@ -362,10 +421,16 @@ public class TicketListUI extends AcmeBaseJPanel {
                
                if(tickets.getValue().getDeliveryTime() == null)
                {
+                   Courier rowCourier = tickets.getValue().getCourier();
+                   if(rowCourier != null)
+                   {
+                     comboBox.setSelectedIndex(courierMap.get(rowCourier.getName()));
+                   }
+                 
                    Vector<Object> row = new Vector<Object>();
                    row.add(tickets.getValue().getPackageID());
-                   row.add(comboBox);
-                   row.add(tickets.getValue().getDepartureTime());
+                   row.add(comboBox.getItemAt(comboBox.getSelectedIndex()));
+                   row.add(tickets.getValue().getDepartureTime().format(formatter));
                    //Used delivery time
                    row.add(tickets.getValue().getDeliveryTime());
                    row.add(cancel);
@@ -378,17 +443,7 @@ public class TicketListUI extends AcmeBaseJPanel {
            }
        }
        
-     //combobox
-       
-
-       
-       
-//       //Tool tip 
-//       DefaultTableCellRenderer renderer = 
-//              new DefaultTableCellRenderer ();
-//          renderer.setToolTipText("Click for combo box");
-//       comboCol.setCellRenderer(renderer);
-//       
+        //display buttons
         ButtonColumn buttonPrint = new ButtonColumn(table, printAction, PRINT_COL);
         buttonPrint.setMnemonic(KeyEvent.VK_D);
         ButtonColumn buttonComp = new ButtonColumn(table, compAction, COMP_COL);
@@ -396,12 +451,25 @@ public class TicketListUI extends AcmeBaseJPanel {
         ButtonColumn buttonCancel = new ButtonColumn(table, cancelAction, CANCEL_COL);
         buttonCancel.setMnemonic(KeyEvent.VK_D);
     
-    
     }
     
+    public void refreshPage()
+    {
+      getAcmeUI().ticketList(this.displayWithComplete);
+    }
+    
+    //method for checkbox
+    //toggles back and forth between the two views
     public void showComplete()
     {
+      if(this.displayWithComplete == false)
+      {
         this.getAcmeUI().ticketList(true);
+      }
+      else
+      {
+        this.getAcmeUI().ticketList(false);
+      }
     }
     
     public void goToTicketCreate()
@@ -415,6 +483,84 @@ public class TicketListUI extends AcmeBaseJPanel {
       acme.getCompany().setCurrentUser(new User());
   }
         
+    public void getTestingData()
+    {
+      Courier tempCourier = new Courier();
+      tempCourier.setCourierNumber(4);
+      tempCourier.setName("Emily");
+      this.company.addCourier(tempCourier);
+      Ticket tempTicket = new Ticket();
+      tempTicket.setCourier(tempCourier);
+      tempTicket.setDepartureTime(LocalDateTime.now());
+      tempTicket.setDeliveryTime(null);
+      Path tempPath = new Path();
+      MapIntersection tempIntersection = new MapIntersection();
+      Road tempRoad = new Road();
+      tempRoad.setName("5");
+      tempIntersection.setEWroad(tempRoad);
+      tempRoad.setName("A");
+      tempIntersection.setNSroad(tempRoad);
+      MapIntersection tempIntersection2 = new MapIntersection();
+      Road tempRoad2 = new Road();
+      tempRoad2.setName("3");
+      tempIntersection2.setEWroad(tempRoad2);
+      tempRoad2.setName("C");
+      tempIntersection2.setNSroad(tempRoad2);
+      ArrayList<MapIntersection> listOfIntersections = new ArrayList();
+      listOfIntersections.add(tempIntersection);
+      listOfIntersections.add(tempIntersection2);
+      tempPath.setPath(listOfIntersections);
+      tempTicket.setPath(tempPath);
+      this.company.getTickets().put(null, tempTicket);
+      
+//      Courier tempCourier2 = new Courier();
+//      tempCourier2.setCourierNumber(5);
+//      tempCourier2.setName("Paresa");
+//      this.company.addCourier(tempCourier2);
+//      Ticket tempTicket2 = new Ticket();
+//      tempTicket2.setCourier(tempCourier);
+//      tempTicket2.setDepartureTime(LocalDateTime.now());
+//      tempTicket2.setDeliveryTime(null);
+//      this.company.getTickets().put(null, tempTicket2);
+//      
+//      Courier tempCourier3 = new Courier();
+//      tempCourier3.setCourierNumber(5);
+//      tempCourier3.setName("Jacob");
+//      this.company.addCourier(tempCourier2);
+//      Ticket tempTicket3 = new Ticket();
+//      tempTicket3.setCourier(tempCourier);
+//      tempTicket3.setDepartureTime(LocalDateTime.now());
+//      tempTicket3.setDeliveryTime(null);
+//      this.company.getTickets().put(null, tempTicket3);
+//      
+//      Courier tempCourier4 = new Courier();
+//      tempCourier4.setCourierNumber(5);
+//      tempCourier4.setName("Chance");
+//      this.company.addCourier(tempCourier4);
+//      Ticket tempTicket4 = new Ticket();
+//      tempTicket4.setCourier(tempCourier);
+//      tempTicket4.setDepartureTime(LocalDateTime.now());
+//      tempTicket4.setDeliveryTime(null);
+//      this.company.getTickets().put(null, tempTicket4);
+//      
+//      Ticket tempTicket5 = new Ticket();
+//      tempTicket5.setCourier(tempCourier3);
+//      tempTicket5.setDepartureTime(LocalDateTime.now());
+//      tempTicket5.setDeliveryTime(null);
+//      this.company.getTickets().put(null, tempTicket5);
+//      
+//      Ticket tempTicket6 = new Ticket();
+//      tempTicket6.setCourier(tempCourier2);
+//      tempTicket6.setDepartureTime(LocalDateTime.now());
+//      tempTicket6.setDeliveryTime(LocalDateTime.now());
+//      this.company.getTickets().put(null, tempTicket6);
+//      
+//      Ticket tempTicket7 = new Ticket();
+//      tempTicket7.setCourier(tempCourier);
+//      tempTicket7.setDepartureTime(LocalDateTime.now());
+//      tempTicket7.setDeliveryTime(LocalDateTime.now());
+//      this.company.getTickets().put(null, tempTicket7);
+    }
     
 
 }
