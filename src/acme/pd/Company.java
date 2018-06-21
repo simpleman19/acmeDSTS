@@ -209,7 +209,7 @@ public class Company implements PersistableEntity {
         this.courierMilesPerHour = courierMilesPerHour;
     }
 
-    public static Company getDefaultAcme() {
+    public static Company getCompany() {
     	Company acme = new Company();
 
     	acme.setName("Acme");

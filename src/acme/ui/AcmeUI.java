@@ -27,7 +27,7 @@ public class AcmeUI extends JFrame {
 
         HibernateAdapter.startUp();
 
-        this.company = Company.getDefaultAcme();
+        this.company = Company.getCompany();
         this.buildMenu();
 
         setVisible(true);
@@ -190,7 +190,7 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void companyEdit() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
+    	ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
     }
 

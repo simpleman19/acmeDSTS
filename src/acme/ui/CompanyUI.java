@@ -43,6 +43,12 @@ private Company comp;
     }
 	
 	
+	public void buildPanel() {
+    	buildForm();
+    	buildButtonPanel();
+    }
+
+	
     public void buildForm () 
     {
         panel = new JPanel();
@@ -87,43 +93,43 @@ private Company comp;
         panelForm.add(company_name, grid);
         ++grid.gridy;
         
-        company_name.setText(comp.getDefaultAcme().getName());
+        company_name.setText(comp.getCompany().getName());
         
         
         bonus_amount = new JTextField (10);
         panelForm.add(bonus_amount, grid);
         ++grid.gridy;
         
-        bonus_amount.setText(comp.getDefaultAcme().getBonus().toString());
+        bonus_amount.setText(comp.getCompany().getBonus().toString());
         
 
         courier_miles = new JTextField (10);
         panelForm.add(courier_miles, grid);
         ++grid.gridy;
         
-        courier_miles.setText(Double.toString(comp.getDefaultAcme().getCourierMilesPerHour()));
+        courier_miles.setText(Double.toString(comp.getCompany().getCourierMilesPerHour()));
         
         
         blocks_per_mile = new JTextField (10);
         panelForm.add(blocks_per_mile, grid);
         ++grid.gridy;
-        blocks_per_mile.setText(Double.toString(comp.getDefaultAcme().getBlocksPerMile()));
+        blocks_per_mile.setText(Double.toString(comp.getCompany().getBlocksPerMile()));
         
         
         lateness_margin = new JTextField (10);
         panelForm.add(lateness_margin, grid);
         ++grid.gridy;
-        lateness_margin.setText(Integer.toString(comp.getDefaultAcme().getLatenessMarginMinutes()));
+        lateness_margin.setText(Integer.toString(comp.getCompany().getLatenessMarginMinutes()));
 
         flat_billing = new JTextField (10);
         panelForm.add(flat_billing, grid);
         ++grid.gridy;
-        flat_billing.setText(comp.getDefaultAcme().getFlatBillingRate().toString());
+        flat_billing.setText(comp.getCompany().getFlatBillingRate().toString());
         
         block_rate_name = new JTextField (10);
         panelForm.add(block_rate_name, grid);
         ++grid.gridy;
-        block_rate_name.setText(Double.toString(comp.getDefaultAcme().getBlocksPerMile()));
+        block_rate_name.setText(Double.toString(comp.getCompany().getBlocksPerMile()));
     }
 
     private void buildButtonPanel()
@@ -150,11 +156,6 @@ private Company comp;
 
     }
     
-    public void buildPanel() {
-    	buildForm();
-    	buildButtonPanel();
-    }
-
 
 
     private class ExitButtonListner implements ActionListener
