@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -38,71 +37,39 @@ public class Company implements PersistableEntity {
     private java.util.Map<UUID, Customer> customers;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private java.util.Map<UUID, User> users;
+    @Column(name = "BONUS")
+    private BigDecimal bonus;
+    @Column(name = "FLAT_BILLING_RATE")
+    private BigDecimal flatBillingRate;
+    @Column(name = "BLOCK_BILLING_RATE")
+    private BigDecimal blockBillingRate;
+    @Column(name = "LATENESS_MARGIN_MINUTES")
+    private int latenessMarginMinutes;
+    @Column(name = "BLOCKS_PER_MILE")
+    private double blocksPerMile;
+    @Column(name = "COURIER_MILES_PER_HOUR")
+    private double courierMilesPerHour;
+
+    // Transients
     @Transient
     private User currentUser = null;
-    @Column(name = "BONUS")
-    private BigDecimal bonus = new BigDecimal(1.25);
-    @Column(name = "FLAT_BILLING_RATE")
-    private BigDecimal flatBillingRate = new BigDecimal(25);
-    @Column(name = "BLOCK_BILLING_RATE")
-    private BigDecimal blockBillingRate = new BigDecimal(5.36);
-    @Column(name = "LATENESS_MARGIN_MINUTES")
-    private int latenessMarginMinutes = 5;
-    @Column(name = "BLOCKS_PER_MILE")
-    private double blocksPerMile = 5.2;
-    @Column(name = "COURIER_MILES_PER_HOUR")
-    private double courierMilesPerHour = 5.8;
     @Transient
     private String mapFilename = "map/map.csv";
     @Transient
     public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
-    @Transient
-    File mapFile = new File(mapFilename);
 
     public Company() {
-        // TODO initialize company
+        File mapFile = new File(mapFilename);
         this.map = new Map(mapFile);
 
-        couriers = new HashMap<UUID, Courier>();
-        tickets = new HashMap<UUID, Ticket>();
-        customers = new HashMap<UUID, Customer>();
-        users = new HashMap<UUID, User>();
-    }
-
-    public void generateStuff() {
-        Random rand = new Random();
-        // TODO remove test customers and couriers
-        for (int i = 0; i < 10; i++) {
-            Courier c1 = new Courier();
-            c1.setName("That Guy " + i);
-            c1.setCourierNumber(i);
-            c1.create();
-            this.addCourier(c1);
-
-            Customer c2 = new Customer();
-            c2.setName("That Customer " + (1000 + i));
-            c2.setAvenueName("1");
-            c2.setStreetName("G");
-            c2.create();
-            this.addCustomer(c2);
-
-            User u1 = new User();
-            u1.setName("First " + "Last" + i);
-            u1.setUsername("uname " + i);
-            if (i % 2 == 0) {
-                u1.setActive(true);
-            } else {
-                u1.setActive(false);
-            }
-            u1.setAdmin(true);
-            u1.setPassword("pass"+i);
-            u1.create();
-            this.addUser(u1);
-        }
-        this.update();
+        couriers = new HashMap<>();
+        tickets = new HashMap<>();
+        customers = new HashMap<>();
+        users = new HashMap<>();
     }
 
     public void exportMap() {
+        File mapFile = new File(mapFilename);
         getMap().exportMap(mapFile);
     }
     

@@ -48,15 +48,6 @@ private Company comp;
         setSize(550, 550);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-//        // TODO initialize company
-//        File file = new File("null");
-//        this.map = new Map(file);
-//
-//        couriers = new HashMap<UUID, Courier>();
-//        tickets = new HashMap<UUID, Ticket>();
-//        customer = new HashMap<UUID, Customer>();
-//        currentUser = new User();
     }
 	
 	

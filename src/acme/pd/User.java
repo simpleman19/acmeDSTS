@@ -77,10 +77,25 @@ public class User extends Person implements PersistableEntity {
     		return false;
     	}
     }
-    
-    
 
-	public static void main(String []args) {   
+    public static User authenticate(String u, String p) {
+        // Checking to see if username and password match
+        HashMap<String,String> parameters = new HashMap<String, String>();
+        parameters.put("username", u);
+        parameters.put("password", p);
+        try {
+            return PersistableEntity.querySingle(User.class,
+                    "select u from APP_USER u where USERNAME = :username and PASSWORD = :password",
+                    parameters);
+        } catch(NoResultException e) {
+            System.out.println("Login Failed Authentication. Access Denied.");
+            return null;
+        }
+    }
+
+
+
+    public static void main(String []args) {
 
     	//Creating the new user called Wolfgang
     	//and setting login attributes for Wolfgang.

@@ -153,8 +153,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this.  Replace my example with your code
     public void loginScreen() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+        UserUI ui = new UserUI();
+        this.setPanel(ui);
     }
 
     // Everyone will tie in their panel like this.  Replace my example with your code
@@ -243,9 +243,9 @@ public class AcmeUI extends JFrame {
     }
     class ShutdownListener implements WindowListener {
         public void windowClosing(WindowEvent event) {
-        HibernateAdapter.shutDown();
-        setVisible(false);
-        company.exportMap();
+            HibernateAdapter.shutDown();
+            setVisible(false);
+            company.exportMap();
             dispose(); //Destroy the JFrame object
         }
         public void windowOpened(WindowEvent event) {}

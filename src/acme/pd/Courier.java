@@ -1,11 +1,9 @@
 package acme.pd;
-import java.util.Collections;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.NoResultException;
 
 import acme.data.PersistableEntity;
 

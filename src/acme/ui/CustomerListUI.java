@@ -293,49 +293,4 @@ public class CustomerListUI extends AcmeBaseJPanel {
             super.fireEditingStopped();
         }
     }
-    // -------------------------------------------------------------------
-
-    // test data creation
-    public Customer[] getTestData() {
-        Customer tempCustomer1 = new Customer();
-        tempCustomer1.setActive(true);
-        tempCustomer1.setAvenueName("5");
-        tempCustomer1.setCustomerNumber(1);
-        tempCustomer1.setName("Dee Dee Corp");
-        tempCustomer1.setStreetName("A");
-
-        Customer tempCustomer2 = new Customer();
-        tempCustomer2.setActive(true);
-        tempCustomer2.setAvenueName("2");
-        tempCustomer2.setCustomerNumber(2);
-        tempCustomer2.setName("Paresa Corp");
-        tempCustomer2.setStreetName("C");
-
-        Customer tempCustomer3 = new Customer();
-        tempCustomer3.setActive(false);
-        tempCustomer3.setAvenueName("3");
-        tempCustomer3.setCustomerNumber(3);
-        tempCustomer3.setName("Jacob Corp");
-        tempCustomer3.setStreetName("G");
-
-        Customer tempCustomer4 = new Customer();
-        tempCustomer4.setActive(true);
-        tempCustomer4.setAvenueName("4");
-        tempCustomer4.setCustomerNumber(4);
-        tempCustomer4.setName("Emily Corp");
-        tempCustomer4.setStreetName("D");
-
-        Customer tempCustomer5 = new Customer();
-        tempCustomer5.setActive(true);
-        tempCustomer5.setAvenueName("5");
-        tempCustomer5.setCustomerNumber(5);
-        tempCustomer5.setName("Chance Corp");
-        tempCustomer5.setStreetName("B");
-
-        Customer[] data = new Customer[] { tempCustomer1, tempCustomer2, tempCustomer3, tempCustomer4, tempCustomer5, };
-
-        return data;
-
-    }
-
 }

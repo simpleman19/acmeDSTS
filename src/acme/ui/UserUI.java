@@ -102,41 +102,18 @@ public class UserUI extends AcmeBaseJPanel {
         public void actionPerformed(ActionEvent e) {
             // IMPLEMENT
             String pass = new String (txt2.getPassword());
-
-            if ((txt.getText().equalsIgnoreCase("admin") && pass.equalsIgnoreCase("admin")) ||
-                 (txt.getText().equalsIgnoreCase("owner") && pass.equalsIgnoreCase("owner")) ||
-                 (txt.getText().equalsIgnoreCase("courier") && pass.equalsIgnoreCase("courier"))) {
-
-                System.out.println("true");
-
-            }
-
-            else {
-                System.out.println("NOT ALLOWED");
-                txt.setText("");
-                txt2.setText("");
-            }
-
-        }
+            String username = new String(txt.getText());
+            loginUser(username, pass);
+		}
     }
 		
-		private boolean loginUser(String username, String password) {
-		    // TODO ask database
-		    if (password.equals("password")) {
-		        // TODO get user from database currenlty creating one instead
-		        User user = new User();
-		        user.setUsername(username);
-		        user.setAdmin(true);  // or false if you want
-		        
-		        // This will log that user in
-		        getAcmeUI().getCompany().setCurrentUser(user);
-		        
-		        return(true);
-		    }
-
-		    return(false);
-		}
-	
+		private void loginUser(String username, String password) {
+            User user = User.authenticate(username, password);
+            if (user != null) {
+                this.getCompany().setCurrentUser(user);
+                this.getAcmeUI().ticketList();
+            }
+        }
 
 
 		public static void main(String [] args) {

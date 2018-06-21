@@ -484,7 +484,6 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
     public static void main(String [] args) {
         AcmeUI acme = new AcmeUI();
-        acme.getCompany().generateStuff();
         acme.getCompany().setCurrentUser((User) acme.getCompany().getUsers().values().toArray()[0]);
         acme.setPanel(new TicketCreationJPanel());
     }

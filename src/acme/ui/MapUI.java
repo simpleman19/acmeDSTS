@@ -209,10 +209,8 @@ public class MapUI extends AcmeBaseJPanel {
   
   public static void main(String [] args) {
     AcmeUI acme = new AcmeUI();
-    acme.getCompany().setCurrentUser(new User());
+    acme.getCompany().setCurrentUser((User) acme.getCompany().getUsers().values().toArray()[0]);
     acme.setPanel(new MapUI());
-    
-    
 }
   
 }

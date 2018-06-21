@@ -13,12 +13,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class Map {
     private MapIntersection[][] map;
