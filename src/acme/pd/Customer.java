@@ -1,16 +1,19 @@
 package acme.pd;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NoResultException;
 import javax.persistence.Transient;
 
+import acme.data.HibernateAdapter;
 import acme.data.PersistableEntity;
 @Entity(name = "CUSTOMER")
 public class Customer implements PersistableEntity {
@@ -84,14 +87,18 @@ public class Customer implements PersistableEntity {
     }
 
     public static int getNextCustomerNumber() {
-		/*try {
-			//FIXME
-			Customer highest = PersistableEntity.querySingle(Customer.class, "select c from CUSTOMER c ORDER BY NUMBER DESC", Collections.EMPTY_MAP);
-			return highest.getCustomerNumber() + 1;
-		} catch (NoResultException e) {
-			return 1;
-		}*/
-    	return 1;
+        try {           
+            EntityManager em = HibernateAdapter.getEntityManager();
+            List<Customer> cus = em.createQuery(
+                    "select c " +
+                    "from CUSTOMER c " +
+                    "order by NUMBER DESC", Customer.class
+                ).getResultList();
+            
+            return cus.get(0).getCustomerNumber()+1;
+        } catch (NoResultException e) {
+            return 1;
+        }
     }
 
     public String toString() {
