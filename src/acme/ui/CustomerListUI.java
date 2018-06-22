@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import acme.pd.Company;
 import acme.pd.Customer;
 import acme.pd.MapIntersection;
 import acme.pd.Road;
@@ -96,7 +97,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
              * 
              */
             private static final long serialVersionUID = 1L;
-            Class<?>[] types = new Class[] { java.lang.String.class, java.lang.String.class, java.lang.String.class,
+            Class<?>[] types = new Class[] { java.lang.Integer.class, java.lang.String.class, java.lang.String.class,
                     java.lang.Boolean.class, javax.swing.JButton.class };
             boolean[] canEdit = new boolean[] {
                     // need last one true so can click button
@@ -161,17 +162,18 @@ public class CustomerListUI extends AcmeBaseJPanel {
                 customerToPass = this.customersArray[x];
             }
         }
-        this.getAcmeUI().customerAddUpdate(customerToPass);
+        this.getAcmeUI().customerAddUpdate(customerToPass, c -> this.getAcmeUI().customerList());
     }
 
     public void goToNewCustomerPage() {
         // go to new customer page
-        this.getAcmeUI().customerAddUpdate(null);
+    	AcmeUI acmeUI = this.getAcmeUI();
+    	acmeUI.customerAddUpdate(null, c -> acmeUI.customerList());
     }
     // ------------------------------------------------
 
     public Object[][] getObjectsForTable(Customer[] listOfCustomers) {
-
+    	Company company = this.getCompany();
         ImageIcon pen = new ImageIcon(
                 new ImageIcon("resources/pen.jpg").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         Object[][] toReturn = new Object[listOfCustomers.length][5];
@@ -179,7 +181,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
             try {
                 toReturn[x][0] = listOfCustomers[x].getCustomerNumber();
                 toReturn[x][1] = listOfCustomers[x].getName();
-                toReturn[x][2] = listOfCustomers[x].getIntersection().getIntersectionName();
+                toReturn[x][2] = listOfCustomers[x].getIntersection(company.getMap()).getIntersectionName();
                 toReturn[x][3] = listOfCustomers[x].isActive();
                 toReturn[x][4] = pen;
             } catch (NullPointerException e) {
@@ -291,89 +293,4 @@ public class CustomerListUI extends AcmeBaseJPanel {
             super.fireEditingStopped();
         }
     }
-    // -------------------------------------------------------------------
-
-    // test data creation
-    public Customer[] getTestData() {
-        Customer tempCustomer1 = new Customer();
-        tempCustomer1.setActive(true);
-        tempCustomer1.setAvenueName("5");
-        tempCustomer1.setCustomerNumber(1);
-        tempCustomer1.setName("Dee Dee Corp");
-        tempCustomer1.setStreetName("A");
-        MapIntersection tempIntersection1 = new MapIntersection();
-        Road tempRoad1 = new Road();
-        tempRoad1.setName("5");
-        Road tempRoad11 = new Road();
-        tempRoad11.setName("A");
-        tempIntersection1.setEWroad(tempRoad1);
-        tempIntersection1.setNSroad(tempRoad11);
-        tempCustomer1.setIntersection(tempIntersection1);
-
-        Customer tempCustomer2 = new Customer();
-        tempCustomer2.setActive(true);
-        tempCustomer2.setAvenueName("2");
-        tempCustomer2.setCustomerNumber(2);
-        tempCustomer2.setName("Paresa Corp");
-        tempCustomer2.setStreetName("C");
-        MapIntersection tempIntersection2 = new MapIntersection();
-        Road tempRoad2 = new Road();
-        tempRoad2.setName("2");
-        Road tempRoad22 = new Road();
-        tempRoad22.setName("C");
-        tempIntersection2.setEWroad(tempRoad2);
-        tempIntersection2.setNSroad(tempRoad22);
-        tempCustomer2.setIntersection(tempIntersection2);
-
-        Customer tempCustomer3 = new Customer();
-        tempCustomer3.setActive(false);
-        tempCustomer3.setAvenueName("3");
-        tempCustomer3.setCustomerNumber(3);
-        tempCustomer3.setName("Jacob Corp");
-        tempCustomer3.setStreetName("G");
-        MapIntersection tempIntersection3 = new MapIntersection();
-        Road tempRoad3 = new Road();
-        tempRoad3.setName("3");
-        Road tempRoad33 = new Road();
-        tempRoad33.setName("G");
-        tempIntersection3.setEWroad(tempRoad3);
-        tempIntersection3.setNSroad(tempRoad33);
-        tempCustomer3.setIntersection(tempIntersection3);
-
-        Customer tempCustomer4 = new Customer();
-        tempCustomer4.setActive(true);
-        tempCustomer4.setAvenueName("4");
-        tempCustomer4.setCustomerNumber(4);
-        tempCustomer4.setName("Emily Corp");
-        tempCustomer4.setStreetName("D");
-        MapIntersection tempIntersection4 = new MapIntersection();
-        Road tempRoad4 = new Road();
-        tempRoad4.setName("4");
-        Road tempRoad44 = new Road();
-        tempRoad44.setName("D");
-        tempIntersection4.setEWroad(tempRoad4);
-        tempIntersection4.setNSroad(tempRoad44);
-        tempCustomer4.setIntersection(tempIntersection4);
-
-        Customer tempCustomer5 = new Customer();
-        tempCustomer5.setActive(true);
-        tempCustomer5.setAvenueName("5");
-        tempCustomer5.setCustomerNumber(5);
-        tempCustomer5.setName("Chance Corp");
-        tempCustomer5.setStreetName("B");
-        MapIntersection tempIntersection5 = new MapIntersection();
-        Road tempRoad5 = new Road();
-        tempRoad4.setName("5");
-        Road tempRoad55 = new Road();
-        tempRoad55.setName("B");
-        tempIntersection5.setEWroad(tempRoad5);
-        tempIntersection5.setNSroad(tempRoad55);
-        tempCustomer5.setIntersection(tempIntersection5);
-
-        Customer[] data = new Customer[] { tempCustomer1, tempCustomer2, tempCustomer3, tempCustomer4, tempCustomer5, };
-
-        return data;
-
-    }
-
 }

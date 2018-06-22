@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import acme.pd.Company;
 import acme.pd.User;
 public class CompanyUI extends AcmeBaseJPanel {
-	
+
 private static final long serialVersionUID = 1L;
 private JPanel panel;
 private JPanel panelForm;
@@ -37,12 +37,12 @@ private Company comp;
 //////////////////////////
 	public CompanyUI()
     {
-		
+
         super();
-        
+
     }
-	
-	
+
+
 	public void buildPanel() {
     	buildForm();
     	buildButtonPanel();
@@ -155,7 +155,7 @@ private Company comp;
         saveButton.addActionListener(save);
 
     }
-    
+
 
 
     private class ExitButtonListner implements ActionListener
@@ -177,13 +177,13 @@ private Company comp;
         @Override
         public void actionPerformed(ActionEvent e)
         {
-        	
+
         	getCompany().update();
-    
+
         }
     }
-     
-    
+
+
        public static void main(String [] args) {
     	   AcmeUI acme = new AcmeUI();
     	   acme.getCompany().setCurrentUser(new User());

@@ -2,6 +2,7 @@ package acme.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class UserUI extends JFrame {
+import acme.pd.User;
+
+public class UserUI extends AcmeBaseJPanel {
 
     private static final long serialVersionUID = 1L;
     private JPanel panel;
@@ -26,25 +29,13 @@ public class UserUI extends JFrame {
 
     public UserUI() {
 
-        super("Acme Ticketing System");
+        super();
 
-        buildForm();
-
-        buildButtonPanel();
-
-        setVisible(true);
-        setSize(500, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        buildForm();
-
-        buildButtonPanel();
     }
 
     public void buildForm() {
         panel = new JPanel();
-        getContentPane().add(panel);
+        this.add(panel);
 
         panelForm = new JPanel(new GridBagLayout());
         panel.add(panelForm);
@@ -95,29 +86,40 @@ public class UserUI extends JFrame {
         LoginButton.addActionListener(save);
 
     }
+    
+    
+    public void buildPanel() {
+    	buildForm();
+    	buildButtonPanel();
+    }
 
+    
+    
+     
     private class LoginButtonListner implements ActionListener {
-
-        @Override
+    	    
+		@Override
         public void actionPerformed(ActionEvent e) {
             // IMPLEMENT
             String pass = new String (txt2.getPassword());
-
-            if ((txt.getText().equalsIgnoreCase("admin") && pass.equalsIgnoreCase("admin")) ||
-                 (txt.getText().equalsIgnoreCase("owner") && pass.equalsIgnoreCase("owner")) ||
-                 (txt.getText().equalsIgnoreCase("courier") && pass.equalsIgnoreCase("courier"))) {
-
-                System.out.println("true");
-
-            }
-
-            else {
-                System.out.println("NOT ALLOWED");
-                txt.setText("");
-                txt2.setText("");
-            }
-
-        }
+            String username = new String(txt.getText());
+            loginUser(username, pass);
+		}
     }
+		
+		private void loginUser(String username, String password) {
+            User user = User.authenticate(username, password);
+            if (user != null) {
+                this.getCompany().setCurrentUser(user);
+                this.getAcmeUI().ticketList();
+            }
+        }
 
-}
+
+		public static void main(String [] args) {
+			AcmeUI acme = new AcmeUI();
+			acme.getCompany().setCurrentUser(new User());
+			acme.setPanel(new UserUI());
+		}
+
+	}

@@ -101,8 +101,8 @@ public class Ticket implements PersistableEntity {
                 && this.getDeliveryCustomer() != null
                 && this.getDeliveryTime() != null) {
             this.path = company.getMap().getPath(
-                    this.getPickupCustomerLocation(),
-                    this.getDeliveryCustomerLocation()
+                    this.getPickupCustomerLocation(this.company.getMap()),
+                    this.getDeliveryCustomerLocation(this.company.getMap())
             );
             calcEstimatedTimes();
             calculateQuote();
@@ -282,13 +282,13 @@ public class Ticket implements PersistableEntity {
         this.note = note;
     }
 
-    public MapIntersection getDeliveryCustomerLocation()
+    public MapIntersection getDeliveryCustomerLocation(Map map)
     {
-      return this.deliveryCustomer.getIntersection();
+      return this.deliveryCustomer.getIntersection(map);
     }
 
-    public MapIntersection getPickupCustomerLocation()
+    public MapIntersection getPickupCustomerLocation(Map map)
     {
-      return this.pickupCustomer.getIntersection();
+      return this.pickupCustomer.getIntersection(map);
     }
 }
