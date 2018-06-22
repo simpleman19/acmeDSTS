@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 public class SeedDatabase {
     public static void main(String[] args) {
         HibernateAdapter.startUpSeed();
-
+ 
         seedDB();
 
         HibernateAdapter.shutDown();

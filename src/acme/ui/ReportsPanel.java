@@ -27,6 +27,9 @@ import javax.swing.table.DefaultTableModel;
 import acme.data.HibernateAdapter;
 import acme.data.PersistableEntity;
 import acme.pd.Ticket;
+import acme.pd.User;
+import acme.seed.SeedDatabase;
+
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
@@ -173,6 +176,9 @@ public class ReportsPanel extends AcmeBaseJPanel {
         if (type.equalsIgnoreCase(COMPANY)) {
             generateCompPerformanceReport(from, to);
         }
+        else if(type.equalsIgnoreCase(CUSTOMER)) {
+          generateCustomerPerformanceReports(from, to, name);
+        }
         previewTbl.repaint();
     }
 
@@ -239,6 +245,78 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
         fixCompPerfCols();
     }
+    
+    private void generateCustomerPerformanceReports(LocalDate from, LocalDate to, String customerName) {
+      SeedDatabase seed = new SeedDatabase();
+      DefaultTableModel model = (DefaultTableModel) previewTbl.getModel();
+      DateTimeFormatter databaseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      DateTimeFormatter reportDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      DateTimeFormatter reportTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
+      HashMap<String, LocalDateTime> params = new HashMap<>();
+      params.put("stDate", from.atStartOfDay());
+      params.put("endDate", to.atStartOfDay().plusDays(1));
+      HashMap<String, String> params2 = new HashMap<>();
+      params2.put("name", customerName);
+      EntityManager em = HibernateAdapter.getEntityManager();
+      Query query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.pickupCustomer.name AND t.isBilledToSender IS true AND t.pickUpCustomer.name IS name", Ticket.class);
+      query.setParameter("stDate", from.atStartOfDay());
+      query.setParameter("endDate", to.atStartOfDay().plusDays(1));
+      query.setParameter("name", customerName);
+      List tickets = query.getResultList();
+      query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.pickupCustomer.name AND t.isBilledToSender IS false AND t.deliveryCustomer.name IS name", Ticket.class);
+      tickets.addAll(query.getResultList());
+      Iterator i = tickets.iterator();
+      int count = 0, onTime = 0, custCount = 0, custOntime = 0;
+      Customer currentCust = null;
+      Ticket t = null;
+      while (i.hasNext()) {
+          t = (Ticket) i.next();
+          if (currentCust != null && t.getPickupCustomer() != currentCust && custCount != 0) {
+              model.addRow(new Object[] {
+                      "<html><b>Customer</b></html>",
+                      "<html><b>Performance</b></html>",
+                      ""
+              });
+              model.addRow(new Object[] {
+                      "<html><b>" + currentCust.getName() + "</b></html>",
+                      "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
+                      ""
+              });
+              custCount = 0;
+              custOntime = 0;
+              currentCust = t.getPickupCustomer();
+          } else if (currentCust == null) {
+              currentCust = t.getPickupCustomer();
+          }
+          if (t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
+              onTime++;
+              custOntime++;
+          }
+          model.addRow(new Object[] {
+                  reportDate.format(t.getCreationDateTime()),
+                  reportTime.format(t.getEstimatedDeliveryTime()),
+                  reportTime.format(t.getDeliveryTime())
+          });
+          custCount++;
+          count++;
+      }
+      if (custCount != 0) {
+          model.addRow(new Object[] {
+                  "<html><b>Customer</b></html>",
+                  "<html><b>Performance</b></html>",
+                  ""
+          });
+          model.addRow(new Object[] {
+                  "<html><b>" + currentCust.getName() + "</b></html>",
+                  "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
+                  ""
+          });
+      }
+
+      fixCompPerfCols();
+  }
+      
+    
 
     private void fixCompPerfCols() {
         for (int i = 0; i  < 3; i++) {
@@ -455,5 +533,12 @@ public class ReportsPanel extends AcmeBaseJPanel {
         gbc_printBtn.gridy = 1;
         southPane.add(printBtn, gbc_printBtn);
     }
+    
+    public static void main(String [] args) {
+      
+      AcmeUI acme = new AcmeUI();
+      acme.getCompany().setCurrentUser(new User());
+      acme.setPanel(new ReportsPanel());
+  }
 
 }
