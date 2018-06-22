@@ -421,23 +421,21 @@ public class Map {
         Path pathDir = new Path();
         ArrayList<MapIntersection> pathToBe = new ArrayList<MapIntersection>();
         int totalBlocks = 0;
+        
         pathToBe.addAll(pathDir1.getPath());
         totalBlocks = totalBlocks + pathDir1.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenHomeandPickup(pathDir1.getBlocksBetweenPickupandDropoff());
+        
         pathToBe.addAll(pathDir2.getPath());
         totalBlocks = totalBlocks + pathDir2.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenPickupandDropoff(pathDir2.getBlocksBetweenPickupandDropoff());
+        
         pathToBe.addAll(pathDir3.getPath());
         totalBlocks = totalBlocks + pathDir3.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenHomeandDropoff(totalBlocks);
+        pathDir.setBlocksBetweenDropoffandHome(pathDir3.getBlocksBetweenPickupandDropoff());
         pathDir.setPath(pathToBe);
 
-        /*System.out.println("----Directions-----");
-
-        for(MapIntersection temp : pathDir.getPath())
-        {
-          System.out.println(temp.getIntersectionName());
-        }*/
         return pathDir;
       }
 
