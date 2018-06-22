@@ -49,6 +49,10 @@ public class Ticket implements PersistableEntity {
     private LocalDateTime deliveryTime;
     @Column(name = "EST_DELIVERY_TIME")
     private LocalDateTime estimatedDeliveryTime;
+    @Column(name = "RETURN_TIME")
+    private LocalDateTime returnTime;
+    @Column(name = "EST_RETURN_TIME")
+    private LocalDateTime estimateReturnTime;
     @Column(name = "COURIER_BONUS")
     private BigDecimal bonus;
     @Transient
@@ -106,36 +110,42 @@ public class Ticket implements PersistableEntity {
     }
 
     private void calculateQuote() {
-        double milesToTravel = path.getBlocksBetweenHomeandDropoff() * company.getBlocksPerMile();
         double quote = path.getBlocksBetweenHomeandDropoff() * company.getBlockBillingRate().doubleValue();
         this.quotedPrice = new BigDecimal(quote + company.getFlatBillingRate().doubleValue());
     }
 
     private void calcEstimatedTimes() {
-      // TODO estimate times - needs refining
-        // Altered this slightly
+      //Lets get down to bussiness.... to defeat the huns!
 
       double mphCouriers = company.getCourierMilesPerHour();
-      double milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
-      double timeToTravel = milesToTravel / mphCouriers;
-      LocalDateTime resultOfCouriersAndMiles = estimatedDeliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
-      resultOfCouriersAndMiles.plusMinutes(5);
+      System.out.println("Miles Per Hour: "+ mphCouriers);
+      System.out.println("Blocks per Mile: " + company.getBlocksPerMile());
+      double bphCouriers = mphCouriers * company.getBlocksPerMile();
+      System.out.println("Blocks per Hour: " + bphCouriers);
+      double timeToTravel = path.getBlocksBetweenHomeandDropoff() / bphCouriers;
+      timeToTravel = timeToTravel * 60;
+      System.out.println("Time to Travel before 10 mins added: " + timeToTravel);
+      timeToTravel = timeToTravel + 10;
+      System.out.println("Time to Travel after 10 mins added: " + timeToTravel);
+      Long time = (long)timeToTravel;
+      System.out.println(time);
+      LocalDateTime result = estimatedDeliveryTime.minus((long)(timeToTravel), ChronoUnit.MINUTES);
+      System.out.println(result);
 
-      if(resultOfCouriersAndMiles.isAfter(LocalDateTime.now()))
+
+      if(result.isAfter(LocalDateTime.now()))
       {
-          this.estimatedDepartureTime = resultOfCouriersAndMiles;
+          this.estimatedDepartureTime = result;
       } else {
           this.estimatedDepartureTime = LocalDateTime.now();
       }
 
-      milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
-      timeToTravel = milesToTravel / mphCouriers;
+      timeToTravel = path.getBlocksBetweenHomeandPickup() / bphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
 
-      /*
-      milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenPickupandDropoff();
-      timeToTravel = milesToTravel / mphCouriers;
-      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES); */
+      timeToTravel = path.getBlocksBetweenDropoffandHome() / bphCouriers;
+      this.estimateReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
+
     }
 
     public Company getCompany() {

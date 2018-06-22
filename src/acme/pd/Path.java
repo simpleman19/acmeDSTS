@@ -12,6 +12,7 @@ public class Path {
     private int blocksBetweenHomeandDropoff;
     private int blocksBetweenHomeandPickup;
     private int blocksBetweenPickupandDropoff;
+    private int blocksBetweenDropoffandHome;
 
 
     public ArrayList<MapIntersection> getPath() {
@@ -45,6 +46,14 @@ public class Path {
     public void setBlocksBetweenPickupandDropoff(int blocksBetweenPickupandDropoff) {
         this.blocksBetweenPickupandDropoff = blocksBetweenPickupandDropoff;
     }
+    
+    public int getBlocksBetweenDropoffandHome() {
+      return blocksBetweenDropoffandHome;
+    }
+
+  public void setBlocksBetweenDropoffandHome(int blocksBetweenDropoffandHome) {
+      this.blocksBetweenDropoffandHome = blocksBetweenDropoffandHome;
+  }
    
 
     public ArrayList<String> getDeliveryInstructions() {

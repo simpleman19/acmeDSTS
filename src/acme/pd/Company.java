@@ -72,7 +72,7 @@ public class Company implements PersistableEntity {
         File mapFile = new File(mapFilename);
         getMap().exportMap(mapFile);
     }
-    
+
     public UUID getId() {
         return id;
     }
