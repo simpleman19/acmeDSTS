@@ -121,6 +121,8 @@ public class SeedDatabase {
             company.update();
             System.out.println("Added admin and clerk accounts");
 
+            company.setCurrentUser(user);
+
             // Two couriers
             Courier courier = new Courier();
             courier.setName("John Doe");
