@@ -7,12 +7,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,6 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import acme.data.HibernateAdapter;
+import acme.data.PersistableEntity;
+import acme.pd.Ticket;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
@@ -164,7 +169,80 @@ public class ReportsPanel extends AcmeBaseJPanel {
     /* Generate the report in th preview table */
     private void generateReport(String type, String name, LocalDate from, LocalDate to) {
         // TODO generate report
+        if (type.equalsIgnoreCase(COMPANY)) {
+            generateCompPerformanceReport(from, to);
+        }
         previewTbl.repaint();
+    }
+
+    private void generateCompPerformanceReport(LocalDate from, LocalDate to) {
+        DefaultTableModel model = (DefaultTableModel) previewTbl.getModel();
+        DateTimeFormatter databaseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter reportDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter reportTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
+        HashMap<String, LocalDateTime> params = new HashMap<>();
+        params.put("stDate", from.atStartOfDay());
+        params.put("endDate", to.atStartOfDay().plusDays(1));
+        EntityManager em = HibernateAdapter.getEntityManager();
+        Query query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.pickupCustomer.name", Ticket.class);
+        query.setParameter("stDate", from.atStartOfDay());
+        query.setParameter("endDate", to.atStartOfDay().plusDays(1));
+        List tickets = query.getResultList();
+        Iterator i = tickets.iterator();
+        int count = 0, onTime = 0, custCount = 0, custOntime = 0;
+        Customer currentCust = null;
+        Ticket t = null;
+        while (i.hasNext()) {
+            t = (Ticket) i.next();
+            if (currentCust != null && t.getPickupCustomer() != currentCust && custCount != 0) {
+                model.addRow(new Object[] {
+                        "<html><b>Customer</b></html>",
+                        "<html><b>Performance</b></html>",
+                        ""
+                });
+                model.addRow(new Object[] {
+                        "<html><b>" + currentCust.getName() + "</b></html>",
+                        "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
+                        ""
+                });
+                custCount = 0;
+                custOntime = 0;
+                currentCust = t.getPickupCustomer();
+            } else if (currentCust == null) {
+                currentCust = t.getPickupCustomer();
+            }
+            if (t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
+                onTime++;
+                custOntime++;
+            }
+            model.addRow(new Object[] {
+                    reportDate.format(t.getCreationDateTime()),
+                    reportTime.format(t.getEstimatedDeliveryTime()),
+                    reportTime.format(t.getDeliveryTime())
+            });
+            custCount++;
+            count++;
+        }
+        if (custCount != 0) {
+            model.addRow(new Object[] {
+                    "<html><b>Customer</b></html>",
+                    "<html><b>Performance</b></html>",
+                    ""
+            });
+            model.addRow(new Object[] {
+                    "<html><b>" + currentCust.getName() + "</b></html>",
+                    "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
+                    ""
+            });
+        }
+
+        fixCompPerfCols();
+    }
+
+    private void fixCompPerfCols() {
+        for (int i = 0; i  < 3; i++) {
+            previewTbl.getColumnModel().getColumn(i).setMinWidth(120);
+        }
     }
 
     /* Print the report to PDF */
