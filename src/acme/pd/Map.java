@@ -67,7 +67,6 @@ public class Map {
             }
             inputStream.close();
         } catch (FileNotFoundException e) {
-            // TODO add a popup for when there is no file
             e.printStackTrace();
         }
 
@@ -407,7 +406,6 @@ public class Map {
             br.write(sb.toString());
             br.close();
         } catch (IOException e) {
-            // TODO can't access map file for export
             e.printStackTrace();
         }
     }

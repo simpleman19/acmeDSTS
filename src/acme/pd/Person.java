@@ -24,10 +24,6 @@ public class Person {
     }
 
     public UUID getId() {
-        // TODO fix with database
-        /*if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }*/
         return id;
     }
 

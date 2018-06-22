@@ -204,7 +204,6 @@ public class Ticket implements PersistableEntity {
     private void generatePackageId() {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMdd-hhmmss");
         this.packageID = df.format(this.getCreationDateTime());
-        // TODO check database for duplicate (Not likely but better safe than sorry)
         HashMap<String, String> params = new HashMap<>();
         params.put("pId", packageID);
         boolean overlap = false;
