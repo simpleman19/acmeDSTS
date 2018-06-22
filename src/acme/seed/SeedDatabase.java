@@ -267,6 +267,7 @@ public class SeedDatabase {
         int courier = rand.nextInt();
         long randTime = rand.nextInt(60 * 24 * 20) - 60 * 24 * 10 ;
         ticket.setEstimatedDeliveryTime(LocalDateTime.now().plusMinutes(randTime));
+        ticket.setCreationDateTime(ticket.getEstimatedDeliveryTime().minusHours(6));
         if (ticket.getEstimatedDeliveryTime().isBefore(LocalDateTime.now())) { // Closed
             ticket.setCourier((Courier) company.getCouriers().values().toArray()[rand.nextInt(company.getCouriers().values().size())]);
             ticket.setDeliveryTime(ticket.getEstimatedDeliveryTime().plusMinutes(rand.nextInt(40) - 30));

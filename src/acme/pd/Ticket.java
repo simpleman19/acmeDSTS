@@ -174,7 +174,7 @@ public class Ticket implements PersistableEntity {
         return creationDateTime;
     }
 
-    private void setCreationDateTime(LocalDateTime creationDateTime) {
+    public void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
