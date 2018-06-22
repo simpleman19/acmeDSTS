@@ -8,11 +8,16 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Vector;
 
+import javax.persistence.EntityManager;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,12 +26,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 
+import acme.data.HibernateAdapter;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
@@ -172,15 +179,54 @@ public class ReportsPanel extends AcmeBaseJPanel {
     }
 
     private void generateCourPerfReport(String name, LocalDate from, LocalDate to) {
-        System.out.println(name + " " +  from + " " + to);
+
+        previewTbl.removeAll();
+        System.out.println(name + " " + from + " " + to);
         Courier c = new Courier();
         for (Map.Entry<UUID, Courier> courier : company.getCouriers().entrySet()) {
             if (name.equals(courier.getValue().getName())) {
                 c = courier.getValue();
             }
         }
-        
-        
+
+        EntityManager em = HibernateAdapter.getEntityManager();
+        List<Ticket> ticket = em.createQuery(
+                "select t " + "from TICKET as t " + "where t.courier is not null " + "AND t.deliveryTime is not null",
+                Ticket.class).getResultList();
+        int lateDeliveries = 0;
+        for (Ticket t : ticket) {
+            int margin = company.getLatenessMarginMinutes();
+            LocalDateTime early = t.getDeliveryTime().minusMinutes(margin);
+            LocalDateTime late = t.getDeliveryTime().plusMinutes(margin);
+            // are we in the date range for this courier
+            System.out.println(t.getCourier().getId().equals(c.getId()));
+
+            if (t.getCreationDateTime().isAfter(from.atStartOfDay())
+                    && t.getDeliveryTime().isBefore(to.plusDays(1).atStartOfDay())
+                    && t.getCourier().getId().equals(c.getId())) {
+                // was it early or late
+                boolean lateDelivery = t.getDeliveryTime().isAfter(early) && t.getDeliveryTime().isBefore(late);
+
+                Vector<Object> row = new Vector<Object>();
+                row.add(t.getDeliveryTime().toLocalDate());
+                row.add(t.getPickupCustomer().getName());
+                row.add(t.getPickupTime());
+                row.add(t.getDeliveryCustomer().getName());
+                row.add(t.getEstimatedDeliveryTime());
+                row.add(t.getDeliveryTime());
+                row.add(t.getBonus());
+                courierModel.addRow(row);
+
+                if (lateDelivery) {
+                    lateDeliveries++;
+                }
+            }
+        }
+        String test = "On-Time Percentage\n" + String.valueOf(100-lateDeliveries) + "%";
+        Vector perc = new Vector();
+        perc.add(test);
+        courierModel.addRow(perc);
+
     }
 
     /* Print the report to PDF */
@@ -238,6 +284,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
         LocalDate today = LocalDate.now();
         reportsLbl.setFont(font);
         previewLbl.setFont(font);
+        previewTbl.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
         // date defaults
         toSettings.setVisibleTodayButton(true);
         toSettings.setFormatForDatesCommonEra("MM/dd/yy");
@@ -392,11 +439,13 @@ public class ReportsPanel extends AcmeBaseJPanel {
         gbc_printBtn.gridy = 1;
         southPane.add(printBtn, gbc_printBtn);
     }
-    
-    public static void main(String [] args) {
+
+    public static void main(String[] args) {
         AcmeUI acme = new AcmeUI();
-        acme.getCompany().setCurrentUser(new User());
+        Company c = acme.getCompany();
+        c.setCurrentUser(new User());
         acme.setPanel(new ReportsPanel());
+
     }
 
 }
