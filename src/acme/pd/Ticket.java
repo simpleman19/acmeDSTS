@@ -80,7 +80,7 @@ public class Ticket implements PersistableEntity {
         customers.remove(tmpCust.getId());
         // Set destination customer to a customer (Useful for UI)
         this.setDeliveryCustomer((Customer) customers.values().toArray()[0]);
-        this.setDeliveryTime(LocalDateTime.now().plusHours(6));
+        this.setEstimatedDeliveryTime(LocalDateTime.now().plusHours(6));
 
         this.note = "";
         updatePath();
@@ -124,7 +124,7 @@ public class Ticket implements PersistableEntity {
       double mphCouriers = company.getCourierMilesPerHour();
       double milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenHomeandDropoff();
       double timeToTravel = milesToTravel / mphCouriers;
-      LocalDateTime resultOfCouriersAndMiles = deliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
+      LocalDateTime resultOfCouriersAndMiles = estimatedDeliveryTime.minus((long)(60*timeToTravel), ChronoUnit.MINUTES);
       resultOfCouriersAndMiles.plusMinutes(5);
 
       if(resultOfCouriersAndMiles.isAfter(LocalDateTime.now()))
@@ -138,9 +138,10 @@ public class Ticket implements PersistableEntity {
       timeToTravel = milesToTravel / mphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
 
+      /*
       milesToTravel = company.getBlocksPerMile() / path.getBlocksBetweenPickupandDropoff();
       timeToTravel = milesToTravel / mphCouriers;
-      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
+      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES); */
     }
 
     public Company getCompany() {
@@ -251,15 +252,15 @@ public class Ticket implements PersistableEntity {
     public void setDeliveryTime(LocalDateTime deliveryTime) {
         // TODO Bonus
         this.deliveryTime = deliveryTime;
-        this.updatePath();
     }
 
     public LocalDateTime getEstimatedDeliveryTime() {
         return estimatedDeliveryTime;
     }
 
-    private void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
+    public void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
+        this.updatePath();
     }
 
     public BigDecimal getBonus() {

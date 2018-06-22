@@ -713,7 +713,7 @@ public class Map {
 
         String date = "2018-06-11 06:30";
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Delivery: " + date);
@@ -772,7 +772,7 @@ public class Map {
 
         date = "2018-06-11 06:30";
         format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Pickup: " + date);
@@ -830,7 +830,7 @@ public class Map {
 
         date = "2018-06-11 06:30";
         format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Delivery: " + date);
