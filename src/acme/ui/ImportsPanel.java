@@ -287,6 +287,7 @@ public class ImportsPanel extends AcmeBaseJPanel {
         } else {
             addText("Unable to save Import");
         }
+        company.update();
     }
 
     /* Handles all of the layout junk */
