@@ -3,26 +3,28 @@ package acme.ui;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.Collections;
 import java.util.function.Consumer;
 
-import javax.persistence.NoResultException;
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
 import acme.data.HibernateAdapter;
-import acme.data.PersistableEntity;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
 import acme.pd.Ticket;
 import acme.pd.User;
 import acme.seed.SeedDatabase;
-import org.postgresql.util.PSQLException;
 
 public class AcmeUI extends JFrame {
 
     private Company company;
-	protected AcmeBaseJPanel storedPanel;
+    protected AcmeBaseJPanel storedPanel;
 
     public AcmeUI() {
         super("Acme Delivery Software");
@@ -35,14 +37,14 @@ public class AcmeUI extends JFrame {
             System.out.println("Could Not Load Company from Database");
             Object[] options = {"Yes, create a company",
                     "No, Shut down the app"};
-            int n = JOptionPane.showOptionDialog(this,
+           			 int n = JOptionPane.showOptionDialog(this,
                     "Would you like me to setup the database?",
                     "Database Error",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,     //do not use a custom Icon
-                    options,  //the titles of buttons
-                    options[0]); //default button title
+                    options, // the titles of buttons
+                    options[0]); // default button title
             if (n == JOptionPane.YES_OPTION) {
                 SeedDatabase.seedDB();
                 this.company = Company.loadCompanyFromDB();
@@ -138,11 +140,11 @@ public class AcmeUI extends JFrame {
     }
 
     public void setStoredPanel(AcmeBaseJPanel panel) {
-    	this.storedPanel = panel;
+        this.storedPanel = panel;
     }
 
     public AcmeBaseJPanel getStoredPanel() {
-    	return this.storedPanel;
+        return this.storedPanel;
     }
 
     public void logoutUser() {
@@ -150,77 +152,77 @@ public class AcmeUI extends JFrame {
         this.loginScreen();
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void loginScreen() {
         UserUI ui = new UserUI();
         this.setPanel(ui);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void ticketList() {
         ExampleJPanel exampleJPanel = new ExampleJPanel();
         this.setPanel(exampleJPanel);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void ticketCreate() {
         // This will be called with null to create a ticket
         TicketCreationJPanel jp = new TicketCreationJPanel();
         this.setPanel(jp);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void ticketComplete(Ticket ticket) {
         CompleteATicketUI ticketCompleteUI = new CompleteATicketUI(ticket);
         this.setPanel(ticketCompleteUI);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void customerList() {
         CustomerListUI customerListUI = new CustomerListUI();
         this.setPanel(customerListUI);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Add or update a customer
     public void customerAddUpdate(Customer customer, Consumer<Customer> onSaveFunc) {
         // This will be called with null to create
-        CustomerCreatePanel panel = new CustomerCreatePanel(onSaveFunc);
+        CustomerCreatePanel panel = new CustomerCreatePanel(customer, onSaveFunc);
         this.setPanel(panel);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void userList() {
         ClerksListPanel clp = new ClerksListPanel();
         this.setPanel(clp);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void userAddUpdate(User user) {
         // This will be called with null to create
         ClerksUpdatePanel cp = new ClerksUpdatePanel(user);
         this.setPanel(cp);
     }
 
-      // Display the list of customers
+    // Display the list of customers
     public void courierList() {
         CourierListPanel clp = new CourierListPanel();
         this.setPanel(clp);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void courierAddUpdate(Courier courier) {
         // This will be called with null to create
-    	CourierCreatePanel panel = new CourierCreatePanel();
+        CourierCreatePanel panel = new CourierCreatePanel(courier);
         this.setPanel(panel);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void importIntoCompany() {
         ImportsPanel ip = new ImportsPanel();
         this.setPanel(ip);
     }
 
-    // Everyone will tie in their panel like this.  Replace my example with your code
+    // Everyone will tie in their panel like this. Replace my example with your code
     public void companyEdit() {
     	CompanyUI comp = new CompanyUI();
         this.setPanel(comp);
@@ -240,12 +242,13 @@ public class AcmeUI extends JFrame {
     public Company getCompany() {
         return company;
     }
+
     class ShutdownListener implements WindowListener {
         public void windowClosing(WindowEvent event) {
             HibernateAdapter.shutDown();
             setVisible(false);
             company.exportMap();
-            dispose(); //Destroy the JFrame object
+            dispose(); // Destroy the JFrame object
         }
         public void windowOpened(WindowEvent event) {}
         public void windowClosed(WindowEvent event) {}
@@ -253,5 +256,6 @@ public class AcmeUI extends JFrame {
         public void windowDeiconified(WindowEvent event) {}
         public void windowActivated(WindowEvent event) {}
         public void windowDeactivated(WindowEvent event) {}
-}}
+    }
 
+}
