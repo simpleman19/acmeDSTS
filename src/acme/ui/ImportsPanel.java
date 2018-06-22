@@ -238,20 +238,9 @@ public class ImportsPanel extends AcmeBaseJPanel {
                     index++;
                 }
                 
-                map = company.getMap().getMap();
-                
-                for (int i = 0; i< map.length; i++){
-                    for (int j = 0; j < map[0].length; j++) {
-                        if (map[i][j].getEWroad().getName().equals(c2.getStreetName()) &&
-                                map[i][j].getNSroad().getName().equals(c2.getAvenueName())){
-                            c2.setIntersection(map[i][j]);
-                        }
-                    }
-                }
-                
                 c2.setActive(true);
                 addText("ID: " + c2.getCustomerNumber() + "\tName: " + c2.getName());
-                addText("\tIntersection: " + c2.getIntersection().getIntersectionName()+"\n");
+                addText("\tIntersection: " + c2.getIntersection(company.getMap()).getIntersectionName()+"\n");
 
                 // check to see if the courier exists
                 UUID id = UUID.randomUUID();
@@ -298,6 +287,7 @@ public class ImportsPanel extends AcmeBaseJPanel {
         } else {
             addText("Unable to save Import");
         }
+        company.update();
     }
 
     /* Handles all of the layout junk */

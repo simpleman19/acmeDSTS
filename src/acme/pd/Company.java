@@ -4,7 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -37,68 +37,40 @@ public class Company implements PersistableEntity {
     private java.util.Map<UUID, Customer> customers;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private java.util.Map<UUID, User> users;
+    @Column(name = "BONUS")
+    private BigDecimal bonus;
+    @Column(name = "FLAT_BILLING_RATE")
+    private BigDecimal flatBillingRate;
+    @Column(name = "BLOCK_BILLING_RATE")
+    private BigDecimal blockBillingRate;
+    @Column(name = "LATENESS_MARGIN_MINUTES")
+    private int latenessMarginMinutes;
+    @Column(name = "BLOCKS_PER_MILE")
+    private double blocksPerMile;
+    @Column(name = "COURIER_MILES_PER_HOUR")
+    private double courierMilesPerHour;
+
+    // Transients
     @Transient
     private User currentUser = null;
-    @Column(name = "BONUS")
-    private BigDecimal bonus = new BigDecimal(1.25);
-    @Column(name = "FLAT_BILLING_RATE")
-    private BigDecimal flatBillingRate = new BigDecimal(25);
-    @Column(name = "BLOCK_BILLING_RATE")
-    private BigDecimal blockBillingRate = new BigDecimal(5.36); 
-    @Column(name = "LATENESS_MARGIN_MINUTES")
-    private int latenessMarginMinutes = 5;
-    @Column(name = "BLOCKS_PER_MILE")
-    private double blocksPerMile = 5.2;
-    @Column(name = "COURIER_MILES_PER_HOUR")
-    private double courierMilesPerHour = 5.8;
     @Transient
-    private String mapFile = "map/map.csv";
+    private String mapFilename = "map/map.csv";
     @Transient
     public final DateTimeFormatter acmeDF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
 
     public Company() {
-        // TODO initialize company
-        File file = new File(mapFile);
-        this.map = new Map(file);
+        File mapFile = new File(mapFilename);
+        this.map = new Map(mapFile);
 
-        couriers = new HashMap<UUID, Courier>();
-        tickets = new HashMap<UUID, Ticket>();
-        customers = new HashMap<UUID, Customer>();
-        users = new HashMap<UUID, User>();
-    } 
+        couriers = new HashMap<>();
+        tickets = new HashMap<>();
+        customers = new HashMap<>();
+        users = new HashMap<>();
+    }
 
-    public void generateStuff() {
-        Random rand = new Random();
-        // TODO remove test customers and couriers
-        for (int i = 0; i < 10; i++) {
-            Courier c1 = new Courier();
-            c1.setName("That Guy " + i);
-            c1.setCourierNumber(i);
-            c1.create();
-            this.addCourier(c1);
-
-            Customer c2 = new Customer();
-            c2.setName("That Customer " + (1000 + i));
-            MapIntersection [][] mapI = map.getMap();
-            // Put company on map
-            c2.setIntersection(mapI[rand.nextInt(mapI.length)][rand.nextInt(mapI[0].length)]);
-            c2.create();
-            this.addCustomer(c2);
-
-            User u1 = new User();
-            u1.setName("First " + "Last" + i);
-            u1.setUsername("uname " + i);
-            if (i % 2 == 0) {
-                u1.setActive(true);
-            } else {
-                u1.setActive(false);
-            }
-            u1.setAdmin(true);
-            u1.setPassword("pass"+i);
-            u1.create();
-            this.addUser(u1);
-        }
-        this.update();
+    public void exportMap() {
+        File mapFile = new File(mapFilename);
+        getMap().exportMap(mapFile);
     }
 
     public UUID getId() {
@@ -209,6 +181,7 @@ public class Company implements PersistableEntity {
         this.courierMilesPerHour = courierMilesPerHour;
     }
 
+    @Deprecated
     public static Company getDefaultAcme() {
     	Company acme = new Company();
 
@@ -216,8 +189,20 @@ public class Company implements PersistableEntity {
     	acme.setCourierMilesPerHour(15);
     	acme.setBlocksPerMile(5.5);
     	acme.setLatenessMarginMinutes(2);
-        acme.create();
 
     	return acme;
+    }
+
+    public static Company loadCompanyFromDB() {
+        Company acme = null;
+        List<Company> companies = PersistableEntity.queryList(Company.class, "Select c from COMPANY c", new HashMap<String, String>());
+        if (companies.size() == 1) {
+            acme = companies.get(0);
+        } else if (companies.size() == 0){
+            System.out.println("No Company in the Database");
+        } else {
+            System.out.println("Multiple Companies Exist in Database, please reinit database");
+        }
+        return acme;
     }
 }

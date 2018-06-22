@@ -185,6 +185,7 @@ public class ClerksUpdatePanel extends AcmeBaseJPanel {
                 if (subLbl.getText().equals(NEW_USER) && !overwrite) {
                     company.getUsers().put(UUID.randomUUID(), user);
                 }
+                company.update();
                 // return to the Clerks list page
                 getAcmeUI().userList();
             }

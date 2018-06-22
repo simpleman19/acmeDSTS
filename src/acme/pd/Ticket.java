@@ -84,7 +84,7 @@ public class Ticket implements PersistableEntity {
         customers.remove(tmpCust.getId());
         // Set destination customer to a customer (Useful for UI)
         this.setDeliveryCustomer((Customer) customers.values().toArray()[0]);
-        this.setDeliveryTime(LocalDateTime.now().plusHours(6));
+        this.setEstimatedDeliveryTime(LocalDateTime.now().plusHours(6));
 
         this.note = "";
         updatePath();
@@ -105,8 +105,8 @@ public class Ticket implements PersistableEntity {
                 && this.getDeliveryCustomer() != null
                 && this.getDeliveryTime() != null) {
             this.path = company.getMap().getPath(
-                    this.getPickupCustomerLocation(),
-                    this.getDeliveryCustomerLocation()
+                    this.getPickupCustomerLocation(this.company.getMap()),
+                    this.getDeliveryCustomerLocation(this.company.getMap())
             );
             calcEstimatedTimes();
             calculateQuote();
@@ -122,7 +122,7 @@ public class Ticket implements PersistableEntity {
 
     private void calcEstimatedTimes() {
       //Lets get down to bussiness.... to defeat the huns!
-      
+
       double mphCouriers = company.getCourierMilesPerHour();
       System.out.println("Miles Per Hour: "+ mphCouriers);
       System.out.println("Blocks per Mile: " + company.getBlocksPerMile());
@@ -135,9 +135,9 @@ public class Ticket implements PersistableEntity {
       System.out.println("Time to Travel after 10 mins added: " + timeToTravel);
       Long time = (long)timeToTravel;
       System.out.println(time);
-      LocalDateTime result = deliveryTime.minus((long)(timeToTravel), ChronoUnit.MINUTES);
+      LocalDateTime result = estimatedDeliveryTime.minus((long)(timeToTravel), ChronoUnit.MINUTES);
       System.out.println(result);
-      
+
 
       if(result.isAfter(LocalDateTime.now()))
       {
@@ -148,13 +148,10 @@ public class Ticket implements PersistableEntity {
 
       timeToTravel = path.getBlocksBetweenHomeandPickup() / bphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
-      
-      timeToTravel = path.getBlocksBetweenPickupandDropoff()/ bphCouriers;
-      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*(timeToTravel+5)), ChronoUnit.MINUTES);
-      
+
       timeToTravel = path.getBlocksBetweenDropoffandHome() / bphCouriers;
       this.estimateReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
-      
+
     }
 
     public Company getCompany() {
@@ -187,7 +184,7 @@ public class Ticket implements PersistableEntity {
         return creationDateTime;
     }
 
-    private void setCreationDateTime(LocalDateTime creationDateTime) {
+    public void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
@@ -265,15 +262,15 @@ public class Ticket implements PersistableEntity {
     public void setDeliveryTime(LocalDateTime deliveryTime) {
         // TODO Bonus
         this.deliveryTime = deliveryTime;
-        this.updatePath();
     }
 
     public LocalDateTime getEstimatedDeliveryTime() {
         return estimatedDeliveryTime;
     }
 
-    private void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
+    public void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
+        this.updatePath();
     }
 
     public BigDecimal getBonus() {
@@ -296,13 +293,13 @@ public class Ticket implements PersistableEntity {
         this.note = note;
     }
 
-    public MapIntersection getDeliveryCustomerLocation()
+    public MapIntersection getDeliveryCustomerLocation(Map map)
     {
-      return this.deliveryCustomer.getIntersection();
+      return this.deliveryCustomer.getIntersection(map);
     }
 
-    public MapIntersection getPickupCustomerLocation()
+    public MapIntersection getPickupCustomerLocation(Map map)
     {
-      return this.pickupCustomer.getIntersection();
+      return this.pickupCustomer.getIntersection(map);
     }
 }

@@ -20,6 +20,11 @@ public class HibernateAdapter {
             entityManagerFactory = Persistence.createEntityManagerFactory("my-pu");
     }
 
+    public static void startUpSeed() {
+        if (entityManagerFactory == null)
+            entityManagerFactory = Persistence.createEntityManagerFactory("seed");
+    }
+
     public static void shutDown() {
         if (entityManagerFactory != null)
             entityManagerFactory.close();
