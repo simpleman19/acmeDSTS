@@ -37,9 +37,7 @@ private Company comp;
 //////////////////////////
 	public CompanyUI()
     {
-
         super();
-
     }
 
 
@@ -93,43 +91,43 @@ private Company comp;
         panelForm.add(company_name, grid);
         ++grid.gridy;
         
-        company_name.setText(comp.getCompany().getName());
+        company_name.setText(getCompany().getName());
         
         
         bonus_amount = new JTextField (10);
         panelForm.add(bonus_amount, grid);
         ++grid.gridy;
         
-        bonus_amount.setText(comp.getCompany().getBonus().toString());
+        bonus_amount.setText(getCompany().getBonus().toString());
         
 
         courier_miles = new JTextField (10);
         panelForm.add(courier_miles, grid);
         ++grid.gridy;
         
-        courier_miles.setText(Double.toString(comp.getCompany().getCourierMilesPerHour()));
+        courier_miles.setText(Double.toString(getCompany().getCourierMilesPerHour()));
         
         
         blocks_per_mile = new JTextField (10);
         panelForm.add(blocks_per_mile, grid);
         ++grid.gridy;
-        blocks_per_mile.setText(Double.toString(comp.getCompany().getBlocksPerMile()));
+        blocks_per_mile.setText(Double.toString(getCompany().getBlocksPerMile()));
         
         
         lateness_margin = new JTextField (10);
         panelForm.add(lateness_margin, grid);
         ++grid.gridy;
-        lateness_margin.setText(Integer.toString(comp.getCompany().getLatenessMarginMinutes()));
+        lateness_margin.setText(Integer.toString(getCompany().getLatenessMarginMinutes()));
 
         flat_billing = new JTextField (10);
         panelForm.add(flat_billing, grid);
         ++grid.gridy;
-        flat_billing.setText(comp.getCompany().getFlatBillingRate().toString());
+        flat_billing.setText(getCompany().getFlatBillingRate().toString());
         
         block_rate_name = new JTextField (10);
         panelForm.add(block_rate_name, grid);
         ++grid.gridy;
-        block_rate_name.setText(Double.toString(comp.getCompany().getBlocksPerMile()));
+        block_rate_name.setText(Double.toString(getCompany().getBlocksPerMile()));
     }
 
     private void buildButtonPanel()
@@ -177,9 +175,8 @@ private Company comp;
         @Override
         public void actionPerformed(ActionEvent e)
         {
-
-        	getCompany().update();
-
+            getCompany().update();
+            getAcmeUI().ticketList();
         }
     }
 
