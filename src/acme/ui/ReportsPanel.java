@@ -1,6 +1,7 @@
 package acme.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -86,7 +87,6 @@ public class ReportsPanel extends AcmeBaseJPanel {
     static final String CUSTOMER = "Customer Performance";
     static final String COMPANY = "Company Performance";
     static final String SELECTALL = "(Select All)";
-    
 
     DateTimeFormatter databaseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter reportDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -131,7 +131,6 @@ public class ReportsPanel extends AcmeBaseJPanel {
             public void actionPerformed(ActionEvent e) {
                 String type = typeSel.getSelectedItem().toString();
 
-                System.out.println("generate report");
                 if (type.equals(COMPANY)) {
                     previewTbl.setModel(companyModel);
                 } else if (type.equals(COURIER)) {
@@ -183,75 +182,88 @@ public class ReportsPanel extends AcmeBaseJPanel {
     private void generateReport(String type, String name, LocalDate from, LocalDate to) {
         if (type.equals(COURIER)) {
             generateCourPerfReport(name, from, to);
-        }else if(type.equals(COMPANY)) {
+        } else if (type.equals(COMPANY)) {
             generateCompPerformanceReport(from, to);
         }
         previewTbl.repaint();
     }
 
     private void generateCourPerfReport(String name, LocalDate from, LocalDate to) {
-        fixCompPerfCols();
-        previewTbl.removeAll();
-        System.out.println(name + " " + from + " " + to);
+        double bonus = 0;
+        EntityManager em = HibernateAdapter.getEntityManager();
         Courier c = new Courier();
+        List<Ticket> ticket = em.createQuery(
+                "select t from TICKET as t where t.courier is not null AND t.deliveryTime is not null order by t.deliveryTime",
+                Ticket.class).getResultList();
+        int onTime = ticket.size();
+        
         for (Map.Entry<UUID, Courier> courier : company.getCouriers().entrySet()) {
             if (name.equals(courier.getValue().getName())) {
                 c = courier.getValue();
             }
         }
-
-        EntityManager em = HibernateAdapter.getEntityManager();
-        List<Ticket> ticket = em.createQuery(
-                "select t " + "from TICKET as t " + "where t.courier is not null " + "AND t.deliveryTime is not null",
-                Ticket.class).getResultList();
-        int onTime = ticket.size();
-        BigDecimal bonus = new BigDecimal(0);
+        
+        //iterate through the tickets that the query returned
         for (Ticket t : ticket) {
             int margin = company.getLatenessMarginMinutes();
             LocalDateTime early = t.getDeliveryTime().minusMinutes(margin);
             LocalDateTime late = t.getDeliveryTime().plusMinutes(margin);
             // are we in the date range for this courier
-            System.out.println(t.getCourier().getId().equals(c.getId()));
 
             if (t.getCreationDateTime().isAfter(from.atStartOfDay())
                     && t.getDeliveryTime().isBefore(to.plusDays(1).atStartOfDay())
                     && t.getCourier().getId().equals(c.getId())) {
                 // was it early or late
                 boolean lateDelivery = t.getDeliveryTime().isBefore(late);
+                bonus += t.getBonus().doubleValue();
+                courierModel.addRow(new Object[] { reportDate.format(t.getDeliveryTime().toLocalDate()),
+                        t.getPickupCustomer().getName(), reportTime.format(t.getPickupTime()),
+                        t.getDeliveryCustomer().getName(), reportTime.format(t.getEstimatedDeliveryTime()),
+                        reportTime.format(t.getDeliveryTime()), t.getBonus() });
 
-                Vector<Object> row = new Vector<Object>();
-                row.add(t.getDeliveryTime().toLocalDate());
-                row.add(t.getPickupCustomer().getName());
-                row.add(t.getPickupTime());
-                row.add(t.getDeliveryCustomer().getName());
-                row.add(t.getEstimatedDeliveryTime());
-                row.add(t.getDeliveryTime());
-                row.add(t.getBonus());
-                bonus.add(t.getBonus());
-                courierModel.addRow(row);
-
-                if (lateDelivery) {
-                    onTime--;
-                }
+                if (lateDelivery) onTime--;
             }
         }
-        
-        courierModel.addRow(new Object[] {
-                "<html><b>" + "On-Time Percentage" + 
-                        String.valueOf(NumberFormat.getPercentInstance().format((double) onTime / ticket.size())) + 
-                        "</b></html>",
-        });
-       
 
+        //append the summary row
+        courierModel.addRow(new Object[] { "<html><b>" + "On-Time" + "<br>" + "Percentage: " + "</b>"
+                + String.valueOf(NumberFormat.getPercentInstance().format((double) onTime / ticket.size())) + "</html>",
+                "<html><b>" + "Bonus: $" + "</b>" + bonus + "</html>"
+
+        });
+
+        //reformat the cell sizes to fit the data
+        updateCellSizes();
     }
 
-   private void generateCompPerformanceReport(LocalDate from, LocalDate to) {
+    private void updateCellSizes() {
+
+        previewTbl.getColumnModel().setColumnSelectionAllowed(false);
+        for (int row = 0; row < previewTbl.getRowCount(); row++) {
+            int rowHeight = previewTbl.getRowHeight();
+            int columnWidth = previewTbl.getIntercellSpacing().width;
+
+            for (int column = 0; column < previewTbl.getColumnCount(); column++) {
+                Component comp = previewTbl.prepareRenderer(previewTbl.getCellRenderer(row, column), row, column);
+                rowHeight = Math.max(rowHeight, comp.getPreferredSize().height) + 1;
+                previewTbl.getColumnModel().getColumn(column)
+                        .setPreferredWidth(columnWidth = Math.max(columnWidth, comp.getPreferredSize().width) + 1);
+
+            }
+            previewTbl.setRowHeight(row, rowHeight);
+
+        }
+    }
+
+    private void generateCompPerformanceReport(LocalDate from, LocalDate to) {
         DefaultTableModel model = (DefaultTableModel) previewTbl.getModel();
         HashMap<String, LocalDateTime> params = new HashMap<>();
         params.put("stDate", from.atStartOfDay());
         params.put("endDate", to.atStartOfDay().plusDays(1));
         EntityManager em = HibernateAdapter.getEntityManager();
-        Query query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.pickupCustomer.name", Ticket.class);
+        Query query = em.createQuery(
+                "SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.pickupCustomer.name",
+                Ticket.class);
         query.setParameter("stDate", from.atStartOfDay());
         query.setParameter("endDate", to.atStartOfDay().plusDays(1));
         List tickets = query.getResultList();
@@ -262,55 +274,44 @@ public class ReportsPanel extends AcmeBaseJPanel {
         while (i.hasNext()) {
             t = (Ticket) i.next();
             if (currentCust != null && t.getPickupCustomer() != currentCust && custCount != 0) {
-                model.addRow(new Object[] {
-                        "<html><b>Customer</b></html>",
-                        "<html><b>Performance</b></html>",
-                        ""
-                });
-                model.addRow(new Object[] {
-                        "<html><b>" + currentCust.getName() + "</b></html>",
-                        "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
-                        ""
-                });
+                model.addRow(new Object[] { "<html><b>Customer</b></html>", "<html><b>Performance</b></html>", "" });
+                model.addRow(new Object[] { "<html><b>" + currentCust.getName() + "</b></html>", "<html><b>"
+                        + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
+                        "" });
                 custCount = 0;
                 custOntime = 0;
                 currentCust = t.getPickupCustomer();
             } else if (currentCust == null) {
                 currentCust = t.getPickupCustomer();
             }
-            if (t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
+            if (t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime())
+                    || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
                 onTime++;
                 custOntime++;
             }
-            model.addRow(new Object[] {
-                    reportDate.format(t.getCreationDateTime()),
-                    reportTime.format(t.getEstimatedDeliveryTime()),
-                    reportTime.format(t.getDeliveryTime())
-            });
+            model.addRow(new Object[] { reportDate.format(t.getCreationDateTime()),
+                    reportTime.format(t.getEstimatedDeliveryTime()), reportTime.format(t.getDeliveryTime()) });
             custCount++;
             count++;
         }
         if (custCount != 0) {
+            model.addRow(new Object[] { "<html><b>Customer</b></html>", "<html><b>Performance</b></html>", "" });
             model.addRow(new Object[] {
-                    "<html><b>Customer</b></html>",
-                    "<html><b>Performance</b></html>",
-                    ""
-            });
-            model.addRow(new Object[] {
-                    "<html><b>" + currentCust.getName() + "</b></html>",
-                    "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
-                    ""
-            });
+                    "<html><b>" + currentCust.getName() + "</b></html>", "<html><b>"
+                            + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
+                    "" });
         }
 
+        updateCellSizes();
         fixCompPerfCols();
     }
 
     private void fixCompPerfCols() {
-        for (int i = 0; i  < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             previewTbl.getColumnModel().getColumn(i).setMinWidth(120);
         }
     }
+
     /* Print the report to PDF */
     private void printReport() {
         // TODO print report
