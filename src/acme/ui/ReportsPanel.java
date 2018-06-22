@@ -168,6 +168,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
     /* Generate the report in th preview table */
     private void generateReport(String type, String name, LocalDate from, LocalDate to) {
+        previewTbl.removeAll();
         // TODO generate report
         if (type.equalsIgnoreCase(COMPANY)) {
             generateCompPerformanceReport(from, to);
