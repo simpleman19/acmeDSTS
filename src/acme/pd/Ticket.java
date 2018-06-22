@@ -275,6 +275,9 @@ public class Ticket implements PersistableEntity {
     }
 
     public Path getPath() {
+        if (path == null) {
+            updatePath();
+        }
         return path;
     }
 

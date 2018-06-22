@@ -1,6 +1,9 @@
 package acme.pd;
 
+import acme.ui.AcmeUI;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -45,10 +48,28 @@ public class Path {
    
 
     public ArrayList<String> getDeliveryInstructions() {
-        // TODO implement delivery instructions
         ArrayList<String> instructions = new ArrayList<>();
-        Random rand = new Random();
-        IntStream.range(0, 10).forEach(i -> instructions.add("Go " + Direction.values()[rand.nextInt() % 4] + " 1 block"));
+        if (this.path != null && this.path.size() > 0) {
+            for (int i = 0; i < this.path.size() - 1; i++) {
+                instructions.add("Go from " + this.path.get(i).getIntersectionName() + " to "
+                        + this.path.get(i + 1).getIntersectionName());
+            }
+            instructions.add("You have arrived at " + this.path.get(this.path.size() - 1).getIntersectionName()
+                    + " which is your destination");
+        }
         return instructions;
+    }
+
+    public static void main(String [] args) {
+        AcmeUI acme = new AcmeUI();
+        for (Ticket t : acme.getCompany().getTickets().values()) {
+            if (t.getDeliveryTime() != null) {
+                ArrayList<String> instructions = t.getPath().getDeliveryInstructions();
+                for (String s : instructions) {
+                    System.out.println(s);
+                }
+            }
+        }
+
     }
 }
