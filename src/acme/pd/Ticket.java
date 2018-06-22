@@ -11,13 +11,7 @@ import java.util.Random;
 
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity(name = "TICKET")
 public class Ticket implements PersistableEntity {
@@ -176,6 +170,7 @@ public class Ticket implements PersistableEntity {
 
     public void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
+        this.generatePackageId();
     }
 
     public User getClerk() {
@@ -210,7 +205,14 @@ public class Ticket implements PersistableEntity {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMdd-hhmmss");
         this.packageID = df.format(this.getCreationDateTime());
         // TODO check database for duplicate (Not likely but better safe than sorry)
-        boolean overlap = (new Random().nextInt() % 10 == 0);
+        HashMap<String, String> params = new HashMap<>();
+        params.put("pId", packageID);
+        boolean overlap = false;
+        try {
+            overlap = !(PersistableEntity.querySingle(Ticket.class, "SELECT t from TICKET t where t.packageID like :pId", params) == null);
+        } catch (NoResultException e) {
+            overlap = false;
+        }
         if (overlap) {
             this.setCreationDateTime(this.getCreationDateTime().plusSeconds(1));
             this.generatePackageId();
@@ -250,8 +252,13 @@ public class Ticket implements PersistableEntity {
     }
 
     public void setDeliveryTime(LocalDateTime deliveryTime) {
-        // TODO Bonus
         this.deliveryTime = deliveryTime;
+        // Bonus Calc
+        if (this.deliveryTime.isBefore(this.estimatedDeliveryTime.plusMinutes(company.getLatenessMarginMinutes()))) {
+            this.bonus = company.getBonus();
+        } else {
+            this.bonus = new BigDecimal(0);
+        }
     }
 
     public LocalDateTime getEstimatedDeliveryTime() {
