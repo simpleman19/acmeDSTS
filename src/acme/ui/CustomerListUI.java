@@ -28,8 +28,6 @@ import javax.swing.table.TableColumn;
 
 import acme.pd.Company;
 import acme.pd.Customer;
-import acme.pd.MapIntersection;
-import acme.pd.Road;
 import acme.pd.User;
 
 public class CustomerListUI extends AcmeBaseJPanel {
@@ -155,14 +153,15 @@ public class CustomerListUI extends AcmeBaseJPanel {
 
     // navigation methods-----------------------------
     public void goToEditPage(String customerName) {
-        customerName = customerName.substring(2);
+        //customerName = customerName;
         Customer customerToPass = null;
         for (int x = 0; x < this.customersArray.length; x++) {
-            if (this.customersArray[x].getName().equals(customerName)) {
+            if (this.customersArray[x].getName().equals(customerName)) {                
                 customerToPass = this.customersArray[x];
             }
         }
-        this.getAcmeUI().customerAddUpdate(customerToPass, c -> this.getAcmeUI().customerList());
+        AcmeUI acme = this.getAcmeUI();
+        acme.customerAddUpdate(customerToPass, c -> acme.customerList());
     }
 
     public void goToNewCustomerPage() {
@@ -244,7 +243,7 @@ public class CustomerListUI extends AcmeBaseJPanel {
             btn = new JButton();
             btn.setHorizontalAlignment(SwingConstants.LEFT);
             btn.setOpaque(true);
-
+            setClickCountToStart(2);
             // when the button is clicked
             btn.addActionListener(new ActionListener() {
 
