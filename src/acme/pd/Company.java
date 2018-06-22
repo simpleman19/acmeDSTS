@@ -44,7 +44,7 @@ public class Company implements PersistableEntity {
     @Column(name = "FLAT_BILLING_RATE")
     private BigDecimal flatBillingRate = new BigDecimal(25);
     @Column(name = "BLOCK_BILLING_RATE")
-    private BigDecimal blockBillingRate = new BigDecimal(5.36);
+    private BigDecimal blockBillingRate = new BigDecimal(5.36); 
     @Column(name = "LATENESS_MARGIN_MINUTES")
     private int latenessMarginMinutes = 5;
     @Column(name = "BLOCKS_PER_MILE")
@@ -65,7 +65,7 @@ public class Company implements PersistableEntity {
         tickets = new HashMap<UUID, Ticket>();
         customers = new HashMap<UUID, Customer>();
         users = new HashMap<UUID, User>();
-    }
+    } 
 
     public void generateStuff() {
         Random rand = new Random();
