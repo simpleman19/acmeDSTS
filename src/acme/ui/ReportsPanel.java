@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -85,6 +86,11 @@ public class ReportsPanel extends AcmeBaseJPanel {
     static final String CUSTOMER = "Customer Performance";
     static final String COMPANY = "Company Performance";
     static final String SELECTALL = "(Select All)";
+    
+
+    DateTimeFormatter databaseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    DateTimeFormatter reportDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    DateTimeFormatter reportTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
 
     /* Constructor */
     public ReportsPanel() {
@@ -178,14 +184,13 @@ public class ReportsPanel extends AcmeBaseJPanel {
         if (type.equals(COURIER)) {
             generateCourPerfReport(name, from, to);
         }else if(type.equals(COMPANY)) {
-            
             generateCompPerformanceReport(from, to);
         }
         previewTbl.repaint();
     }
 
     private void generateCourPerfReport(String name, LocalDate from, LocalDate to) {
-
+        fixCompPerfCols();
         previewTbl.removeAll();
         System.out.println(name + " " + from + " " + to);
         Courier c = new Courier();
@@ -199,7 +204,8 @@ public class ReportsPanel extends AcmeBaseJPanel {
         List<Ticket> ticket = em.createQuery(
                 "select t " + "from TICKET as t " + "where t.courier is not null " + "AND t.deliveryTime is not null",
                 Ticket.class).getResultList();
-        int lateDeliveries = 0;
+        int onTime = ticket.size();
+        BigDecimal bonus = new BigDecimal(0);
         for (Ticket t : ticket) {
             int margin = company.getLatenessMarginMinutes();
             LocalDateTime early = t.getDeliveryTime().minusMinutes(margin);
@@ -211,7 +217,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
                     && t.getDeliveryTime().isBefore(to.plusDays(1).atStartOfDay())
                     && t.getCourier().getId().equals(c.getId())) {
                 // was it early or late
-                boolean lateDelivery = t.getDeliveryTime().isAfter(early) && t.getDeliveryTime().isBefore(late);
+                boolean lateDelivery = t.getDeliveryTime().isBefore(late);
 
                 Vector<Object> row = new Vector<Object>();
                 row.add(t.getDeliveryTime().toLocalDate());
@@ -221,25 +227,26 @@ public class ReportsPanel extends AcmeBaseJPanel {
                 row.add(t.getEstimatedDeliveryTime());
                 row.add(t.getDeliveryTime());
                 row.add(t.getBonus());
+                bonus.add(t.getBonus());
                 courierModel.addRow(row);
 
                 if (lateDelivery) {
-                    lateDeliveries++;
+                    onTime--;
                 }
             }
         }
-        String test = "On-Time Percentage\n" + String.valueOf(100-lateDeliveries) + "%";
-        Vector perc = new Vector();
-        perc.add(test);
-        courierModel.addRow(perc);
+        
+        courierModel.addRow(new Object[] {
+                "<html><b>" + "On-Time Percentage" + 
+                        String.valueOf(NumberFormat.getPercentInstance().format((double) onTime / ticket.size())) + 
+                        "</b></html>",
+        });
+       
 
     }
 
    private void generateCompPerformanceReport(LocalDate from, LocalDate to) {
         DefaultTableModel model = (DefaultTableModel) previewTbl.getModel();
-        DateTimeFormatter databaseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter reportDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter reportTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
         HashMap<String, LocalDateTime> params = new HashMap<>();
         params.put("stDate", from.atStartOfDay());
         params.put("endDate", to.atStartOfDay().plusDays(1));
