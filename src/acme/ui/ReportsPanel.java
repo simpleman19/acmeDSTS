@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -247,73 +248,103 @@ public class ReportsPanel extends AcmeBaseJPanel {
     }
     
     private void generateCustomerPerformanceReports(LocalDate from, LocalDate to, String customerName) {
-      SeedDatabase seed = new SeedDatabase();
+     
       DefaultTableModel model = (DefaultTableModel) previewTbl.getModel();
+      model.setRowCount(0);         //clears out table if run customer report multiple times in a row
       DateTimeFormatter databaseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
       DateTimeFormatter reportDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
       DateTimeFormatter reportTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
       HashMap<String, LocalDateTime> params = new HashMap<>();
       params.put("stDate", from.atStartOfDay());
       params.put("endDate", to.atStartOfDay().plusDays(1));
-      HashMap<String, String> params2 = new HashMap<>();
-      params2.put("name", customerName);
       EntityManager em = HibernateAdapter.getEntityManager();
-      Query query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.pickupCustomer.name AND t.isBilledToSender IS true AND t.pickUpCustomer.name IS name", Ticket.class);
+      Query query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.deliveryTime", Ticket.class);
       query.setParameter("stDate", from.atStartOfDay());
       query.setParameter("endDate", to.atStartOfDay().plusDays(1));
-      query.setParameter("name", customerName);
       List tickets = query.getResultList();
-      query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.pickupCustomer.name AND t.isBilledToSender IS false AND t.deliveryCustomer.name IS name", Ticket.class);
-      tickets.addAll(query.getResultList());
       Iterator i = tickets.iterator();
-      int count = 0, onTime = 0, custCount = 0, custOntime = 0;
+      int count = 0, onTime = 0, custCount = 0;
+      double totalPrice = 0;
       Customer currentCust = null;
       Ticket t = null;
-      while (i.hasNext()) {
-          t = (Ticket) i.next();
-          if (currentCust != null && t.getPickupCustomer() != currentCust && custCount != 0) {
+      Stack<String> nameOfCustomers = new Stack();
+      System.out.println(customerName);
+      if(customerName.equals("(Select All)"))
+      {System.out.println("here");
+        nameOfCustomers.clear();
+        for(Map.Entry<UUID, Customer> customer : this.getAcmeUI().getCompany().getCustomers().entrySet())
+        {
+          nameOfCustomers.push(customer.getValue().getName());
+        }
+      }
+      else
+      {
+        nameOfCustomers.clear();
+        nameOfCustomers.push(customerName);
+      }
+      while(!nameOfCustomers.isEmpty())
+      {
+        customerName = nameOfCustomers.pop();
+        i = tickets.iterator();
+        count = 0;
+        onTime = 0;
+        totalPrice = 0;
+        while (i.hasNext()) {
+            t = (Ticket) i.next();
+          
+            
+            if(t.isBillToSender() && t.getPickupCustomer().getName().equals(customerName))
+            {
               model.addRow(new Object[] {
-                      "<html><b>Customer</b></html>",
-                      "<html><b>Performance</b></html>",
-                      ""
+                    reportDate.format(t.getCreationDateTime()),
+                    reportTime.format(t.getCreationDateTime()),
+                    new BigDecimal(50),
+                    reportTime.format(t.getEstimatedDeliveryTime()),
+                    reportTime.format(t.getDeliveryTime())
               });
+              totalPrice = totalPrice + new BigDecimal(50).doubleValue();
+                  
+              if(t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
+                  onTime++;
+              }
+              count++;
+            }
+            else if(!t.isBillToSender() && t.getDeliveryCustomer().getName().equals(customerName))
+            {
               model.addRow(new Object[] {
-                      "<html><b>" + currentCust.getName() + "</b></html>",
-                      "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
-                      ""
-              });
-              custCount = 0;
-              custOntime = 0;
-              currentCust = t.getPickupCustomer();
-          } else if (currentCust == null) {
-              currentCust = t.getPickupCustomer();
-          }
-          if (t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
-              onTime++;
-              custOntime++;
-          }
-          model.addRow(new Object[] {
                   reportDate.format(t.getCreationDateTime()),
+                  reportTime.format(t.getCreationDateTime()),
+                  new BigDecimal(50),
                   reportTime.format(t.getEstimatedDeliveryTime()),
                   reportTime.format(t.getDeliveryTime())
-          });
-          custCount++;
-          count++;
-      }
-      if (custCount != 0) {
-          model.addRow(new Object[] {
-                  "<html><b>Customer</b></html>",
-                  "<html><b>Performance</b></html>",
-                  ""
-          });
-          model.addRow(new Object[] {
-                  "<html><b>" + currentCust.getName() + "</b></html>",
-                  "<html><b>" + NumberFormat.getPercentInstance().format((double) custOntime / custCount) + "</b></html>",
-                  ""
-          });
+              });
+              
+              totalPrice = totalPrice + new BigDecimal(50).doubleValue();
+              
+              if(t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
+                onTime++;
+              }
+              count++;
+            }
+            
+        }
+        if (count != 0) {
+            model.addRow(new Object[] {
+                    "<html><b>Customer Name</b></html>",
+                    "<html><b>Total Price</b></html>",
+                    "<html><b>On Time Percentage</b></html>",
+                    ""
+            });
+            model.addRow(new Object[] {
+                    "<html><b>" + customerName  + "</b></html>",
+                    "<html><b>" + new BigDecimal(totalPrice)  + "</b></html>",
+                    "<html><b>" +  NumberFormat.getPercentInstance().format((double) onTime / count) + "</b></html>",
+                    ""
+            });
+        }
       }
 
-      fixCompPerfCols();
+      fixCustomerPerfCols();
   }
       
     
@@ -322,6 +353,13 @@ public class ReportsPanel extends AcmeBaseJPanel {
         for (int i = 0; i  < 3; i++) {
             previewTbl.getColumnModel().getColumn(i).setMinWidth(120);
         }
+    }
+    
+    private void fixCustomerPerfCols() {
+      for (int i = 0; i<  5; i++)
+      {
+        previewTbl.getColumnModel().getColumn(i).setMinWidth(120);
+      }
     }
 
     /* Print the report to PDF */
