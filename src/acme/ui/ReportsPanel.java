@@ -10,11 +10,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.io.FileOutputStream;
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.*;
 
 import javax.persistence.EntityManager;
@@ -39,17 +47,12 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import acme.data.HibernateAdapter;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
-import acme.pd.Ticket;
-import acme.pd.User;
 
 public class ReportsPanel extends AcmeBaseJPanel {
 
@@ -397,7 +400,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
             });
             model.addRow(new Object[] {
                     "<html><b>" + customerName  + "</b></html>",
-                    "<html><b>" + new BigDecimal(totalPrice)  + "</b></html>",
+                    "<html><b>" + (new BigDecimal(totalPrice)).setScale(2, BigDecimal.ROUND_HALF_UP) + "</b></html>",
                     "<html><b>" +  NumberFormat.getPercentInstance().format((double) onTime / count) + "</b></html>",
                     ""
             });
@@ -669,7 +672,6 @@ public class ReportsPanel extends AcmeBaseJPanel {
     }
 
     public static void main(String [] args) {
-
       AcmeUI acme = new AcmeUI();
       acme.getCompany().setCurrentUser(new User());
       acme.setPanel(new ReportsPanel());
