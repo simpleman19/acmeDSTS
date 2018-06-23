@@ -295,6 +295,7 @@ public class TicketListUI extends AcmeBaseJPanel {
                 int modelRow = Integer.valueOf(e.getActionCommand());
                 System.out.println("Compelete");
                 Ticket ticket = company.getTickets().get(table.getModel().getValueAt(modelRow, ID_COL));
+                System.out.println(ticket.getCourier().getName());
                 getAcmeUI().ticketComplete(company.getTickets().get(table.getModel().getValueAt(modelRow, ID_COL)));
             }
         };
@@ -356,22 +357,31 @@ public class TicketListUI extends AcmeBaseJPanel {
                          TableModel model = (TableModel) e.getSource();
                          int row = e.getFirstRow();
                          int col = e.getColumn();
-                         System.out.println("Update " + row + "x" + col + " = " + model.getValueAt(row, col));
-
-  
-                         if(company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).getCourier() != null) {
-                           company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).setCourier(courierMapForTickets.get(model.getValueAt(row, col)));   
+                         
+                         if(col == 1)
+                         {
+                             System.out.println("Update " + row + "x" + col + " = " + model.getValueAt(row, col));
+    
+      
+                             if(company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).getCourier() != null) {
+                               company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).setCourier(courierMapForTickets.get(model.getValueAt(row, col)));   
+                             }
+                             else {
+                               if(!model.getValueAt(row, col).equals("None"))
+                               {
+                                 Courier temp = new Courier();
+                                 temp.setActive(courierMapForTickets.get(model.getValueAt(row, col)).isActive());
+                                 temp.setCourierNumber(courierMapForTickets.get(model.getValueAt(row, col)).getCourierNumber());
+                                 temp.setName(courierMapForTickets.get(model.getValueAt(row, col)).getName());
+                                 company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).setCourier(temp);
+                                 temp.create();
+                               }
+                             }
+                             company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).update();
+                             company.update();
+                             
+                             System.out.println("Success");
                          }
-                         else {
-                           Courier temp = new Courier();
-                           temp.setActive(courierMapForTickets.get(model.getValueAt(row, col)).isActive());
-                           temp.setCourierNumber(courierMapForTickets.get(model.getValueAt(row, col)).getCourierNumber());
-                           temp.setName(courierMapForTickets.get(model.getValueAt(row, col)).getName());
-                           company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).setCourier(temp);
-
-                         }
-                         company.update();
-                         System.out.println("Success");
                      }
                      break;
              }

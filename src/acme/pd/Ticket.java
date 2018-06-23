@@ -85,7 +85,7 @@ public class Ticket implements PersistableEntity {
     }
 
     public ArrayList<String> getDeliveryInstructions() {
-        return path.getDeliveryInstructions();
+        return path.getDeliveryInstructions(company);
     }
 
     public UUID getId() {
@@ -149,6 +149,7 @@ public class Ticket implements PersistableEntity {
       timeToTravel = path.getBlocksBetweenDropoffandHome() / bphCouriers;
       this.estimatedReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
 
+      this.deliveryTime = null;
     }
 
     public Company getCompany() {
@@ -218,7 +219,6 @@ public class Ticket implements PersistableEntity {
     private void generatePackageId() {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMdd-hhmmss");
         this.packageID = df.format(this.getCreationDateTime());
-        // TODO check database for duplicate (Not likely but better safe than sorry)
         HashMap<String, String> params = new HashMap<>();
         params.put("pId", packageID);
         boolean overlap = false;
@@ -306,7 +306,7 @@ public class Ticket implements PersistableEntity {
     }
 
     public Path getPath() {
-        if (this.path == null) {
+        if (path == null) {
             updatePath();
         }
         return path;

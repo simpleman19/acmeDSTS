@@ -17,7 +17,6 @@ public class MapIntersection {
     }
 
     public String getIntersectionName() {
-        // TODO get name
         return NSroad.getName() + " & " + EWroad.getName();
     }
 
@@ -33,7 +32,6 @@ public class MapIntersection {
     }
 
     public boolean canTravelDirection(Direction dir) {
-        // TODO can travel
         return this.NSroad.canTravelDirection(dir) || this.EWroad.canTravelDirection(dir);
     }
 

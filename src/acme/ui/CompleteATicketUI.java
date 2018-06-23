@@ -22,6 +22,8 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   public CompleteATicketUI(Ticket ticket) {
     super();
     this.ticketToComplete = ticket;
+    System.out.println(this.ticketToComplete.getCourier().getName());
+    this.ticketToComplete.update();
   }
 
   public void buildPanel() {
@@ -116,7 +118,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   
   //this method checks to make sure the times make sense in the basic sense of things and then 
   //completes the ticket
-  public void clickedSave()
+  public void clickedSave() 
   {
     if(this.dateTimePickerDeparture.getDateTimeStrict() != null && this.dateTimePickerPickup.getDateTimeStrict() != null
         && this.dateTimePickerDelivery.getDateTimeStrict() != null)
@@ -148,6 +150,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   //This is just to go back
   public void clickedCancel()
   {
+    System.out.println(this.ticketToComplete.getCourier().getName());
     this.getAcmeUI().ticketList(false);
   }
   

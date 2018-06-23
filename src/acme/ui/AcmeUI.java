@@ -101,7 +101,6 @@ public class AcmeUI extends JFrame {
             // Admin only
             if (admin) {
                 JMenuItem clerkItem = new JMenuItem("Clerks");
-                // TODO should this be clerks or user???
                 clerkItem.addActionListener((event) -> userList());
                 maintenanceMenu.add(clerkItem);
 
