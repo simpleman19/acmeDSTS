@@ -224,8 +224,8 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this. Replace my example with your code
     public void companyEdit() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+    	CompanyUI comp = new CompanyUI();
+        this.setPanel(comp);
     }
 
     public void mapView() {
