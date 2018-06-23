@@ -55,7 +55,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
 
     String courierString = "";
     if (this.ticketToComplete.getCourier() != null) {
-      this.ticketToComplete.getCourier().getName();
+      courierString = this.ticketToComplete.getCourier().getName();
     }
     JLabel lblActCourier = new JLabel(courierString + "");
     lblActCourier.setBounds(125, 87, 150, 16);
