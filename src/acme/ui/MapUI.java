@@ -148,6 +148,7 @@ public class MapUI extends AcmeBaseJPanel {
         {
           mapButtons[x][y].setBackground(Color.YELLOW);
           mapButtons[x][y].setOpaque(true);
+          mapButtons[x][y].setEnabled(false);
         }
         
         //handle clicking of intersection 
