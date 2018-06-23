@@ -236,7 +236,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         dateSettings.setAllowEmptyDates(false);
         timeSettings.setAllowEmptyTimes(false);
         dropOffPicker = new DateTimePicker(dateSettings, timeSettings);
-        dropOffPicker.setDateTimePermissive(this.ticket.getDeliveryTime());
+        dropOffPicker.setDateTimePermissive(this.ticket.getEstimatedDeliveryTime());
         dropOffPicker.addDateTimeChangeListener((e) -> updateTicket());
         dropOffPanel.add(dropOffPicker, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -393,7 +393,8 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Getting an unsaved transient instance error
         ticket.create();
         c.addTicket(ticket);
-        this.getAcmeUI().courierList();
+        c.update();
+        this.getAcmeUI().ticketList(false);
     }
 
     private void cancelButton() {
@@ -437,7 +438,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         }
 
         // Drop off date time
-        this.ticket.setDeliveryTime(dropOffPicker.getDateTimeStrict());
+        this.ticket.setEstimatedDeliveryTime(dropOffPicker.getDateTimeStrict());
 
         // Save Note Text
         this.ticket.setNote(notesTextArea.getText());

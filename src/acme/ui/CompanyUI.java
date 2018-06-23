@@ -6,23 +6,24 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
 import acme.pd.Company;
-public class CompanyUI extends JFrame {
-////////////GUI/////////////////
+import acme.pd.User;
+public class CompanyUI extends AcmeBaseJPanel {
+
 private static final long serialVersionUID = 1L;
 private JPanel panel;
 private JPanel panelForm;
 private JPanel buttonPanel;
 private JButton saveButton;
-private JButton exitButton;
+private JButton cancelButton;
 private GridBagConstraints grid;
 
 private JTextField company_name;
@@ -37,24 +38,20 @@ private Company comp;
 //////////////////////////
 	public CompanyUI()
     {
-
-        super("Acme Ticketing System");
-
-        buildForm();
-
-        buildButtonPanel();
-
-        setVisible(true);
-        setSize(550, 550);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        super();
     }
-	
+
+
+	public void buildPanel() {
+    	buildForm();
+    	buildButtonPanel();
+    }
+
 	
     public void buildForm () 
     {
         panel = new JPanel();
-        getContentPane().add(panel);
+        this.add(panel);
 
         panelForm = new JPanel(new GridBagLayout());
         panel.add(panelForm);
@@ -95,43 +92,43 @@ private Company comp;
         panelForm.add(company_name, grid);
         ++grid.gridy;
         
-        company_name.setText(comp.getDefaultAcme().getName());
+        company_name.setText(getCompany().getName());
         
         
         bonus_amount = new JTextField (10);
         panelForm.add(bonus_amount, grid);
         ++grid.gridy;
         
-        bonus_amount.setText(comp.getDefaultAcme().getBonus().toString());
+        bonus_amount.setText(getCompany().getBonus().toString());
         
 
         courier_miles = new JTextField (10);
         panelForm.add(courier_miles, grid);
         ++grid.gridy;
         
-        courier_miles.setText(Double.toString(comp.getDefaultAcme().getCourierMilesPerHour()));
+        courier_miles.setText(Double.toString(getCompany().getCourierMilesPerHour()));
         
         
         blocks_per_mile = new JTextField (10);
         panelForm.add(blocks_per_mile, grid);
         ++grid.gridy;
-        blocks_per_mile.setText(Double.toString(comp.getDefaultAcme().getBlocksPerMile()));
+        blocks_per_mile.setText(Double.toString(getCompany().getBlocksPerMile()));
         
         
         lateness_margin = new JTextField (10);
         panelForm.add(lateness_margin, grid);
         ++grid.gridy;
-        lateness_margin.setText(Integer.toString(comp.getDefaultAcme().getLatenessMarginMinutes()));
+        lateness_margin.setText(Integer.toString(getCompany().getLatenessMarginMinutes()));
 
         flat_billing = new JTextField (10);
         panelForm.add(flat_billing, grid);
         ++grid.gridy;
-        flat_billing.setText(comp.getDefaultAcme().getFlatBillingRate().toString());
+        flat_billing.setText(getCompany().getFlatBillingRate().toString());
         
         block_rate_name = new JTextField (10);
         panelForm.add(block_rate_name, grid);
         ++grid.gridy;
-        block_rate_name.setText(Double.toString(comp.getDefaultAcme().getBlocksPerMile()));
+        block_rate_name.setText(getCompany().getBlockBillingRate().toString());
     }
 
     private void buildButtonPanel()
@@ -142,31 +139,50 @@ private Company comp;
         buttonPanel.setBackground(lightBlue);
 
         saveButton = new JButton("Save");
-        exitButton = new JButton("Cancel");
+        cancelButton = new JButton("Cancel");
 
         buttonPanel.add(saveButton);
-        buttonPanel.add(exitButton);
+        buttonPanel.add(cancelButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
 
         // Register the action listeners
-        ExitButtonListner exit = new ExitButtonListner();
-        exitButton.addActionListener(exit);
+        CancelButtonListener exit = new CancelButtonListener();
+        cancelButton.addActionListener(exit);
 
         SaveButtonListner save = new SaveButtonListner();
         saveButton.addActionListener(save);
 
     }
 
-    private class ExitButtonListner implements ActionListener
+    private void updateCompany() {
+	    Company c = getCompany();
+
+        c.setName(company_name.getText());
+
+        c.setBonus(new BigDecimal(bonus_amount.getText()));
+
+        c.setCourierMilesPerHour(Double.parseDouble(courier_miles.getText()));
+
+        c.setBlocksPerMile(Double.parseDouble(blocks_per_mile.getText()));
+
+        c.setLatenessMarginMinutes(Integer.parseInt(lateness_margin.getText()));
+
+        c.setFlatBillingRate(new BigDecimal(flat_billing.getText()));
+
+        c.setBlockBillingRate(new BigDecimal(block_rate_name.getText()));
+    }
+
+
+
+    private class CancelButtonListener implements ActionListener
     {
       
         @Override
         public void actionPerformed(ActionEvent e)
         {
 
-            System.exit(0);
-
+            getAcmeUI().ticketList(false);
         }
 
     }
@@ -177,13 +193,16 @@ private Company comp;
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            // IMPLEMENT
-            
-
-//            System.out.println(field1.getText());
-//            Integer.parseInt(field2.getText());
-            
-            
+            updateCompany();
+            getCompany().update();
+            getAcmeUI().ticketList(false);
         }
     }
-}
+
+
+       public static void main(String [] args) {
+    	   AcmeUI acme = new AcmeUI();
+    	   acme.getCompany().setCurrentUser(new User());
+    	   acme.setPanel(new CompanyUI());
+	}
+       }

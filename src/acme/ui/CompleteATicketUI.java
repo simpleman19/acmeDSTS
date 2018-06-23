@@ -22,6 +22,8 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   public CompleteATicketUI(Ticket ticket) {
     super();
     this.ticketToComplete = ticket;
+    System.out.println(this.ticketToComplete.getCourier().getName());
+    this.ticketToComplete.update();
   }
 
   public void buildPanel() {
@@ -50,8 +52,12 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     JLabel lblActPackageId = new JLabel(this.ticketToComplete.getPackageID());
     lblActPackageId.setBounds(125, 59, 150, 16);
     add(lblActPackageId);
-    
-    JLabel lblActCourier = new JLabel(this.ticketToComplete.getCourier().getName() + "");
+
+    String courierString = "";
+    if (this.ticketToComplete.getCourier() != null) {
+      courierString = this.ticketToComplete.getCourier().getName();
+    }
+    JLabel lblActCourier = new JLabel(courierString + "");
     lblActCourier.setBounds(125, 87, 150, 16);
     add(lblActCourier);
     //--------------------------------------------------------------
@@ -112,7 +118,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   
   //this method checks to make sure the times make sense in the basic sense of things and then 
   //completes the ticket
-  public void clickedSave()
+  public void clickedSave() 
   {
     if(this.dateTimePickerDeparture.getDateTimeStrict() != null && this.dateTimePickerPickup.getDateTimeStrict() != null
         && this.dateTimePickerDelivery.getDateTimeStrict() != null)
@@ -124,8 +130,8 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
         this.ticketToComplete.setPickupTime(this.dateTimePickerPickup.getDateTimeStrict());
         this.ticketToComplete.setDeliveryTime(this.dateTimePickerDelivery.getDateTimeStrict());
         
-        //TO DO
-        //go to TicketList Page
+        this.ticketToComplete.update();
+        this.getAcmeUI().ticketList(false);
       }
       else
       {
@@ -144,8 +150,8 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   //This is just to go back
   public void clickedCancel()
   {
-    //TO DO
-    //go to TicketList Page
+    System.out.println(this.ticketToComplete.getCourier().getName());
+    this.getAcmeUI().ticketList(false);
   }
   
   public static void main(String [] args) {

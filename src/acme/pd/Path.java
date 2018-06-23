@@ -24,6 +24,7 @@ public class Path {
         this.path = path;
     }
 
+    //Total blocks from Home Office -> Pick Up -> Drop Off (delivery)
     public int getBlocksBetweenHomeandDropoff() {
         return blocksBetweenHomeandDropoff;
     }
@@ -32,6 +33,7 @@ public class Path {
         this.blocksBetweenHomeandDropoff = blocksBetweenHomeandDropoff;
     }
 
+    //Total blocks from Home Office -> Pick Up
     public int getBlocksBetweenHomeandPickup() {
         return blocksBetweenHomeandPickup;
     }
@@ -40,6 +42,7 @@ public class Path {
         this.blocksBetweenHomeandPickup = blocksBetweenHomeandPickup;
     }
 
+    //Total blocks from Pick Up -> Drop Off (delivery)
     public int getBlocksBetweenPickupandDropoff() {
         return blocksBetweenPickupandDropoff;
     }
@@ -48,6 +51,7 @@ public class Path {
         this.blocksBetweenPickupandDropoff = blocksBetweenPickupandDropoff;
     }
 
+    //Total blocks from Drop Off (delivery) -> Home Office
     public int getBlocksBetweenDropoffandHome() {
         return blocksBetweenDropoffandHome;
     }
@@ -55,6 +59,8 @@ public class Path {
     public void setBlocksBetweenDropoffandHome(int blocksBetweenDropoffandHome) {
         this.blocksBetweenDropoffandHome = blocksBetweenDropoffandHome;
     }
+
+   
 
     public ArrayList<String> getDeliveryInstructions(Company company) {
         ArrayList<String> instructions = new ArrayList<>();

@@ -17,6 +17,7 @@ import acme.data.HibernateAdapter;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
+import acme.pd.MapIntersection;
 import acme.pd.Ticket;
 import acme.pd.User;
 import acme.seed.SeedDatabase;
@@ -58,7 +59,7 @@ public class AcmeUI extends JFrame {
         this.buildMenu();
 
         setVisible(true);
-        setSize(550, 550);
+        setSize(650, 550);
         setLocationRelativeTo(null);
 
         loginScreen();
@@ -72,7 +73,7 @@ public class AcmeUI extends JFrame {
 
             // Ticket Button
             JMenuItem ticketList = new JMenuItem("Tickets");
-            ticketList.addActionListener((event) -> ticketList());
+            ticketList.addActionListener((event) -> ticketList(false));
             menuBar.add(ticketList);
 
             // Map Button
@@ -157,10 +158,10 @@ public class AcmeUI extends JFrame {
         this.setPanel(ui);
     }
 
-    // Everyone will tie in their panel like this. Replace my example with your code
-    public void ticketList() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+    // Everyone will tie in their panel like this.  Replace my example with your code
+    public void ticketList(Boolean showComplete) {
+        TicketListUI ticketListUI = new TicketListUI(showComplete);
+        this.setPanel(ticketListUI);
     }
 
     // Everyone will tie in their panel like this. Replace my example with your code
@@ -223,13 +224,18 @@ public class AcmeUI extends JFrame {
 
     // Everyone will tie in their panel like this. Replace my example with your code
     public void companyEdit() {
-        ExampleJPanel exampleJPanel = new ExampleJPanel();
-        this.setPanel(exampleJPanel);
+    	CompanyUI comp = new CompanyUI();
+        this.setPanel(comp);
     }
 
     public void mapView() {
         MapUI mapUI = new MapUI();
         this.setPanel(mapUI);
+    }
+    
+    public void intersectionUpdate(MapIntersection intersection) {
+    	IntersectionPanel panel = new IntersectionPanel(intersection);
+    	this.setPanel(panel);
     }
 
     // Generate Reports Panel
