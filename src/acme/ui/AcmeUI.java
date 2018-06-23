@@ -17,6 +17,7 @@ import acme.data.HibernateAdapter;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
+import acme.pd.MapIntersection;
 import acme.pd.Ticket;
 import acme.pd.User;
 import acme.seed.SeedDatabase;
@@ -231,6 +232,11 @@ public class AcmeUI extends JFrame {
     public void mapView() {
         MapUI mapUI = new MapUI();
         this.setPanel(mapUI);
+    }
+    
+    public void intersectionUpdate(MapIntersection intersection) {
+    	IntersectionPanel panel = new IntersectionPanel(intersection);
+    	this.setPanel(panel);
     }
 
     // Generate Reports Panel

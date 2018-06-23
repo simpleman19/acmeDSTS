@@ -204,7 +204,8 @@ public class MapUI extends AcmeBaseJPanel {
   
   public void intersectionClicked(String intersectionName)
   {
-    //Will go to intersection page
+	  MapIntersection intersection = this.getCompany().getMap().getIntersectionByName(intersectionName);
+	  this.getAcmeUI().intersectionUpdate(intersection);
   }
   
   public static void main(String [] args) {
