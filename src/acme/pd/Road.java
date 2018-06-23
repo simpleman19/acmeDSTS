@@ -6,9 +6,10 @@ public class Road implements Comparable {
     private boolean bidirectional;
 
     public boolean canTravelDirection(Direction dir) {
-        return this.getDirection() == dir
+        return (this.getDirection() == dir
                 || (this.isBidirectional()
-                && (dir.ordinal() % 2 == this.getDirection().ordinal() % 2));
+                && (dir.ordinal() % 2 == this.getDirection().ordinal() % 2)))
+                && dir != Direction.NONE;
     }
 
     public Direction getDirection() {

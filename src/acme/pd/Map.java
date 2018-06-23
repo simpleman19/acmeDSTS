@@ -531,10 +531,10 @@ public class Map {
           for(int i = 0; i < 4; i++)
           {
             //set up values
-            Direction dir;
-            int xFactor;
-            int yFactor;
-            int compareValue;
+            Direction dir = Direction.NONE;
+            int xFactor = 0;
+            int yFactor = 0;
+            int compareValue = 0;
             if(i == 0)     //West
             {
               dir = Direction.WEST;
@@ -556,7 +556,7 @@ public class Map {
               yFactor = 0;
               compareValue =  0;
             }
-            else            //South
+            else if (i == 3)  //South
             {
               dir = Direction.SOUTH;
               xFactor = 1;

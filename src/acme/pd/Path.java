@@ -10,6 +10,7 @@ public class Path {
     private int blocksBetweenHomeandPickup;
     private int blocksBetweenPickupandDropoff;
     private int blocksBetweenDropoffandHome;
+    private int blocks;
 
     public ArrayList<MapIntersection> getPath() {
         return path;
@@ -53,23 +54,19 @@ public class Path {
 
     public ArrayList<String> getDeliveryInstructions(Company company) {
         ArrayList<String> instructions = new ArrayList<>();
-        int step, blocks;
+        int step;
         if (this.path != null && this.path.size() > 2) {
             Direction lastDir = company.getMap().getTravelDirection(this.path.get(0), this.path.get(1));
             Direction dir = null;
             step = 1;
             for (int i = 1; i < this.path.size() - 1; i++) {
                 blocks = 1;
-                MapIntersection i1 = this.path.get(i);
-                MapIntersection i2 = this.path.get(i+1);
-                dir = company.getMap().getTravelDirection(i1, i2);
+                dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i+1));
                 step = checkForInteraction(i, step, instructions);
                 while (dir.toString().equalsIgnoreCase(lastDir.toString()) && i < this.path.size() - 2) {
                     i++;
                     blocks++;
-                    i1 = this.path.get(i); 
-                    i1 = this.path.get(i+1);
-                    dir = company.getMap().getTravelDirection(i1, i2);
+                    dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i+1));
                     step = checkForInteraction(i, step, instructions);
                 }
 
@@ -91,9 +88,12 @@ public class Path {
         if (dir == Direction.EAST || dir == Direction.WEST) {
             road = this.path.get(block).getEWroad();
             name = "Street " + road.getName();
-        } else {
+        } else if (dir == Direction.NORTH || dir == Direction.SOUTH){
             road = this.path.get(block).getNSroad();
             name = "Avenue " + road.getName();
+        }
+        else {
+            name = "";
         }
         return name;
     }
