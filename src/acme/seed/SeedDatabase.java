@@ -10,11 +10,8 @@ import javax.persistence.EntityManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Scanner;
-import java.util.UUID;
 
 public class SeedDatabase {
     public static void main(String[] args) {
@@ -29,9 +26,6 @@ public class SeedDatabase {
         Company acme = new Company();
 
         acme.setName("Acme");
-        acme.setCourierMilesPerHour(15);
-        acme.setBlocksPerMile(5.5);
-        acme.setLatenessMarginMinutes(2);
 
         return acme;
     }
@@ -48,7 +42,7 @@ public class SeedDatabase {
                 if (input.equalsIgnoreCase("Y")) {
                     System.out.println("Overwriting Company");
                     // Delete tickets
-                    Iterator it = new HashMap<>(company.getTickets()).entrySet().iterator();
+                    Iterator it = new HashMap<>(company.getTickets()).values().iterator();
                     while (it.hasNext()) {
                         Ticket ticket = (Ticket) ((HashMap.Entry) it.next()).getValue();
                         company.getTickets().remove(ticket.getId());
@@ -57,7 +51,7 @@ public class SeedDatabase {
                     }
 
                     // Delete Customers
-                    it = new HashMap<>(company.getCustomers()).entrySet().iterator();
+                    it = new HashMap<>(company.getCustomers()).values().iterator();
                     while (it.hasNext()) {
                         Customer customer = (Customer)((HashMap.Entry) it.next()).getValue();
                         company.getCustomers().remove(customer.getId());
@@ -66,7 +60,7 @@ public class SeedDatabase {
                     }
 
                     // Delete Couriers
-                    it = new HashMap<>(company.getCouriers()).entrySet().iterator();
+                    it = new HashMap<>(company.getCouriers()).values().iterator();
                     while (it.hasNext()) {
                         Courier courier = (Courier) ((HashMap.Entry) it.next()).getValue();
                         company.getCouriers().remove(courier.getId());
@@ -75,7 +69,7 @@ public class SeedDatabase {
                     }
 
                     // Delete Users
-                    it = new HashMap<>(company.getUsers()).entrySet().iterator();
+                    it = new HashMap<>(company.getUsers()).values().iterator();
                     while (it.hasNext()) {
                         User user = (User) ((HashMap.Entry) it.next()).getValue();
                         company.getUsers().remove(user.getId());
@@ -103,6 +97,7 @@ public class SeedDatabase {
             company.setBlocksPerMile(5.2);
             company.setCourierMilesPerHour(5.8);
             company.setFlatBillingRate(new BigDecimal(25.00));
+            company.setLatenessMarginMinutes(5);
             company.update();
             System.out.println("Added company");
 
@@ -125,6 +120,8 @@ public class SeedDatabase {
             company.addUser(user);
             company.update();
             System.out.println("Added admin and clerk accounts");
+
+            company.setCurrentUser(user);
 
             // Two couriers
             Courier courier = new Courier();
@@ -166,7 +163,7 @@ public class SeedDatabase {
             Ticket ticket = new Ticket(company);
             ticket.setDeliveryCustomer(customer);
             ticket.setPickupCustomer(customer2);
-            ticket.setDeliveryTime(LocalDateTime.now().plusHours(4).plusMinutes(45));
+            ticket.setEstimatedDeliveryTime(LocalDateTime.now().plusHours(4).plusMinutes(45));
             ticket.setBillToSender(false);
             ticket.setNote("This is a note");
             ticket.create();
@@ -177,7 +174,7 @@ public class SeedDatabase {
             Ticket ticket2 = new Ticket(company);
             ticket2.setDeliveryCustomer(customer2);
             ticket2.setPickupCustomer(customer);
-            ticket2.setDeliveryTime(LocalDateTime.now().plusDays(2));
+            ticket2.setEstimatedDeliveryTime(LocalDateTime.now().plusDays(2));
             ticket2.setBillToSender(true);
             ticket2.setNote("This is a note");
             ticket2.setCourier(courier);
@@ -189,7 +186,7 @@ public class SeedDatabase {
             Ticket ticket3 = new Ticket(company);
             ticket3.setDeliveryCustomer(customer2);
             ticket3.setPickupCustomer(customer);
-            ticket3.setDeliveryTime(LocalDateTime.now().minusHours(2));
+            ticket3.setEstimatedDeliveryTime(LocalDateTime.now().minusHours(2));
             ticket3.setBillToSender(true);
             ticket3.setNote("This is a note");
             ticket3.setCourier(courier);
@@ -201,6 +198,89 @@ public class SeedDatabase {
             company.update();
             System.out.println("Added an open ticket, open with courier, and closed ticket");
         }
+
+        Scanner sc = new Scanner(System.in);
+        String input = "";
+        do {
+            System.out.print("Do you want a ton of stuff? (Y/N): ");
+            input = sc.nextLine().toUpperCase();
+            if (input.equalsIgnoreCase("Y")) {
+                for (int i = 1; i <= 5; i++) {
+                    Courier courier = randomCourier(i);
+                    courier.create();
+                    company.addCourier(courier);
+                    company.update();
+                }
+                for (int i = 1; i <= 20; i++) {
+                    Customer cust = randomCust(i);
+                    cust.create();
+                    company.addCustomer(cust);
+                    company.update();
+                }
+                for (int i = 0; i < 200; i++) {
+                    Ticket randTicket = randomTicket(company);
+                    randTicket.create();
+                    company.addTicket(randTicket);
+                    company.update();
+                }
+            } else if (input.equalsIgnoreCase("N")){
+                System.out.println("Done");
+            }
+        } while (!input.equals("Y") && !input.equals("N"));
+    }
+
+
+    private static Courier randomCourier(int i){
+        Courier courier = new Courier();
+        courier.setName("John Doe " + i);
+        courier.setCourierNumber(5000 + i);
+
+        return courier;
+    }
+    private static Customer randomCust(int i) {
+        Random rand = new Random();
+        Customer customer = new Customer();
+        String [] names = {
+                "A", "B", "C", "D", "E", "F", "G"
+        };
+        String [] nums = {
+                "1", "2", "3", "4", "5", "6", "7"
+        };
+        customer.setName("Company " + i);
+        customer.setAvenueName(names[rand.nextInt(names.length)]);
+        customer.setStreetName(nums[rand.nextInt(nums.length)]);
+        customer.setCustomerNumber(10000 + i);
+        return customer;
+    }
+
+    private static Ticket randomTicket(Company company) {
+        Random rand = new Random();
+        rand.setSeed(System.currentTimeMillis());
+        Customer customer = (Customer) company.getCustomers().values().toArray()[rand.nextInt(company.getCustomers().values().size())];
+        Customer customer2 = null;
+        do {
+            customer2 = (Customer) company.getCustomers().values().toArray()[rand.nextInt(company.getCustomers().values().size())];
+        } while (customer == customer2);
+        Ticket ticket = new Ticket(company);
+        ticket.setDeliveryCustomer(customer2);
+        ticket.setPickupCustomer(customer);
+        int courier = rand.nextInt();
+        long randTime = rand.nextInt(60 * 24 * 20) - 60 * 24 * 10 ;
+        ticket.setEstimatedDeliveryTime(LocalDateTime.now().plusMinutes(randTime));
+        ticket.setCreationDateTime(ticket.getEstimatedDeliveryTime().minusHours(6));
+        if (ticket.getEstimatedDeliveryTime().isBefore(LocalDateTime.now())) { // Closed
+            ticket.setCourier((Courier) company.getCouriers().values().toArray()[rand.nextInt(company.getCouriers().values().size())]);
+            ticket.setDeliveryTime(ticket.getEstimatedDeliveryTime().plusMinutes(rand.nextInt(40) - 30));
+            ticket.setPickupTime(ticket.getEstimatedDeliveryTime().minusMinutes(30));
+            ticket.setDepartureTime(ticket.getEstimatedDeliveryTime().minusMinutes(50));
+        } else if (courier % 2 == 1) { // Created with courier
+            ticket.setCourier((Courier) company.getCouriers().values().toArray()[rand.nextInt(company.getCouriers().values().size())]);
+        }
+
+        ticket.setBillToSender(rand.nextInt() % 2 == 0);
+        ticket.setNote("This is a note");
+
+        return ticket;
     }
 
 

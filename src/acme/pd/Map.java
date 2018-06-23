@@ -67,7 +67,6 @@ public class Map {
             }
             inputStream.close();
         } catch (FileNotFoundException e) {
-            // TODO add a popup for when there is no file
             e.printStackTrace();
         }
 
@@ -305,6 +304,16 @@ public class Map {
         }
         return intersection;
     }
+    
+    public MapIntersection getIntersectionByName(String intersectionName) {
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				if (map[i][j].getIntersectionName().equals(intersectionName))
+					return map[i][j];
+			}
+		}
+		return null;
+	}
 
     private MapIntersection findIntersection(String nsRoad, String ewRoad) {
         for (int i = 0; i < map.length; i++) {
@@ -313,6 +322,48 @@ public class Map {
                     if (map[j][i].getEWroad().getName().equalsIgnoreCase(ewRoad)) {
                         return map[j][i];
                     }
+                }
+            }
+        }
+        return null;
+    }
+
+    public Direction getTravelDirection(MapIntersection start, MapIntersection end) {
+        int [] startLoc = getLocation(start);
+        int [] endLoc = getLocation(end);
+
+        if (startLoc != null && endLoc != null) {
+            if (startLoc[0] == endLoc[0]) {
+                if (start.getEWroad().isBidirectional()) {
+                    if (startLoc[1] > endLoc[1]) {
+                        return Direction.WEST;
+                    } else {
+                        return Direction.EAST;
+                    }
+                } else {
+                    return start.getEWroad().getDirection();
+                }
+            } else if (startLoc[1] == endLoc[1]) {
+                if (start.getNSroad().isBidirectional()) {
+                    if (startLoc[1] > endLoc[1]) {
+                        return Direction.NORTH;
+                    } else {
+                        return Direction.SOUTH;
+                    }
+                } else {
+                    return start.getNSroad().getDirection();
+                }
+            }
+        }
+        return null;
+    }
+
+    public int [] getLocation(MapIntersection inter) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (inter.getEWroad().getName().equalsIgnoreCase(map[i][j].getEWroad().getName())
+                        && inter.getNSroad().getName().equalsIgnoreCase(map[i][j].getNSroad().getName())) {
+                    return new int [] {i, j};
                 }
             }
         }
@@ -407,7 +458,6 @@ public class Map {
             br.write(sb.toString());
             br.close();
         } catch (IOException e) {
-            // TODO can't access map file for export
             e.printStackTrace();
         }
     }
@@ -421,23 +471,21 @@ public class Map {
         Path pathDir = new Path();
         ArrayList<MapIntersection> pathToBe = new ArrayList<MapIntersection>();
         int totalBlocks = 0;
+        
         pathToBe.addAll(pathDir1.getPath());
         totalBlocks = totalBlocks + pathDir1.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenHomeandPickup(pathDir1.getBlocksBetweenPickupandDropoff());
+        
         pathToBe.addAll(pathDir2.getPath());
         totalBlocks = totalBlocks + pathDir2.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenPickupandDropoff(pathDir2.getBlocksBetweenPickupandDropoff());
+        
         pathToBe.addAll(pathDir3.getPath());
         totalBlocks = totalBlocks + pathDir3.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenHomeandDropoff(totalBlocks);
+        pathDir.setBlocksBetweenDropoffandHome(pathDir3.getBlocksBetweenPickupandDropoff());
         pathDir.setPath(pathToBe);
 
-        /*System.out.println("----Directions-----");
-
-        for(MapIntersection temp : pathDir.getPath())
-        {
-          System.out.println(temp.getIntersectionName());
-        }*/
         return pathDir;
       }
 
@@ -713,7 +761,7 @@ public class Map {
 
         String date = "2018-06-11 06:30";
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Delivery: " + date);
@@ -772,7 +820,7 @@ public class Map {
 
         date = "2018-06-11 06:30";
         format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Pickup: " + date);
@@ -830,7 +878,7 @@ public class Map {
 
         date = "2018-06-11 06:30";
         format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Delivery: " + date);
