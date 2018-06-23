@@ -304,6 +304,16 @@ public class Map {
         }
         return intersection;
     }
+    
+    public MapIntersection getIntersectionByName(String intersectionName) {
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				if (map[i][j].getIntersectionName().equals(intersectionName))
+					return map[i][j];
+			}
+		}
+		return null;
+	}
 
     private MapIntersection findIntersection(String nsRoad, String ewRoad) {
         for (int i = 0; i < map.length; i++) {
