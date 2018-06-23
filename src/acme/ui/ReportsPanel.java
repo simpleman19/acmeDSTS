@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -35,6 +36,11 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import acme.pd.Company;
 import acme.pd.Courier;
@@ -140,8 +146,15 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+              String type = typeSel.getSelectedItem().toString();
                 System.out.println("print report");
-                printReport();
+                if (type.equalsIgnoreCase(COMPANY)) {
+                  printReport();
+                }
+                else if(type.equalsIgnoreCase(CUSTOMER)) {
+                  printBillingReport();
+                }
+                
             }
 
         });
@@ -263,14 +276,13 @@ public class ReportsPanel extends AcmeBaseJPanel {
       query.setParameter("endDate", to.atStartOfDay().plusDays(1));
       List tickets = query.getResultList();
       Iterator i = tickets.iterator();
-      int count = 0, onTime = 0, custCount = 0;
+      int count = 0, onTime = 0;
       double totalPrice = 0;
-      Customer currentCust = null;
       Ticket t = null;
       Stack<String> nameOfCustomers = new Stack();
       System.out.println(customerName);
-      if(customerName.equals("(Select All)"))
-      {System.out.println("here");
+      if(customerName.equals("(Select All)")) 
+      {
         nameOfCustomers.clear();
         for(Map.Entry<UUID, Customer> customer : this.getAcmeUI().getCompany().getCustomers().entrySet())
         {
@@ -293,36 +305,22 @@ public class ReportsPanel extends AcmeBaseJPanel {
             t = (Ticket) i.next();
           
             
-            if(t.isBillToSender() && t.getPickupCustomer().getName().equals(customerName))
+            if(t.isBillToSender() && t.getPickupCustomer().getName().equals(customerName) || 
+                !t.isBillToSender() && t.getDeliveryCustomer().getName().equals(customerName))
             {
               model.addRow(new Object[] {
                     reportDate.format(t.getCreationDateTime()),
                     reportTime.format(t.getCreationDateTime()),
-                    new BigDecimal(50),
+                    t.getQuotedPrice(),
                     reportTime.format(t.getEstimatedDeliveryTime()),
                     reportTime.format(t.getDeliveryTime())
               });
-              totalPrice = totalPrice + new BigDecimal(50).doubleValue();
+              
+              
+              totalPrice = totalPrice + t.getQuotedPrice().doubleValue();
                   
               if(t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
                   onTime++;
-              }
-              count++;
-            }
-            else if(!t.isBillToSender() && t.getDeliveryCustomer().getName().equals(customerName))
-            {
-              model.addRow(new Object[] {
-                  reportDate.format(t.getCreationDateTime()),
-                  reportTime.format(t.getCreationDateTime()),
-                  new BigDecimal(50),
-                  reportTime.format(t.getEstimatedDeliveryTime()),
-                  reportTime.format(t.getDeliveryTime())
-              });
-              
-              totalPrice = totalPrice + new BigDecimal(50).doubleValue();
-              
-              if(t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
-                onTime++;
               }
               count++;
             }
@@ -340,7 +338,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
                     "<html><b>" + new BigDecimal(totalPrice)  + "</b></html>",
                     "<html><b>" +  NumberFormat.getPercentInstance().format((double) onTime / count) + "</b></html>",
                     ""
-            });
+            });   
         }
       }
 
@@ -365,6 +363,41 @@ public class ReportsPanel extends AcmeBaseJPanel {
     /* Print the report to PDF */
     private void printReport() {
         // TODO print report
+    }
+    
+    private void printBillingReport() {
+      try {
+      Document doc = new Document();
+      PdfWriter.getInstance(doc, new FileOutputStream(System.getProperty("user.home")+"/Downloads/" +LocalDateTime.now() + ".pdf"));
+      doc.open();
+      PdfPTable pdfTable = new PdfPTable(this.previewTbl.getColumnCount());
+      //adding table headers
+      for (int i = 0; i < this.previewTbl.getColumnCount(); i++) {
+          pdfTable.addCell(previewTbl.getColumnName(i));
+      }
+      //extracting data from the JTable and inserting it to PdfPTable
+      int rows = 0;
+      int cols = 0;
+      for (rows = 0; rows < previewTbl.getRowCount(); rows++) {
+          for (cols = 0; cols < previewTbl.getColumnCount(); cols++) {
+              if(this.previewTbl.getModel().getValueAt(rows, cols) == null)
+              {
+                pdfTable.addCell(" ");
+              }
+              else {
+              pdfTable.addCell(this.previewTbl.getModel().getValueAt(rows, cols).toString().replaceAll("\\<.*?>","") );
+              }
+          }
+      }
+      
+      
+      doc.add(pdfTable);
+      doc.close();
+      System.out.println("done");
+      } 
+      catch (Exception e) {
+        System.out.println("Error Printing");
+      }
     }
 
     public void updateNameSel() {
