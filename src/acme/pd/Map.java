@@ -318,6 +318,48 @@ public class Map {
         return null;
     }
 
+    public Direction getTravelDirection(MapIntersection start, MapIntersection end) {
+        int [] startLoc = getLocation(start);
+        int [] endLoc = getLocation(end);
+
+        if (startLoc != null && endLoc != null) {
+            if (startLoc[0] == endLoc[0]) {
+                if (start.getEWroad().isBidirectional()) {
+                    if (startLoc[1] > endLoc[1]) {
+                        return Direction.WEST;
+                    } else {
+                        return Direction.EAST;
+                    }
+                } else {
+                    return start.getEWroad().getDirection();
+                }
+            } else if (startLoc[1] == endLoc[1]) {
+                if (start.getNSroad().isBidirectional()) {
+                    if (startLoc[1] > endLoc[1]) {
+                        return Direction.SOUTH;
+                    } else {
+                        return Direction.NORTH;
+                    }
+                } else {
+                    return start.getNSroad().getDirection();
+                }
+            }
+        }
+        return null;
+    }
+
+    public int [] getLocation(MapIntersection inter) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (inter.getEWroad().getName().equalsIgnoreCase(map[i][j].getEWroad().getName())
+                        && inter.getNSroad().getName().equalsIgnoreCase(map[i][j].getNSroad().getName())) {
+                    return new int [] {i, j};
+                }
+            }
+        }
+        return null;
+    }
+
     private void setHomeBase(int NS, int EW) {
         this.homeBase = map[NS][EW];
     }

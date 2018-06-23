@@ -56,15 +56,23 @@ public class Path {
   }
    
 
-    public ArrayList<String> getDeliveryInstructions() {
+    public ArrayList<String> getDeliveryInstructions(Company company) {
         ArrayList<String> instructions = new ArrayList<>();
         if (this.path != null && this.path.size() > 0) {
             for (int i = 0; i < this.path.size() - 1; i++) {
-                instructions.add("Go from " + this.path.get(i).getIntersectionName() + " to "
-                        + this.path.get(i + 1).getIntersectionName());
+                Direction dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i+1));
+                Road road = null;
+                if (dir != null) {
+                    if (dir == Direction.EAST || dir == Direction.WEST) {
+                        road = this.path.get(i).getEWroad();
+                    } else {
+                        road = this.path.get(i).getNSroad();
+                    }
+                    instructions.add("Go " + dir.toString() + " on " + road.getName() + " to "
+                            + this.path.get(i+1).getIntersectionName());
+                }
             }
-            instructions.add("You have arrived at " + this.path.get(this.path.size() - 1).getIntersectionName()
-                    + " which is your destination");
+            instructions.add("You have arrived at " + this.path.get(this.path.size() - 1).getIntersectionName());
         }
         return instructions;
     }
@@ -73,7 +81,7 @@ public class Path {
         AcmeUI acme = new AcmeUI();
         for (Ticket t : acme.getCompany().getTickets().values()) {
             if (t.getDeliveryTime() != null) {
-                ArrayList<String> instructions = t.getPath().getDeliveryInstructions();
+                ArrayList<String> instructions = t.getPath().getDeliveryInstructions(acme.getCompany());
                 for (String s : instructions) {
                     System.out.println(s);
                 }
