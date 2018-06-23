@@ -15,6 +15,11 @@ public class Path {
     private int blocksBetweenPickupandDropoff;
     private int blocksBetweenDropoffandHome;
     private static String PICKUP = "Pickup", DELIVER = "Deliver", NONE = "";
+    private static boolean change = false;
+    private static Direction lastDir;
+    private static Direction dir;
+    private MapIntersection pickUp;
+    private MapIntersection dropOff;
 
     public ArrayList<MapIntersection> getPath() {
         return path;
@@ -64,22 +69,23 @@ public class Path {
 
     public ArrayList<String> getDeliveryInstructions(Company company) {
         ArrayList<String> instructions = new ArrayList<>();
-        MapIntersection pickUp = null;
-        MapIntersection dropOff = null;
         if (this.path != null && this.path.size() > 0) {
-            Direction lastDir = company.getMap().getTravelDirection(this.path.get(0), this.path.get(1));
-            Direction dir = null;
+            lastDir = company.getMap().getTravelDirection(this.path.get(0), this.path.get(1));
+            dir = null;
             int step = 0, blocks = 0;
             String interaction = NONE;
             for (int i = 1; i < this.path.size() - 1; i++) {
                 pickUp = this.path.get(i);
+                blocks = 1;
                 step++;
-                dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i + 1));
                 step = checkForInteraction(i, step, instructions);
+                dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i + 1));
+                
                 while (dir.toString().equalsIgnoreCase(lastDir.toString()) && i < this.path.size() - 2) {
                     i++;
                     step = checkForInteraction(i, step,  instructions);
                     dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i + 1));
+                    blocks++;
                 }
                 dropOff = this.path.get(i);
                 Road road = null;
@@ -93,8 +99,8 @@ public class Path {
                 }
 
                 Path p = company.getMap().getPath(pickUp, dropOff);
-                blocks = p.getBlocksBetweenPickupandDropoff();
-                instructions.add("Step " + step + ": Go " + lastDir.toString() + " on " + roadName + " for "
+                blocks =p.getBlocksBetweenPickupandDropoff();
+                if (!change) instructions.add("Step " + step + ": Go " + lastDir.toString() + " on " + roadName + " for "
                         + blocks + (blocks > 1 ? " Blocks" : " Block")+" to " + this.path.get(i).getIntersectionName());
 
                 lastDir = dir;
@@ -113,22 +119,24 @@ public class Path {
             Path p = company.getMap().getPath(pickUp, dropOff);
             blocks = p.getBlocksBetweenPickupandDropoff();
             step++;
-            instructions.add("Step " + step + ": Go " + lastDir.toString() + " on " + road.getName() + " for "
-                    + blocks + (blocks > 1 ? " Blocks" : " Block")+" to " + this.path.get(this.path.size() -1).getIntersectionName());
-            step++;
-            instructions.add("Step " + step + ": Confirm ticket completion with " + company.getName());
+            instructions.add("Step " + step + ": Continue " +lastDir.toString() + " to " + company.getName());
         }
         return instructions;
     }
 
     private int checkForInteraction(int count, int step, ArrayList<String> instructions) {
         if (count == this.getBlocksBetweenHomeandPickup()) {
-            instructions.add("Step " + step + ": " + PICKUP + " Package at the intersection of "
+            instructions.add("Step "+ step + ": "+ PICKUP + " Package at the intersection of "
                     + this.path.get(count).getIntersectionName());
+            pickUp = this.path.get(count+1);
+            change = true;
         } else if (count == this.getBlocksBetweenPickupandDropoff()+this.getBlocksBetweenHomeandPickup()) {
-            instructions.add("Step " + step + ": " + DELIVER + " Package at the intersection of "
+            instructions.add("Step " + step + ": Go " + lastDir.toString() + " to " + DELIVER + " Package at the intersection of "
                     + this.path.get(count).getIntersectionName());
+            pickUp = this.path.get(count+1);
+            change = true;
         }else {
+            change = false;
             return step;
         }
         return step+1;
