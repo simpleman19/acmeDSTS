@@ -52,7 +52,7 @@ public class Ticket implements PersistableEntity {
     @Column(name = "RETURN_TIME")
     private LocalDateTime returnTime;
     @Column(name = "EST_RETURN_TIME")
-    private LocalDateTime estimateReturnTime;
+    private LocalDateTime estimatedReturnTime;
     @Column(name = "COURIER_BONUS")
     private BigDecimal bonus;
     @Transient
@@ -139,11 +139,15 @@ public class Ticket implements PersistableEntity {
           this.estimatedDepartureTime = LocalDateTime.now();
       }
 
+
       timeToTravel = path.getBlocksBetweenHomeandPickup() / bphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
 
+      timeToTravel = path.getBlocksBetweenPickupandDropoff() / bphCouriers;
+      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*(timeToTravel +5)), ChronoUnit.MINUTES);
+    
       timeToTravel = path.getBlocksBetweenDropoffandHome() / bphCouriers;
-      this.estimateReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
+      this.estimatedReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
 
     }
 
@@ -280,9 +284,22 @@ public class Ticket implements PersistableEntity {
         this.updatePath();
     }
 
-    public LocalDateTime getEstimateReturnTime() {
-        return estimateReturnTime;
+    public LocalDateTime getEstimatedReturnTime() {
+        return estimatedReturnTime;
     }
+    
+    public LocalDateTime getReturnTime() {
+      return returnTime;
+    }
+  
+    public void setReturnTime(LocalDateTime returnTime) {
+        this.returnTime = returnTime;
+    }
+    
+    public void setEstimatedReturnTime(LocalDateTime estimatedReturnTime) {
+      this.estimatedReturnTime = estimatedReturnTime;
+  }
+  
 
     public BigDecimal getBonus() {
         return bonus;

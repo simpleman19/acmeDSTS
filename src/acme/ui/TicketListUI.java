@@ -259,24 +259,23 @@ public class TicketListUI extends AcmeBaseJPanel {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Print");
+                System.out.println("Print");
                 int modelRow = Integer.valueOf(e.getActionCommand());
                 for (Map.Entry<UUID, Ticket> ticket : company.getTickets().entrySet()) {
-                    System.out.print("Compelete");
                     if (ticket.getValue().getId().equals(table.getModel().getValueAt(modelRow, ID_COL))) {
                       //print 
                       try {
-                        
-                        Document document = new Document();
-                        PdfWriter.getInstance(document, new FileOutputStream(System.getProperty("user.home")+"/Downloads/" + ticket.getValue().getClerk() +".pdf"));
-                        document.open();
-                        String directions="";
-                        for(String temp : ticket.getValue().getDeliveryInstructions())
-                        {
-                          directions = directions + "\n" + temp;
-                        }
-                        document.add(new Paragraph(directions));
-                        document.close();
+                            Document document = new Document();
+                            PdfWriter.getInstance(document, new FileOutputStream(System.getProperty("user.home")+"/Downloads/" + ticket.getValue().getPackageID() +".pdf"));
+                            document.open();
+                            String directions="";
+                            for(String temp : ticket.getValue().getDeliveryInstructions())
+                            {
+                              directions = directions + "\n" + temp;
+                            }
+                            System.out.println("here");
+                            document.add(new Paragraph(directions));
+                            document.close();
                       }
                       catch(Exception printError)
                       {
@@ -293,9 +292,9 @@ public class TicketListUI extends AcmeBaseJPanel {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
-                //Code here
                 int modelRow = Integer.valueOf(e.getActionCommand());
-                System.out.print("Compelete");
+                System.out.println("Compelete");
+                Ticket ticket = company.getTickets().get(table.getModel().getValueAt(modelRow, ID_COL));
                 getAcmeUI().ticketComplete(company.getTickets().get(table.getModel().getValueAt(modelRow, ID_COL)));
             }
         };
@@ -329,6 +328,7 @@ public class TicketListUI extends AcmeBaseJPanel {
        comboBox.addItem("None");
        Map<String, Integer> courierMap = new HashMap<String, Integer>();
        Map<String, Courier> courierMapForTickets = new HashMap<String, Courier>();
+       Map<String, Integer> courierMapForCreatingCouriers = new HashMap<String, Integer>();
        int count = 1;
        for(Map.Entry<UUID, Courier> courier: company.getCouriers().entrySet())
        {
@@ -336,6 +336,7 @@ public class TicketListUI extends AcmeBaseJPanel {
          comboBox.addItem(courierName);
          courierMap.put(courierName, count);
          courierMapForTickets.put(courierName,courier.getValue());
+         courierMapForCreatingCouriers.put(courierName, courier.getValue().getCourierNumber());
          count++;
        }
        
@@ -357,9 +358,19 @@ public class TicketListUI extends AcmeBaseJPanel {
                          int col = e.getColumn();
                          System.out.println("Update " + row + "x" + col + " = " + model.getValueAt(row, col));
 
-                         Ticket ticket = company.getTickets().get(table.getModel().getValueAt(row, ID_COL));
-                         ticket.setCourier(courierMapForTickets.get(model.getValueAt(row, col)));
-                         ticket.update();
+  
+                         if(company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).getCourier() != null) {
+                           company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).setCourier(courierMapForTickets.get(model.getValueAt(row, col)));   
+                         }
+                         else {
+                           Courier temp = new Courier();
+                           temp.setActive(courierMapForTickets.get(model.getValueAt(row, col)).isActive());
+                           temp.setCourierNumber(courierMapForTickets.get(model.getValueAt(row, col)).getCourierNumber());
+                           temp.setName(courierMapForTickets.get(model.getValueAt(row, col)).getName());
+                           company.getTickets().get(table.getModel().getValueAt(row, ID_COL)).setCourier(temp);
+
+                         }
+                         company.update();
                          System.out.println("Success");
                      }
                      break;
@@ -387,8 +398,7 @@ public class TicketListUI extends AcmeBaseJPanel {
                row.add(tickets.getValue().getPackageID());
                row.add(comboBox.getItemAt(comboBox.getSelectedIndex()));
                row.add(tickets.getValue().getEstimatedDepartureTime().format(formatter));
-               //Used delivery time
-               row.add(tickets.getValue().getEstimateReturnTime().format(formatter));
+               row.add(tickets.getValue().getEstimatedReturnTime().format(formatter));
                row.add(cancel);
                row.add(comp);
                row.add(print);
@@ -397,6 +407,7 @@ public class TicketListUI extends AcmeBaseJPanel {
            }
 
        }
+       
 
         //display buttons
         ButtonColumn buttonPrint = new ButtonColumn(table, printAction, PRINT_COL);
@@ -436,39 +447,7 @@ public class TicketListUI extends AcmeBaseJPanel {
       acme.setPanel(new TicketListUI(false));
       acme.getCompany().setCurrentUser(new User());
   }
-        
-    public void getTestingData()
-    {
-      Courier tempCourier = new Courier();
-      tempCourier.setCourierNumber(4);
-      tempCourier.setName("Emily");
-      this.company.addCourier(tempCourier);
-      Ticket tempTicket = new Ticket();
-      tempTicket.setCourier(tempCourier);
-      tempTicket.setDepartureTime(LocalDateTime.now());
-      tempTicket.setDeliveryTime(null);
-      Path tempPath = new Path();
-      MapIntersection tempIntersection = new MapIntersection();
-      Road tempRoad = new Road();
-      tempRoad.setName("5");
-      tempIntersection.setEWroad(tempRoad);
-      tempRoad.setName("A");
-      tempIntersection.setNSroad(tempRoad);
-      MapIntersection tempIntersection2 = new MapIntersection();
-      Road tempRoad2 = new Road();
-      tempRoad2.setName("3");
-      tempIntersection2.setEWroad(tempRoad2);
-      tempRoad2.setName("C");
-      tempIntersection2.setNSroad(tempRoad2);
-      ArrayList<MapIntersection> listOfIntersections = new ArrayList();
-      listOfIntersections.add(tempIntersection);
-      listOfIntersections.add(tempIntersection2);
-      tempPath.setPath(listOfIntersections);
-      tempTicket.setPath(tempPath);
-      this.company.getTickets().put(null, tempTicket);
-    }
-    
-
+       
 }
 
 

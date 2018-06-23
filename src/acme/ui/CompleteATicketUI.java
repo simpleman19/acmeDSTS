@@ -148,8 +148,7 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
   //This is just to go back
   public void clickedCancel()
   {
-    //TO DO
-    //go to TicketList Page
+    this.getAcmeUI().ticketList(false);
   }
   
   public static void main(String [] args) {
