@@ -161,7 +161,7 @@ public class Map {
                                     || intersections[cols][rows + 1].equalsIgnoreCase(NS_BI)) {
                                 nsRoad.setDirection(Direction.SOUTH);
                             } else {
-                                nsRoad.setDirection(null);
+                                nsRoad.setDirection(Direction.NONE);
                             }
                             break;
                         case S_BORDER:
@@ -169,7 +169,7 @@ public class Map {
                                     || intersections[cols][rows - 1].equalsIgnoreCase(NS_BI)) {
                                 nsRoad.setDirection(Direction.NORTH);
                             } else {
-                                nsRoad.setDirection(null);
+                                nsRoad.setDirection(Direction.NONE);
                             }
                             break;
                         default: // this must be a bidirectional if nothing else fits
@@ -194,7 +194,7 @@ public class Map {
                                     || intersections[cols - 1][rows].equalsIgnoreCase(EW_BI)) {
                                 ewRoad.setDirection(Direction.WEST);
                             } else {
-                                ewRoad.setDirection(null);
+                                ewRoad.setDirection(Direction.NONE);
                             }
                             break;
                         case W_BORDER:
@@ -202,7 +202,7 @@ public class Map {
                                     || intersections[cols + 1][rows].equalsIgnoreCase(EW_BI)) {
                                 ewRoad.setDirection(Direction.EAST);
                             } else {
-                                ewRoad.setDirection(null);
+                                ewRoad.setDirection(Direction.NONE);
                             }
                             break;
                         default:
@@ -345,7 +345,7 @@ public class Map {
                 }
             }
         }
-        return null;
+        return Direction.NONE;
     }
 
     public int [] getLocation(MapIntersection inter) {

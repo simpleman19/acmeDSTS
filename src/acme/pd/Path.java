@@ -54,18 +54,22 @@ public class Path {
     public ArrayList<String> getDeliveryInstructions(Company company) {
         ArrayList<String> instructions = new ArrayList<>();
         int step, blocks;
-        if (this.path != null && this.path.size() > 0) {
+        if (this.path != null && this.path.size() > 2) {
             Direction lastDir = company.getMap().getTravelDirection(this.path.get(0), this.path.get(1));
             Direction dir = null;
             step = 1;
             for (int i = 1; i < this.path.size() - 1; i++) {
                 blocks = 1;
-                dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i + 1));
+                MapIntersection i1 = this.path.get(i);
+                MapIntersection i2 = this.path.get(i+1);
+                dir = company.getMap().getTravelDirection(i1, i2);
                 step = checkForInteraction(i, step, instructions);
-                while (dir.toString().equalsIgnoreCase(lastDir.toString()) && i < this.path.size() - 3) {
+                while (dir.toString().equalsIgnoreCase(lastDir.toString()) && i < this.path.size() - 2) {
                     i++;
                     blocks++;
-                    dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i + 1));
+                    i1 = this.path.get(i); 
+                    i1 = this.path.get(i+1);
+                    dir = company.getMap().getTravelDirection(i1, i2);
                     step = checkForInteraction(i, step, instructions);
                 }
 
