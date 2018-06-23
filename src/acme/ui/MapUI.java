@@ -173,7 +173,7 @@ public class MapUI extends AcmeBaseJPanel {
     yPos = 35;
     JLabel lblLegend = new JLabel("Legend");
     lblLegend.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-    lblLegend.setBounds(xPos, yPos, 71, 27);
+    lblLegend.setBounds(xPos, yPos, 80, 27);
     lblLegend.setHorizontalAlignment(SwingConstants.CENTER);
     add(lblLegend);
     xPos = xPos-10;
@@ -191,7 +191,7 @@ public class MapUI extends AcmeBaseJPanel {
     add(openButton);
     yPos = yPos + 55;
     
-    JButton homeButton = new JButton("Home Office");
+    JButton homeButton = new JButton("Home");
     homeButton.setBounds(xPos, yPos, 100, 50);
     homeButton.setBackground(Color.YELLOW);
     homeButton.setOpaque(true);

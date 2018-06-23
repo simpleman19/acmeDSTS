@@ -59,7 +59,7 @@ public class AcmeUI extends JFrame {
         this.buildMenu();
 
         setVisible(true);
-        setSize(550, 550);
+        setSize(650, 550);
         setLocationRelativeTo(null);
 
         loginScreen();
