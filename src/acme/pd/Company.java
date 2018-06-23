@@ -72,7 +72,7 @@ public class Company implements PersistableEntity {
         File mapFile = new File(mapFilename);
         getMap().exportMap(mapFile);
     }
-    
+
     public UUID getId() {
         return id;
     }
@@ -103,7 +103,7 @@ public class Company implements PersistableEntity {
 
     public java.util.Map<UUID, Ticket> getTickets() {
         return tickets;
-    }
+    } 
 
     public void addTicket(Ticket ticket) {
 		tickets.put(ticket.getId(), ticket);
