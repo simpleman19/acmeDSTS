@@ -143,11 +143,9 @@ public class Ticket implements PersistableEntity {
       timeToTravel = path.getBlocksBetweenHomeandPickup() / bphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
 
-      timeToTravel = path.getBlocksBetweenPickupandDropoff() / bphCouriers;
-      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*(timeToTravel +5)), ChronoUnit.MINUTES);
-    
       timeToTravel = path.getBlocksBetweenDropoffandHome() / bphCouriers;
-      this.estimatedReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
+      this.estimatedReturnTime = this.estimatedPickupTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES)
+              .plus((long)(60*(timeToTravel +5)), ChronoUnit.MINUTES);
 
       this.deliveryTime = null;
     }
