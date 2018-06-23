@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,7 +23,7 @@ private JPanel panel;
 private JPanel panelForm;
 private JPanel buttonPanel;
 private JButton saveButton;
-private JButton exitButton;
+private JButton cancelButton;
 private GridBagConstraints grid;
 
 private JTextField company_name;
@@ -127,7 +128,7 @@ private Company comp;
         block_rate_name = new JTextField (10);
         panelForm.add(block_rate_name, grid);
         ++grid.gridy;
-        block_rate_name.setText(Double.toString(getCompany().getBlocksPerMile()));
+        block_rate_name.setText(getCompany().getBlockBillingRate().toString());
     }
 
     private void buildButtonPanel()
@@ -138,33 +139,50 @@ private Company comp;
         buttonPanel.setBackground(lightBlue);
 
         saveButton = new JButton("Save");
-        exitButton = new JButton("Cancel");
+        cancelButton = new JButton("Cancel");
 
         buttonPanel.add(saveButton);
-        buttonPanel.add(exitButton);
+        buttonPanel.add(cancelButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
 
         // Register the action listeners
-        ExitButtonListner exit = new ExitButtonListner();
-        exitButton.addActionListener(exit);
+        CancelButtonListener exit = new CancelButtonListener();
+        cancelButton.addActionListener(exit);
 
         SaveButtonListner save = new SaveButtonListner();
         saveButton.addActionListener(save);
 
     }
 
+    private void updateCompany() {
+	    Company c = getCompany();
+
+        c.setName(company_name.getText());
+
+        c.setBonus(new BigDecimal(bonus_amount.getText()));
+
+        c.setCourierMilesPerHour(Double.parseDouble(courier_miles.getText()));
+
+        c.setBlocksPerMile(Double.parseDouble(blocks_per_mile.getText()));
+
+        c.setLatenessMarginMinutes(Integer.parseInt(lateness_margin.getText()));
+
+        c.setFlatBillingRate(new BigDecimal(flat_billing.getText()));
+
+        c.setBlockBillingRate(new BigDecimal(block_rate_name.getText()));
+    }
 
 
-    private class ExitButtonListner implements ActionListener
+
+    private class CancelButtonListener implements ActionListener
     {
       
         @Override
         public void actionPerformed(ActionEvent e)
         {
 
-            System.exit(0);
-
+            getAcmeUI().ticketList(false);
         }
 
     }
@@ -175,8 +193,9 @@ private Company comp;
         @Override
         public void actionPerformed(ActionEvent e)
         {
+            updateCompany();
             getCompany().update();
-            getAcmeUI().ticketList();
+            getAcmeUI().ticketList(false);
         }
     }
 
