@@ -4,7 +4,8 @@ public enum Direction {
     WEST("West"),
     NORTH("North"),
     EAST("East"),
-    SOUTH("South");
+    SOUTH("South"),
+    NONE("None");
 
     Direction(String name) {
         this.displayValue = name;
