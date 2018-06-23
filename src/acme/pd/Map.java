@@ -336,9 +336,9 @@ public class Map {
             } else if (startLoc[1] == endLoc[1]) {
                 if (start.getNSroad().isBidirectional()) {
                     if (startLoc[1] > endLoc[1]) {
-                        return Direction.SOUTH;
-                    } else {
                         return Direction.NORTH;
+                    } else {
+                        return Direction.SOUTH;
                     }
                 } else {
                     return start.getNSroad().getDirection();

@@ -1,6 +1,7 @@
 package acme.pd;
 
 import acme.ui.AcmeUI;
+import org.hibernate.cache.spi.DirectAccessRegion;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,19 +60,32 @@ public class Path {
     public ArrayList<String> getDeliveryInstructions(Company company) {
         ArrayList<String> instructions = new ArrayList<>();
         if (this.path != null && this.path.size() > 0) {
-            for (int i = 0; i < this.path.size() - 1; i++) {
-                Direction dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i+1));
-                Road road = null;
-                if (dir != null) {
-                    if (dir == Direction.EAST || dir == Direction.WEST) {
-                        road = this.path.get(i).getEWroad();
-                    } else {
-                        road = this.path.get(i).getNSroad();
-                    }
-                    instructions.add("Go " + dir.toString() + " on " + road.getName() + " to "
-                            + this.path.get(i+1).getIntersectionName());
+            Direction lastDir = company.getMap().getTravelDirection(this.path.get(0), this.path.get(1));
+            Direction dir = null;
+            for (int i = 1; i < this.path.size() - 1; i++) {
+                dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i+1));
+                while (dir.toString().equalsIgnoreCase(lastDir.toString()) && i < this.path.size() - 2) {
+                    i++;
+                    dir = company.getMap().getTravelDirection(this.path.get(i), this.path.get(i+1));
                 }
+                Road road = null;
+                if (lastDir == Direction.EAST || lastDir == Direction.WEST) {
+                    road = this.path.get(i).getEWroad();
+                } else {
+                    road = this.path.get(i).getNSroad();
+                }
+                instructions.add("Go " + lastDir.toString() + " on " + road.getName() + " to "
+                        + this.path.get(i).getIntersectionName());
+                lastDir = dir;
             }
+            Road road = null;
+            if (lastDir == Direction.EAST || lastDir == Direction.WEST) {
+                road = this.path.get(this.path.size() - 1).getEWroad();
+            } else {
+                road = this.path.get(this.path.size() - 1).getNSroad();
+            }
+            instructions.add("Go " + dir.toString() + " on " + road.getName() + " to "
+                    + this.path.get(this.path.size() - 1).getIntersectionName());
             instructions.add("You have arrived at " + this.path.get(this.path.size() - 1).getIntersectionName());
         }
         return instructions;
