@@ -103,7 +103,7 @@ public class MapUI extends AcmeBaseJPanel {
     {
       //configure positioning
       xPos=xPos+55;
-      yPos = 35;
+      yPos = 35;   
       
       //this is the drawing for the labels for the north and south road
       //it was convenient to just do it in this loop
@@ -138,8 +138,8 @@ public class MapUI extends AcmeBaseJPanel {
         mapButtons[x][y].setBounds(xPos, yPos, 50, 50);
         
         //color code the intersections 
-        if(map.getMap()[y][x].isClosed(LocalDate.now()))
-        {
+        if(map.getMap()[y][x].isClosed(LocalDate.now()) || map.getMap()[y][x].isClosedIndefinitely())
+        { 
           mapButtons[x][y].setBackground(Color.RED);
           mapButtons[x][y].setOpaque(true);
         }

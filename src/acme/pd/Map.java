@@ -312,7 +312,7 @@ public class Map {
 					return map[i][j];
 			}
 		}
-		return null;
+		return null;   
 	}
 
     private MapIntersection findIntersection(String nsRoad, String ewRoad) {
@@ -514,6 +514,13 @@ public class Map {
             intersections[x][y] = new MapIntersectionInfo(new MapIntersection(), Integer.MAX_VALUE, x, y);
             intersections[x][y].intersection.setEWroad(map[x][y].getEWroad());
             intersections[x][y].intersection.setNSroad(map[x][y].getNSroad());
+            if(map[x][y].getClosedTo() != null && map[x][y].getClosedFrom() != null)
+            {
+              intersections[x][y].intersection.setClosedTo((map[x][y].getClosedTo()));
+              intersections[x][y].intersection.setClosedFrom(map[x][y].getClosedFrom());
+            }
+            intersections[x][y].intersection.setClosedIndefinitely(map[x][y].isClosedIndefinitely());
+            
             notVisitedIntersections.add(intersections[x][y]);
             if(map[x][y].getIntersectionName().equals(pickUp.getIntersectionName()))
             {
@@ -581,7 +588,7 @@ public class Map {
                       currentIntersection.intersection.canTravelDirection(dir))
               {
                 MapIntersectionInfo intersectionLookingAt = intersections[currentIntersection.xVal + xFactor][currentIntersection.yVal + yFactor];
-
+                
                 if(intersectionLookingAt.intersection.isClosedIndefinitely() != true
                         && intersectionLookingAt.intersection.isClosed(LocalDate.now()) != true)
                 {
