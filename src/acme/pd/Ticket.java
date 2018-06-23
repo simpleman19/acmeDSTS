@@ -85,7 +85,7 @@ public class Ticket implements PersistableEntity {
     }
 
     public ArrayList<String> getDeliveryInstructions() {
-        return path.getDeliveryInstructions(company);
+        return this.getPath().getDeliveryInstructions(company);
     }
 
     public UUID getId() {
