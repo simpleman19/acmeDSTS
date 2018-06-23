@@ -101,8 +101,13 @@ public class Ticket implements PersistableEntity {
                     this.getPickupCustomerLocation(this.company.getMap()),
                     this.getDeliveryCustomerLocation(this.company.getMap())
             );
-            calcEstimatedTimes();
-            calculateQuote();
+            if (this.deliveryTime == null) {
+                calcEstimatedTimes();
+            }
+            if (this.quotedPrice == null) {
+                calculateQuote();
+            }
+
         } else {
             this.path = null;
         }
@@ -143,11 +148,10 @@ public class Ticket implements PersistableEntity {
       timeToTravel = path.getBlocksBetweenHomeandPickup() / bphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
 
-      timeToTravel = path.getBlocksBetweenPickupandDropoff() / bphCouriers;
-      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*(timeToTravel +5)), ChronoUnit.MINUTES);
-    
+      double timeToTravelPD = path.getBlocksBetweenPickupandDropoff() / bphCouriers;
       timeToTravel = path.getBlocksBetweenDropoffandHome() / bphCouriers;
-      this.estimatedReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
+      this.estimatedReturnTime = this.estimatedPickupTime.plus((long)(60*(timeToTravel)) + 5, ChronoUnit.MINUTES)
+              .plus((long)(60*(timeToTravelPD) + 5), ChronoUnit.MINUTES);
 
       this.deliveryTime = null;
     }
@@ -306,9 +310,7 @@ public class Ticket implements PersistableEntity {
     }
 
     public Path getPath() {
-        if (path == null) {
-            updatePath();
-        }
+        updatePath();
         return path;
     }
 
