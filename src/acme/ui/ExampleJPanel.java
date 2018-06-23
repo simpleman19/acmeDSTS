@@ -25,7 +25,7 @@ public class ExampleJPanel extends AcmeBaseJPanel {
         this.setLayout(new FlowLayout());
 
         this.add(new JLabel("Company Name: "));
-        companyName = new JLabel(this.getCompany().getName());
+        companyName = new JLabel(this.getCompany().getName()); 
         this.add(companyName);
         JButton changeName = new JButton("Change Name");
         changeName.addActionListener(actionEvent -> newName());
@@ -36,7 +36,7 @@ public class ExampleJPanel extends AcmeBaseJPanel {
             login.addActionListener(actionEvent -> {
                 this.getCompany().setCurrentUser(new User());
                 this.getCompany().getCurrentUser().setAdmin(false);
-                this.getAcmeUI().ticketList();
+                this.getAcmeUI().ticketList(false);
             });
             this.add(login);
 
@@ -44,7 +44,7 @@ public class ExampleJPanel extends AcmeBaseJPanel {
             loginA.addActionListener(actionEvent -> {
                 this.getCompany().setCurrentUser(new User());
                 this.getCompany().getCurrentUser().setAdmin(true);
-                this.getAcmeUI().ticketList();
+                this.getAcmeUI().ticketList(false);
             });
             this.add(loginA);
         }

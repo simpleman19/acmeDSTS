@@ -126,7 +126,7 @@ public class UserUI extends AcmeBaseJPanel {
             User user = User.authenticate(username, password);
             if (user != null) {
                 this.getCompany().setCurrentUser(user);
-                this.getAcmeUI().ticketList();
+                this.getAcmeUI().ticketList(false);
             }
         }
 

@@ -52,7 +52,7 @@ public class Ticket implements PersistableEntity {
     @Column(name = "RETURN_TIME")
     private LocalDateTime returnTime;
     @Column(name = "EST_RETURN_TIME")
-    private LocalDateTime estimateReturnTime;
+    private LocalDateTime estimatedReturnTime;
     @Column(name = "COURIER_BONUS")
     private BigDecimal bonus;
     @Transient
@@ -81,12 +81,11 @@ public class Ticket implements PersistableEntity {
         this.setEstimatedDeliveryTime(LocalDateTime.now().plusHours(6));
 
         this.note = "";
-        updatePath();
-
+ 
     }
 
     public ArrayList<String> getDeliveryInstructions() {
-        return path.getDeliveryInstructions(company);
+        return this.getPath().getDeliveryInstructions(company);
     }
 
     public UUID getId() {
@@ -97,7 +96,7 @@ public class Ticket implements PersistableEntity {
         // Only update if pickup and delivery are set
         if (this.getPickupCustomer() != null
                 && this.getDeliveryCustomer() != null
-                && this.getDeliveryTime() != null) {
+                && this.getEstimatedDeliveryTime() != null) {
             this.path = company.getMap().getPath(
                     this.getPickupCustomerLocation(this.company.getMap()),
                     this.getDeliveryCustomerLocation(this.company.getMap())
@@ -140,12 +139,17 @@ public class Ticket implements PersistableEntity {
           this.estimatedDepartureTime = LocalDateTime.now();
       }
 
+
       timeToTravel = path.getBlocksBetweenHomeandPickup() / bphCouriers;
       this.estimatedPickupTime = this.estimatedDepartureTime.plus((long)(60*timeToTravel), ChronoUnit.MINUTES);
 
+      timeToTravel = path.getBlocksBetweenPickupandDropoff() / bphCouriers;
+      this.estimatedDeliveryTime = this.estimatedPickupTime.plus((long)(60*(timeToTravel +5)), ChronoUnit.MINUTES);
+    
       timeToTravel = path.getBlocksBetweenDropoffandHome() / bphCouriers;
-      this.estimateReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
+      this.estimatedReturnTime = this.estimatedDeliveryTime.plus((long)(60*(timeToTravel + 5)), ChronoUnit.MINUTES);
 
+      this.deliveryTime = null;
     }
 
     public Company getCompany() {
@@ -210,6 +214,7 @@ public class Ticket implements PersistableEntity {
     public String getPackageID() {
         return packageID;
     }
+
 
     private void generatePackageId() {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMdd-hhmmss");
@@ -278,6 +283,23 @@ public class Ticket implements PersistableEntity {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
         this.updatePath();
     }
+
+    public LocalDateTime getEstimatedReturnTime() {
+        return estimatedReturnTime;
+    }
+    
+    public LocalDateTime getReturnTime() {
+      return returnTime;
+    }
+  
+    public void setReturnTime(LocalDateTime returnTime) {
+        this.returnTime = returnTime;
+    }
+    
+    public void setEstimatedReturnTime(LocalDateTime estimatedReturnTime) {
+      this.estimatedReturnTime = estimatedReturnTime;
+  }
+  
 
     public BigDecimal getBonus() {
         return bonus;
