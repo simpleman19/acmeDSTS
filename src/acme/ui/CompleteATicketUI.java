@@ -50,8 +50,12 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
     JLabel lblActPackageId = new JLabel(this.ticketToComplete.getPackageID());
     lblActPackageId.setBounds(125, 59, 150, 16);
     add(lblActPackageId);
-    
-    JLabel lblActCourier = new JLabel(this.ticketToComplete.getCourier().getName() + "");
+
+    String courierString = "";
+    if (this.ticketToComplete.getCourier() != null) {
+      this.ticketToComplete.getCourier().getName();
+    }
+    JLabel lblActCourier = new JLabel(courierString + "");
     lblActCourier.setBounds(125, 87, 150, 16);
     add(lblActCourier);
     //--------------------------------------------------------------
@@ -124,8 +128,8 @@ public class CompleteATicketUI extends AcmeBaseJPanel {
         this.ticketToComplete.setPickupTime(this.dateTimePickerPickup.getDateTimeStrict());
         this.ticketToComplete.setDeliveryTime(this.dateTimePickerDelivery.getDateTimeStrict());
         
-        //TO DO
-        //go to TicketList Page
+        this.ticketToComplete.update();
+        this.getAcmeUI().ticketList(false);
       }
       else
       {

@@ -11,11 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.io.File;
+import java.util.Set;
+import java.util.TreeSet;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class Map {
     private MapIntersection[][] map;
@@ -40,13 +39,9 @@ public class Map {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
     public Map(File file) {
-
         importMap(file);
-        // TODO call export function on shutdown
-        exportMap(file);
-        // TODO export map
     }
-
+    
     public void importMap(File file) {
         // this gives you a 2-dimensional array of strings
         List<List<String>> lines = new ArrayList<>();
@@ -243,9 +238,85 @@ public class Map {
     public MapIntersection[][] getMap() {
         return map;
     }
+    
+    public Set<Road> getRoads() {
+    	Set<Road> roads = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			roads.add(map[i][j].getEWroad());
+    			roads.add(map[i][j].getNSroad());
+    		}
+    	}
+    	return roads;
+    }
+    
+    public Road getRoadByName(String roadName) {
+		return getRoads().stream().filter(road -> road.getName().equalsIgnoreCase(roadName)).findFirst().get();
+	}
+    
+    public Set<Road> getStreets() {
+    	Set<Road> roads = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			roads.add(map[i][j].getEWroad());
+    		}
+    	}
+    	return roads;
+    }
+    
+    public Set<Road> getAvenues() {
+    	Set<Road> roads = new TreeSet<Road>();
+    	for (int i = 0; i < map.length; i++) {
+    		for (int j = 0; j < map[i].length; j++) {
+    			roads.add(map[i][j].getNSroad());
+    		}
+    	}
+    	return roads;
+    }
 
+	public MapIntersection getIntersection(Road one, Road another) {
+		if (one == null || another == null)
+			System.out.println("Could not find road");
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				Road lookEW = map[i][j].getEWroad();
+				Road lookNS = map[i][j].getNSroad();
+				
+				if ((map[i][j].getEWroad().equals(one) && map[i][j].getNSroad().equals(another)) ||
+						(map[i][j].getEWroad().equals(another) && map[i][j].getNSroad().equals(one)))
+					return map[i][j];
+			}
+		}
+		return null;
+	}
+    
     public MapIntersection getHomeBase() {
         return homeBase;
+    }
+
+    public MapIntersection getIntersection(Customer customer) {
+        return this.getIntersection(customer.getAvenueName(), customer.getStreetName());
+    }
+
+    public MapIntersection getIntersection(String road, String road2) {
+        MapIntersection intersection = findIntersection(road, road2);
+        if (intersection == null) {
+            intersection = findIntersection(road2, road);
+        }
+        return intersection;
+    }
+
+    private MapIntersection findIntersection(String nsRoad, String ewRoad) {
+        for (int i = 0; i < map.length; i++) {
+            if (map[0][i].getNSroad().getName().equalsIgnoreCase(nsRoad)) {
+                for (int j = 0; j < map[0].length; j++) {
+                    if (map[j][i].getEWroad().getName().equalsIgnoreCase(ewRoad)) {
+                        return map[j][i];
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private void setHomeBase(int NS, int EW) {
@@ -274,7 +345,7 @@ public class Map {
         } // end for rows
     }
 
-    private void exportMap(File file) {
+    void exportMap(File file) {
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(file));
             StringBuilder sb = new StringBuilder();
@@ -350,23 +421,21 @@ public class Map {
         Path pathDir = new Path();
         ArrayList<MapIntersection> pathToBe = new ArrayList<MapIntersection>();
         int totalBlocks = 0;
+        
         pathToBe.addAll(pathDir1.getPath());
         totalBlocks = totalBlocks + pathDir1.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenHomeandPickup(pathDir1.getBlocksBetweenPickupandDropoff());
+        
         pathToBe.addAll(pathDir2.getPath());
         totalBlocks = totalBlocks + pathDir2.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenPickupandDropoff(pathDir2.getBlocksBetweenPickupandDropoff());
+        
         pathToBe.addAll(pathDir3.getPath());
         totalBlocks = totalBlocks + pathDir3.getBlocksBetweenPickupandDropoff();
         pathDir.setBlocksBetweenHomeandDropoff(totalBlocks);
+        pathDir.setBlocksBetweenDropoffandHome(pathDir3.getBlocksBetweenPickupandDropoff());
         pathDir.setPath(pathToBe);
 
-        /*System.out.println("----Directions-----");
-
-        for(MapIntersection temp : pathDir.getPath())
-        {
-          System.out.println(temp.getIntersectionName());
-        }*/
         return pathDir;
       }
 
@@ -642,7 +711,7 @@ public class Map {
 
         String date = "2018-06-11 06:30";
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Delivery: " + date);
@@ -701,7 +770,7 @@ public class Map {
 
         date = "2018-06-11 06:30";
         format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Pickup: " + date);
@@ -759,7 +828,7 @@ public class Map {
 
         date = "2018-06-11 06:30";
         format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        ticket.setDeliveryTime(LocalDateTime.parse(date, format));
+        ticket.setEstimatedDeliveryTime(LocalDateTime.parse(date, format));
 
 
         System.out.println("Date and Time Wanted For Delivery: " + date);

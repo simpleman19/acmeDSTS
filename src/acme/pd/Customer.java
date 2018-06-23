@@ -1,14 +1,17 @@
 package acme.pd;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.NoResultException;
 
+import acme.data.HibernateAdapter;
 import acme.data.PersistableEntity;
 @Entity(name = "CUSTOMER")
 public class Customer implements PersistableEntity {
@@ -16,7 +19,6 @@ public class Customer implements PersistableEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "ID")
     private UUID id;
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "NUMBER")
     private int customerNumber;
 	@Column(name = "NAME")
@@ -27,19 +29,13 @@ public class Customer implements PersistableEntity {
     private String streetName;
 	@Column(name = "AVENUE_NAME")
     private String avenueName;
-	@Transient
-	private MapIntersection intersection;
-
+	
     public UUID getId() {
-        // TODO fix with database
-        /*if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }*/
         return id;
     }
 
     public int getCustomerNumber() {
-        return customerNumber;
+        return this.customerNumber;
     }
 
     public void setCustomerNumber(int customerNumber) {
@@ -78,12 +74,25 @@ public class Customer implements PersistableEntity {
         this.avenueName = avenueName;
     }
 
-    public MapIntersection getIntersection() {
-        return intersection;
+    public MapIntersection getIntersection(Map map) {
+    	Road a = map.getRoadByName(this.streetName);
+    	Road b =  map.getRoadByName(this.avenueName);
+        return map.getIntersection(a,b);
     }
 
-    public void setIntersection(MapIntersection intersection) {
-        this.intersection = intersection;
+    public static int getNextCustomerNumber() {
+        try {           
+            EntityManager em = HibernateAdapter.getEntityManager();
+            List<Customer> cus = em.createQuery(
+                    "select c " +
+                    "from CUSTOMER c " +
+                    "order by NUMBER DESC", Customer.class
+                ).getResultList();
+            
+            return cus.get(0).getCustomerNumber()+1;
+        } catch (NoResultException e) {
+            return 1;
+        }
     }
 
     public String toString() {

@@ -154,7 +154,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 0), 0, 0));
 
         newCustomer.setText("New Customer");
-        newCustomer.addActionListener((e) -> newCustomerAction());
+        newCustomer.addActionListener((e) -> newCustomerAction("pickup"));
         pickupPanel.add(newCustomer, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -220,7 +220,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
                 new Insets(0, 0, 5, 0), 0, 0));
 
         newCustomer2.setText("New Customer");
-        newCustomer2.addActionListener((e) -> newCustomerAction());
+        newCustomer2.addActionListener((e) -> newCustomerAction("delivery"));
         dropOffPanel.add(newCustomer2, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
@@ -236,7 +236,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         dateSettings.setAllowEmptyDates(false);
         timeSettings.setAllowEmptyTimes(false);
         dropOffPicker = new DateTimePicker(dateSettings, timeSettings);
-        dropOffPicker.setDateTimePermissive(this.ticket.getDeliveryTime());
+        dropOffPicker.setDateTimePermissive(this.ticket.getEstimatedDeliveryTime());
         dropOffPicker.addDateTimeChangeListener((e) -> updateTicket());
         dropOffPanel.add(dropOffPicker, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -393,15 +393,31 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         // Getting an unsaved transient instance error
         ticket.create();
         c.addTicket(ticket);
-        this.getAcmeUI().courierList();
+        c.update();
+        this.getAcmeUI().ticketList(false);
     }
 
     private void cancelButton() {
         this.getAcmeUI().courierList();
     }
 
-    private void newCustomerAction() {
-        this.getAcmeUI().customerAddUpdate(null);
+    private void newCustomerAction(String fieldToUpdate) {
+    	this.getAcmeUI().setStoredPanel(this);
+    	AcmeUI acmeUI = this.getAcmeUI();
+        this.getAcmeUI().customerAddUpdate(null, c -> {
+        	acmeUI.setPanel(acmeUI.getStoredPanel());
+        	switch(fieldToUpdate) {
+        	case "pickup":
+        		ticket.setPickupCustomer(c);
+        		break;
+        	case "delivery":
+        		ticket.setDeliveryCustomer(c);
+        		break;
+        	default:
+        		throw new IllegalArgumentException("Invalid field to update: " + fieldToUpdate);
+        	}
+        	acmeUI.getStoredPanel().buildPanel();
+        });
     }
 
     private void updateTicket() {
@@ -422,7 +438,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
         }
 
         // Drop off date time
-        this.ticket.setDeliveryTime(dropOffPicker.getDateTimeStrict());
+        this.ticket.setEstimatedDeliveryTime(dropOffPicker.getDateTimeStrict());
 
         // Save Note Text
         this.ticket.setNote(notesTextArea.getText());
@@ -469,7 +485,6 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
 
     public static void main(String [] args) {
         AcmeUI acme = new AcmeUI();
-        acme.getCompany().generateStuff();
         acme.getCompany().setCurrentUser((User) acme.getCompany().getUsers().values().toArray()[0]);
         acme.setPanel(new TicketCreationJPanel());
     }
