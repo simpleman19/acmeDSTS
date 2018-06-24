@@ -398,7 +398,7 @@ public class TicketCreationJPanel extends AcmeBaseJPanel {
     }
 
     private void cancelButton() {
-        this.getAcmeUI().courierList();
+        this.getAcmeUI().ticketList();
     }
 
     private void newCustomerAction(String fieldToUpdate) {

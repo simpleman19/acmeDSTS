@@ -170,6 +170,7 @@ public class Ticket implements PersistableEntity {
 
     public void setDeliveryCustomer(Customer deliveryCustomer) {
         this.deliveryCustomer = deliveryCustomer;
+        this.quotedPrice = null;
         this.updatePath();
     }
 
@@ -179,6 +180,7 @@ public class Ticket implements PersistableEntity {
 
     public void setPickupCustomer(Customer pickupCustomer) {
         this.pickupCustomer = pickupCustomer;
+        this.quotedPrice = null;
         this.updatePath();
     }
 
