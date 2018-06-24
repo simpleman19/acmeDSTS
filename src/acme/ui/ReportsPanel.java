@@ -93,7 +93,7 @@ public class ReportsPanel extends AcmeBaseJPanel {
     JPanel southPane = new JPanel();
     // constants
     static final String COURIER = "Courier Performance";
-    static final String CUSTOMER = "Customer Performance";
+    static final String CUSTOMER = "Billing Reports";
     static final String COMPANY = "Company Performance";
     static final String SELECTALL = "(Select All)";
 
@@ -370,8 +370,9 @@ public class ReportsPanel extends AcmeBaseJPanel {
             t = (Ticket) i.next();
 
 
-            if(t.isBillToSender() && t.getPickupCustomer().getName().equals(customerName) ||
-                !t.isBillToSender() && t.getDeliveryCustomer().getName().equals(customerName))
+            if((t.isBillToSender() && t.getPickupCustomer().getName().equals(customerName) ||
+                !t.isBillToSender() && t.getDeliveryCustomer().getName().equals(customerName)) &&
+                t.getDeliveryTime() != null)
             {
               model.addRow(new Object[] {
                     reportDate.format(t.getCreationDateTime()),
