@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.io.FileOutputStream;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,8 +20,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -33,17 +36,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import acme.data.HibernateAdapter;
+import acme.data.PersistableEntity;
+import acme.pd.Ticket;
+import acme.pd.User;
+import acme.seed.SeedDatabase;
+
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
-import acme.data.HibernateAdapter;
 import acme.pd.Company;
 import acme.pd.Courier;
 import acme.pd.Customer;
-import acme.pd.Ticket;
-import acme.pd.User;
 
 public class ReportsPanel extends AcmeBaseJPanel {
 
@@ -148,8 +157,15 @@ public class ReportsPanel extends AcmeBaseJPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+              String type = typeSel.getSelectedItem().toString();
                 System.out.println("print report");
-                printReport();
+                if (type.equalsIgnoreCase(COMPANY)) {
+                  printReport();
+                }
+                else if(type.equalsIgnoreCase(CUSTOMER)) {
+                  printBillingReport();
+                }
+
             }
 
         });
@@ -185,6 +201,9 @@ public class ReportsPanel extends AcmeBaseJPanel {
         } else if (type.equals(COMPANY)) {
             generateCompPerformanceReport(from, to);
         }
+        else if(type.equalsIgnoreCase(CUSTOMER)) {
+          generateCustomerPerformanceReports(from, to, name);
+        }
         previewTbl.repaint();
     }
 
@@ -196,13 +215,13 @@ public class ReportsPanel extends AcmeBaseJPanel {
                 "select t from TICKET as t where t.courier is not null AND t.deliveryTime is not null order by t.deliveryTime",
                 Ticket.class).getResultList();
         int onTime = ticket.size();
-        
+
         for (Map.Entry<UUID, Courier> courier : company.getCouriers().entrySet()) {
             if (name.equals(courier.getValue().getName())) {
                 c = courier.getValue();
             }
         }
-        
+
         //iterate through the tickets that the query returned
         for (Ticket t : ticket) {
             int margin = company.getLatenessMarginMinutes();
@@ -306,15 +325,144 @@ public class ReportsPanel extends AcmeBaseJPanel {
         fixCompPerfCols();
     }
 
+    private void generateCustomerPerformanceReports(LocalDate from, LocalDate to, String customerName) {
+
+      DefaultTableModel model = (DefaultTableModel) previewTbl.getModel();
+      model.setRowCount(0);         //clears out table if run customer report multiple times in a row
+      DateTimeFormatter databaseFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      DateTimeFormatter reportDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      DateTimeFormatter reportTime = DateTimeFormatter.ofPattern("hh:mm:ss a");
+      HashMap<String, LocalDateTime> params = new HashMap<>();
+      params.put("stDate", from.atStartOfDay());
+      params.put("endDate", to.atStartOfDay().plusDays(1));
+      EntityManager em = HibernateAdapter.getEntityManager();
+      Query query = em.createQuery("SELECT t from TICKET t WHERE t.creationDateTime BETWEEN :stDate AND :endDate AND t.deliveryTime IS NOT NULL ORDER BY t.deliveryTime", Ticket.class);
+      query.setParameter("stDate", from.atStartOfDay());
+      query.setParameter("endDate", to.atStartOfDay().plusDays(1));
+      List tickets = query.getResultList();
+      Iterator i = tickets.iterator();
+      int count = 0, onTime = 0;
+      double totalPrice = 0;
+      Ticket t = null;
+      Stack<String> nameOfCustomers = new Stack();
+      System.out.println(customerName);
+      if(customerName.equals("(Select All)"))
+      {
+        nameOfCustomers.clear();
+        for(Map.Entry<UUID, Customer> customer : this.getAcmeUI().getCompany().getCustomers().entrySet())
+        {
+          nameOfCustomers.push(customer.getValue().getName());
+        }
+      }
+      else
+      {
+        nameOfCustomers.clear();
+        nameOfCustomers.push(customerName);
+      }
+      while(!nameOfCustomers.isEmpty())
+      {
+        customerName = nameOfCustomers.pop();
+        i = tickets.iterator();
+        count = 0;
+        onTime = 0;
+        totalPrice = 0;
+        while (i.hasNext()) {
+            t = (Ticket) i.next();
+
+
+            if(t.isBillToSender() && t.getPickupCustomer().getName().equals(customerName) ||
+                !t.isBillToSender() && t.getDeliveryCustomer().getName().equals(customerName))
+            {
+              model.addRow(new Object[] {
+                    reportDate.format(t.getCreationDateTime()),
+                    reportTime.format(t.getCreationDateTime()),
+                    t.getQuotedPrice(),
+                    reportTime.format(t.getEstimatedDeliveryTime()),
+                    reportTime.format(t.getDeliveryTime())
+              });
+
+
+              totalPrice = totalPrice + t.getQuotedPrice().doubleValue();
+
+              if(t.getEstimatedDeliveryTime().isAfter(t.getDeliveryTime()) || t.getEstimatedDeliveryTime().equals(t.getDeliveryTime())) {
+                  onTime++;
+              }
+              count++;
+            }
+
+        }
+        if (count != 0) {
+            model.addRow(new Object[] {
+                    "<html><b>Customer Name</b></html>",
+                    "<html><b>Total Price</b></html>",
+                    "<html><b>On Time Percentage</b></html>",
+                    ""
+            });
+            model.addRow(new Object[] {
+                    "<html><b>" + customerName  + "</b></html>",
+                    "<html><b>" + (new BigDecimal(totalPrice)).setScale(2, BigDecimal.ROUND_HALF_UP) + "</b></html>",
+                    "<html><b>" +  NumberFormat.getPercentInstance().format((double) onTime / count) + "</b></html>",
+                    ""
+            });
+        }
+      }
+
+      fixCustomerPerfCols();
+  }
+
+
+
     private void fixCompPerfCols() {
         for (int i = 0; i < 3; i++) {
             previewTbl.getColumnModel().getColumn(i).setMinWidth(120);
         }
     }
 
+    private void fixCustomerPerfCols() {
+      for (int i = 0; i<  5; i++)
+      {
+        previewTbl.getColumnModel().getColumn(i).setMinWidth(120);
+      }
+    }
+
     /* Print the report to PDF */
     private void printReport() {
         // TODO print report
+    }
+
+    private void printBillingReport() {
+      try {
+      Document doc = new Document();
+      PdfWriter.getInstance(doc, new FileOutputStream(System.getProperty("user.home")+"/Downloads/" +LocalDateTime.now() + ".pdf"));
+      doc.open();
+      PdfPTable pdfTable = new PdfPTable(this.previewTbl.getColumnCount());
+      //adding table headers
+      for (int i = 0; i < this.previewTbl.getColumnCount(); i++) {
+          pdfTable.addCell(previewTbl.getColumnName(i));
+      }
+      //extracting data from the JTable and inserting it to PdfPTable
+      int rows = 0;
+      int cols = 0;
+      for (rows = 0; rows < previewTbl.getRowCount(); rows++) {
+          for (cols = 0; cols < previewTbl.getColumnCount(); cols++) {
+              if(this.previewTbl.getModel().getValueAt(rows, cols) == null)
+              {
+                pdfTable.addCell(" ");
+              }
+              else {
+              pdfTable.addCell(this.previewTbl.getModel().getValueAt(rows, cols).toString().replaceAll("\\<.*?>","") );
+              }
+          }
+      }
+
+
+      doc.add(pdfTable);
+      doc.close();
+      System.out.println("done");
+      }
+      catch (Exception e) {
+        System.out.println("Error Printing");
+      }
     }
 
     public void updateNameSel() {
@@ -523,12 +671,10 @@ public class ReportsPanel extends AcmeBaseJPanel {
         southPane.add(printBtn, gbc_printBtn);
     }
 
-    public static void main(String[] args) {
-        AcmeUI acme = new AcmeUI();
-        Company c = acme.getCompany();
-        c.setCurrentUser(new User());
-        acme.setPanel(new ReportsPanel());
-
-    }
+    public static void main(String [] args) {
+      AcmeUI acme = new AcmeUI();
+      acme.getCompany().setCurrentUser(new User());
+      acme.setPanel(new ReportsPanel());
+  }
 
 }

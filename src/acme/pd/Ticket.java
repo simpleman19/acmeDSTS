@@ -240,6 +240,10 @@ public class Ticket implements PersistableEntity {
     }
 
     public BigDecimal getQuotedPrice() {
+        if (this.quotedPrice == null) {
+            this.updatePath();
+        }
+        this.update();
         return quotedPrice;
     }
 
